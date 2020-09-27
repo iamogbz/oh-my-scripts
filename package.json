@@ -63,8 +63,8 @@
   "license": "Unlicense",
   "lint-staged": {
     "*.{js,ts}": [
-      "eslint --max-warnings=0",
-      "jest --bail --findRelatedTests"
+      "npm run lint -- --max-warnings=0",
+      "npm test -- --bail --findRelatedTests"
     ]
   },
   "name": "oh-my-scripts",
@@ -83,7 +83,7 @@
   "scripts": {
     "commit": "git-cz",
     "coveralls": "cat ./artifacts/coverage/lcov.info | coveralls",
-    "lint": "eslint",
+    "lint": "eslint .",
     "release": "semantic-release",
     "test": "jest"
   },

@@ -6,9 +6,9 @@ User scripts to turbo charge your browser.
 
 1. Make sure you have user scripts enabled in your browser:
 
-   - Firefox - install [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=firefox) or [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) (GM v4+ is **not supported**!).
+   - Firefox - install [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=firefox).
    - Chrome - install [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=chrome).
-   - Opera - install [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=opera) or [Violent Monkey](https://addons.opera.com/en/extensions/details/violent-monkey/).
+   - Opera - install [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=opera).
    - Safari - install [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=safari).
    - Dolphin - install [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=dolphin).
    - UC Browser - install [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=ucweb).
@@ -22,3 +22,7 @@ Userscripts are set up to automatically update. You can check for updates from w
 ## More Scripts
 
 - [OpenUserJS](https://openuserjs.org)
+
+## Attribution
+
+- Icon made by [Freepik](http://www.freepik.com/) from [flaticon](https://www.flaticon.com/free-icon/monkey_3069257)
