@@ -1,0 +1,91 @@
+{
+  "author": "iamogbz",
+  "bugs": {
+    "url": "https://github.com/iamogbz/oh-my-scripts/issues"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "commitizen": "^4.2.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.9.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.3.0",
+    "jest": "^25.5.4",
+    "lint-staged": "^10.4.0",
+    "prettier": "^1.19.1",
+    "prettier-eslint": "^11.0.0",
+    "semantic-release": "^17.1.2"
+  },
+  "description": "Userscripts to turbo charge your browser",
+  "engines": {
+    "node": ">=8",
+    "npm": ">=6"
+  },
+  "homepage": "https://github.com/iamogbz/oh-my-scripts#readme",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "jest": {
+    "moduleDirectories": [
+      ".",
+      "./node_modules"
+    ],
+    "testPathIgnorePatterns": [
+      "./artifacts/",
+      "./node_modules/"
+    ],
+    "coverageDirectory": "./artifacts/coverage"
+  },
+  "keywords": [
+    "browser",
+    "github",
+    "greasemonkey",
+    "javascript",
+    "tampermonkey",
+    "userscripts"
+  ],
+  "license": "Unlicense",
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --max-warnings=0",
+      "jest --bail --findRelatedTests"
+    ]
+  },
+  "name": "oh-my-scripts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamogbz/oh-my-scripts.git"
+  },
+  "release": {
+    "dryRun": true,
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/github"
+    ]
+  },
+  "scripts": {
+    "commit": "git-cz",
+    "coveralls": "cat ./artifacts/coverage/lcov.info | coveralls",
+    "lint": "eslint",
+    "release": "semantic-release",
+    "test": "jest"
+  },
+  "version": "0.0.1"
+}
