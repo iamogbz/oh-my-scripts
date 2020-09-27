@@ -11,9 +11,10 @@
 // @include      *://*/*
 // @exclude
 // @require
+// @grant        none
 // https://www.tampermonkey.net/documentation.php
 // ==/UserScript==
 
-(function() {
+(function () {
   "use strict";
 })();

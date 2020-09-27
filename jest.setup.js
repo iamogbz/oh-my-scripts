@@ -16,8 +16,9 @@ const monkeyGlobals = [
   "GM_registerMenuCommand",
   "GM_saveTab",
   "GM_setClipboard",
+  "GM_setStyle",
   "GM_unregisterMenuCommand",
-  "GM_xmlhttpRequest"
+  "GM_xmlhttpRequest",
 ];
 for (const fnName of monkeyGlobals) {
   global[fnName] = NOOP;
