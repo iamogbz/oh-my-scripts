@@ -21,10 +21,7 @@ jobs:
           CI: true
         run: |
           npm test -- --ci --coverage
-      - name: Build
-        run: |
-          npm run build
-      - name: Deploy
+      - name: Release
         if: github.ref == 'refs/heads/master'
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
