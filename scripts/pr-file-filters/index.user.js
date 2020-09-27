@@ -9,10 +9,8 @@
 // @downloadURL  https://raw.githubusercontent.com/iamogbz/oh-my-scripts/feat/pr-file-filters/scripts/pr-file-filters/index.user.js
 // @supportURL   https://github.com/iamogbz/oh-my-scripts/issues
 // @include      *://*.github.com/*
-// @exclude
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/feat/pr-file-filters/libraries/github.js
 // @grant        none
-// https://www.tampermonkey.net/documentation.php
 // ==/UserScript==
 
 function getPRFiles() {
