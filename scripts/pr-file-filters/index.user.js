@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name
+// @name         PR File Filters
 // @namespace    https://github.com/iamogbz/oh-my-scripts
 // @version      0.0.1
 // @author       iamogbz
-// @description
+// @description  Extend GitHub PR File Types Filter
 // @icon         https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/assets/monkey_128.png
 // @updateURL    https://raw.githubusercontent.com/iamogbz/oh-my-scripts/feat/pr-file-filters/scripts/pr-file-filters/index.user.js
 // @downloadURL  https://raw.githubusercontent.com/iamogbz/oh-my-scripts/feat/pr-file-filters/scripts/pr-file-filters/index.user.js
