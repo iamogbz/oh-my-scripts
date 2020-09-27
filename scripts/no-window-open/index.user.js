@@ -31,6 +31,7 @@
   display: flex;
   flex-flow: column;
   font-size: 0.8em;
+  overflow: hidden;
   padding: 8px;
   position: fixed;
   right: -256px;
@@ -50,6 +51,7 @@
   cursor: pointer;
   margin-top: 4px;
   padding: 2px 6px;
+  word-break: break-all;
 }
 `;
   const POPUP_ELEMENT_TEXT = `This page just attempted to open a url.
