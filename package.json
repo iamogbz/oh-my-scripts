@@ -49,6 +49,9 @@
       "./node_modules"
     ],
     "preset": "ts-jest",
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ],
     "testPathIgnorePatterns": [
       "./artifacts/",
       "./node_modules/"
