@@ -83,7 +83,7 @@ function apiV3(query, options = { accept404: false }) {
       personalToken ? { Authorization: `token ${personalToken}` } : {}
     ),
   }).then(function (response) {
-    response.text().then(function (textContent) {
+    return response.text().then(function (textContent) {
       // The response might just be a 200 or 404, it's the REST equivalent of `boolean`
       const apiResponse =
         textContent.length > 0
