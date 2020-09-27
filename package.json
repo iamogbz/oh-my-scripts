@@ -27,7 +27,8 @@
     "lint-staged": "^10.4.0",
     "prettier": "^1.19.1",
     "prettier-eslint": "^11.0.0",
-    "semantic-release": "^17.1.2"
+    "semantic-release": "^17.1.2",
+    "ts-jest": "^26.4.0"
   },
   "description": "Userscripts to turbo charge your browser",
   "engines": {
@@ -42,15 +43,16 @@
     }
   },
   "jest": {
+    "coverageDirectory": "./artifacts/coverage",
     "moduleDirectories": [
       ".",
       "./node_modules"
     ],
+    "preset": "ts-jest",
     "testPathIgnorePatterns": [
       "./artifacts/",
       "./node_modules/"
-    ],
-    "coverageDirectory": "./artifacts/coverage"
+    ]
   },
   "keywords": [
     "browser",

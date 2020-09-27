@@ -12,7 +12,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
+module.exports = (function() {
   "use strict";
   window.open = url => {
     console.log(`window.open(${url})`);
