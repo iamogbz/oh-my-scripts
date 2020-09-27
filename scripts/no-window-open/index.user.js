@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Block Window Open
 // @namespace    https://github.com/iamogbz/oh-my-scripts
-// @version      0.0.1
+// @version      0.0.2
 // @author       iamogbz
 // @description  blocks window open
 // @icon         https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/assets/monkey_128.png
@@ -12,7 +12,7 @@
 // @grant        none
 // ==/UserScript==
 
-module.exports = (function() {
+(function() {
   "use strict";
 
   const POPUP_ELEMENT_TIMEOUT = 10000; // 10 seconds
