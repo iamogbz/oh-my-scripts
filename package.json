@@ -23,9 +23,9 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.3.0",
-    "jest": "^25.5.4",
+    "jest": "^26.4.2",
     "lint-staged": "^10.4.0",
-    "prettier": "^1.19.1",
+    "prettier": "^2.1.2",
     "prettier-eslint": "^11.0.0",
     "semantic-release": "^17.1.2",
     "ts-jest": "^26.4.0"
@@ -49,6 +49,9 @@
       "./node_modules"
     ],
     "preset": "ts-jest",
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ],
     "testPathIgnorePatterns": [
       "./artifacts/",
       "./node_modules/"
