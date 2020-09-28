@@ -133,7 +133,7 @@ function extendFileTypesToggle({ onChange }) {
     children: [
       {
         tagName: "span",
-        children: ["Use fill extension "],
+        children: ["Use full extension "],
       },
       {
         tagName: "input",
@@ -215,7 +215,7 @@ function selectAllToggle({ count, onClick }) {
           },
           {
             attributes: {
-              className: `${fileFilterSelectAllClass} no-underline text-normal text-gray`,
+              class: `${fileFilterSelectAllClass} no-underline text-normal text-gray`,
               "data-all-selected-markup": allSelectedMarkup,
               "data-select-all-markup": selectAllMarkup,
               onclick: onClick,
@@ -253,7 +253,7 @@ function deselectAllToggle({ count, onClick }) {
           },
           {
             attributes: {
-              className: `${fileFilterDeselectAllClass} no-underline text-normal text-blue`,
+              class: `${fileFilterDeselectAllClass} no-underline text-normal text-blue`,
               "data-all-deselected-markup": allDeselectedMarkup,
               "data-deselect-all-markup": deselectAllMarkup,
               onclick: onClick,
