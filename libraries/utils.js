@@ -41,8 +41,16 @@ function selectOrThrow(selectors, baseElement) {
   return result;
 }
 
-function createElement({ attributes = {}, children = [], tagName }) {
+function createElement({
+  attributes = {},
+  children = [],
+  events = {},
+  tagName,
+}) {
   const elem = document.createElement(tagName);
+  for (const [eventType, listener] of Object.entries(events)) {
+    elem.addEventListener(eventType, listener);
+  }
   for (const [attrName, value] of Object.entries(attributes)) {
     if (typeof value === "boolean" && !value) continue;
     elem.setAttribute(attrName, value);
