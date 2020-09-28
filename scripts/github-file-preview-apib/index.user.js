@@ -12,7 +12,7 @@
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/utils.js
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/github.js
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/github-file.js
-// @grant        none
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
 class ExtendFilePreviewAPIB extends ExtendFilePreview {
@@ -26,7 +26,7 @@ class ExtendFilePreviewAPIB extends ExtendFilePreview {
   prepareHTML(fileContent) {
     const host = "https://d31myey2oeipxs.cloudfront.net/v1";
     const apib = btoa(fileContent);
-    return fetch(host, { headers: { "X-Blueprint": apib } })
+    return request(host, { headers: { "X-Blueprint": apib } })
       .then((r) => r.text())
       .then((renderedHtml) => {
         return renderedHtml

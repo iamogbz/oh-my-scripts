@@ -70,7 +70,7 @@ function getApiError(apiResponse) {
 function apiV3(query, options = { accept404: false }) {
   const personalToken = getGithubToken();
 
-  return fetch(API_V3 + query, {
+  return request(API_V3 + query, {
     headers: Object.assign(
       {
         Accept: "application/vnd.github.v3+json",

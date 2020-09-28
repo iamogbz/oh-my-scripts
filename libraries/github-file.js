@@ -57,7 +57,7 @@ class ExtendFilePreview {
   }
 
   safeFetch(input, init) {
-    return fetch(input, init).then((r) => {
+    return request(input, init).then((r) => {
       if (r.status !== 200) {
         throw new Error(`${r.status} - ${r.statusText}`);
       }

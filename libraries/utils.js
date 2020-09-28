@@ -12,6 +12,31 @@ function debounce(fn, wait) {
   };
 }
 
+function request(url, options) {
+  if (!GM_xmlhttpRequest) return fetch(url, options);
+  return new Promise((resolve, reject) => {
+    options.onabort = options.onabort || reject;
+    options.onerror = options.onerror || reject;
+    options.ontimeout = options.ontimeout || reject;
+    options.onload =
+      options.onload ||
+      ((result) => {
+        resolve({
+          blob: () => Promise.resolve(result.response),
+          headers: result.responseHeaders,
+          json: () => Promise.resolve(JSON.parse(result.responseText)),
+          ok: result.status >= 200 && result.status < 300,
+          status: result.status,
+          statusText: result.statusText,
+          text: () => Promise.resolve(result.responseText),
+          url: result.finalUrl,
+          useFinalUrl: true,
+        });
+      });
+    GM_xmlhttpRequest(url, options);
+  });
+}
+
 function isAbsolutePath(p) {
   return p && /^(?:[a-z]+:)?\/\//i.test(p);
 }
