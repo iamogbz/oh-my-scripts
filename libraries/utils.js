@@ -122,8 +122,9 @@ function createElement({
   children = [],
   events = {},
   tagName,
+  tagNS = undefined,
 }) {
-  const elem = document.createElementNS(getTagNS(tagName), tagName);
+  const elem = document.createElementNS(tagNS || getTagNS(tagName), tagName);
   for (const [eventType, listener] of Object.entries(events)) {
     elem.addEventListener(eventType, listener);
   }

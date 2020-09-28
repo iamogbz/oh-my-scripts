@@ -130,6 +130,7 @@ class ExtendFilePreview {
   viewerButtonToggleGroup({ frameElem, isFileList }) {
     const disabled = frameElem ? false : true;
     const disabledTooltip = "HTML render toggle disabled";
+    const svgTagNS = getTagNS("svg");
     const sourceButton = createElement({
       attributes: {
         "aria-current": "true",
@@ -164,9 +165,11 @@ class ExtendFilePreview {
                 "fill-rule": "evenodd",
               },
               tagName: "path",
+              tagNS: svgTagNS,
             },
           ],
           tagName: "svg",
+          tagNS: svgTagNS,
         },
       ],
       events: {
@@ -206,9 +209,11 @@ class ExtendFilePreview {
                 "fill-rule": "evenodd",
               },
               tagName: "path",
+              tagNS: svgTagNS,
             },
           ],
           tagName: "svg",
+          tagNS: svgTagNS,
         },
       ],
       events: {
