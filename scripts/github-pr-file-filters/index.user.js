@@ -1,16 +1,16 @@
 // ==UserScript==
-// @name         PR File Filters
+// @name         GitHub PR File Filters
 // @namespace    https://github.com/iamogbz/oh-my-scripts
 // @version      0.0.1
 // @author       iamogbz
 // @description  Extend GitHub PR File Types Filter
 // @icon         https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/assets/monkey_128.png
-// @updateURL    https://raw.githubusercontent.com/iamogbz/oh-my-scripts/feat/pr-file-filters/scripts/pr-file-filters/index.user.js
-// @downloadURL  https://raw.githubusercontent.com/iamogbz/oh-my-scripts/feat/pr-file-filters/scripts/pr-file-filters/index.user.js
+// @updateURL    https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/scripts/github-pr-file-filters/index.user.js
+// @downloadURL  https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/scripts/github-pr-file-filters/index.user.js
 // @supportURL   https://github.com/iamogbz/oh-my-scripts/issues
 // @include      *://*github.com/*
-// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/feat/pr-file-filters/libraries/utils.js
-// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/feat/pr-file-filters/libraries/github.js
+// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/utils.js
+// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/github.js
 // @grant        none
 // ==/UserScript==
 
@@ -162,12 +162,13 @@ function fileTypeToggle({ deletedCount, fileType, onChange, totalCount }) {
         children: [
           {
             attributes: {
+              checked: true,
               class: "js-diff-file-type-option",
+              "data-deleted-files-count": deletedCount,
+              "data-non-deleted-files-count": nonDeletedCount,
               onchange: onChange,
               type: "checkbox",
               value: fileType,
-              "data-deleted-files-count": deletedCount,
-              "data-non-deleted-files-count": nonDeletedCount,
             },
             tagName: "input",
           },
