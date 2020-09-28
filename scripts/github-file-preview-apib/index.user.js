@@ -14,7 +14,30 @@
 // @grant        none
 // ==/UserScript==
 
+class ExtendFilePreviewAPIB extends ExtendFilePreview {
+  constructor() {
+    super();
+    this.id = filePreviewNS`extend-apib`;
+    this.fileTypes = new Set(["apib"]);
+    this.featureClass = filePreviewNS`extend-apib`;
+  }
+
+  prepareHTML(fileContent) {
+    const host = "https://d31myey2oeipxs.cloudfront.net/v1";
+    const apib = Buffer.from(fileContent).toString("base64");
+    return fetch(host, { headers: { "X-Blueprint": apib } })
+      .then((r) => r.text())
+      .then((renderedHtml) => {
+        return renderedHtml
+          .replace(/<a/g, `<a target="_blank"`)
+          .replace(/href="#/g, `style="cursor:default" no-href="#`)
+          .replace(".collapse-button{", ".collapse-button{display:none;")
+          .replace(".collapse-content{max-height:0;", ".collapse-content{");
+      });
+  }
+}
+
 (function () {
   "use strict";
-
+  new ExtendFilePreviewAPIB().setup();
 })();

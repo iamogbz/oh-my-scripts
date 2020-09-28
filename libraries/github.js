@@ -129,6 +129,10 @@ function onAjaxedPagesRaw(callback) {
   callback();
 }
 
+function filePreviewNS(str) {
+  return `iamogbz-gh-file-preview-${str}`;
+}
+
 class ExtendFilePreview {
   constructor() {
     this.id = null;
