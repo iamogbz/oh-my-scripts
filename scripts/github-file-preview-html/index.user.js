@@ -9,6 +9,7 @@
 // @downloadURL  https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/scripts/github-file-preview-html/index.user.js
 // @supportURL   https://github.com/iamogbz/oh-my-scripts/issues
 // @include      *://*github.com/*
+// @require      https://raw.githubusercontent.com/iamogbz/cheerio/web/dist/main.js
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/utils.js
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/github.js
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/github-file.js

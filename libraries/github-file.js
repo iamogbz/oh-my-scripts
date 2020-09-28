@@ -365,7 +365,7 @@ function inline({
   folder = "",
   load = (path) => Promise.resolve(""),
 }) {
-  const $ = jQuery(html);
+  const $ = cheerio.load(html);
   const retrieve = (target) => {
     const noPre = noPrefix(target);
     return load(noPre ? target : normalisePath(`${folder}/${target}`));
