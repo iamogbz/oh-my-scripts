@@ -49,7 +49,7 @@ function getPRFiles() {
   const pullUrl = getCleanPathname().replace("/pull/", "/pulls/");
   const apiUrl = `repos/${pullUrl}?per_page=1000`;
   // Uses v3 as v4 does not contain deleted status information
-  return apiV3(apiUrl).then(function (result) {
+  return githubApi.v3(apiUrl).then(function (result) {
     if (!result) return [];
     return result.map(function ({ status, filename }) {
       return {

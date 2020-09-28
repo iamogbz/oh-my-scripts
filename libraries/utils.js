@@ -12,6 +12,26 @@ function debounce(fn, wait) {
   };
 }
 
+function isAbsolutePath(p) {
+  return p && /^(?:[a-z]+:)?\/\//i.test(p);
+}
+
+function observeEl(el, listener, options = { childList: true }) {
+  const element = typeof el === "string" ? document.querySelector(el) : el;
+  if (!element) {
+    return;
+  }
+
+  // Run on updates
+  const observer = new MutationObserver(listener);
+  observer.observe(element, options);
+
+  // Run the first time
+  listener.call(observer, [], observer);
+
+  return observer;
+}
+
 function getQueryElement(element) {
   return element === undefined ? document : element;
 }
@@ -41,6 +61,10 @@ function selectOrThrow(selectors, baseElement) {
   return result;
 }
 
+function isElement(element) {
+  return element instanceof Element || element instanceof HTMLDocument;
+}
+
 function createElement({
   attributes = {},
   children = [],
@@ -55,18 +79,17 @@ function createElement({
     if (typeof value === "boolean" && !value) continue;
     elem.setAttribute(attrName, value);
   }
+  const unsupportedChildTypes = ["boolean", "function", "symbol", "undefined"];
   for (const child of children) {
-    if (
-      child === null ||
-      ["boolean", "function", "symbol", "undefined"].includes(typeof child)
-    ) {
+    if (child === null || unsupportedChildTypes.includes(typeof child)) {
       console.error(`Appending child of type '${child}' is not supported.`);
+    } else if (isElement(child)) {
+      elem.appendChild(child);
+    } else if (typeof child === "object") {
+      elem.appendChild(createElement(child));
+    } else {
+      elem.appendChild(document.createTextNode(String(child)));
     }
-    elem.appendChild(
-      typeof child === "object"
-        ? createElement(child)
-        : document.createTextNode(String(child))
-    );
   }
   return elem;
 }
