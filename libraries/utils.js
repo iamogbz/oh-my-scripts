@@ -48,7 +48,17 @@ function createElement({ attributes = {}, children = [], tagName }) {
     elem.setAttribute(attrName, value);
   }
   for (const child of children) {
-    elem.appendChild(typeof child === "object" ? createElement(child) : child);
+    if (
+      child === null ||
+      ["boolean", "function", "symbol", "undefined"].includes(typeof child)
+    ) {
+      console.error(`Appending child of type '${child}' is not supported.`);
+    }
+    elem.appendChild(
+      typeof child === "object"
+        ? createElement(child)
+        : document.createTextNode(String(child))
+    );
   }
   return elem;
 }
