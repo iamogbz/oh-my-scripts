@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Block Window Open
+// @name         No Window Open
 // @namespace    https://github.com/iamogbz/oh-my-scripts
 // @version      0.0.2
 // @author       iamogbz
