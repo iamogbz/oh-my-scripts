@@ -1,0 +1,5 @@
+# Github File Preview APIB
+
+[Install](https://github.com/iamogbz/oh-my-scripts/raw/master/scripts/github-file-preview-apib/index.user.js)
+
+[![extend-file-types-filter-demo](https://github.com/iamogbz/gh-pro-view/raw/master/src/assets/images/extend-file-preview-apib-demo.gif)](https://github.com/apiaryio/api-blueprint-cheatsheet/blob/master/polls.apib)
