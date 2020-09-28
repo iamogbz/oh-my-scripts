@@ -12,20 +12,21 @@ function debounce(fn, wait) {
   };
 }
 
+function getQueryElement(element) {
+  return element === undefined ? document : element;
+}
+
 function selectAll(selectors, baseElement) {
-  if (arguments.length === 1) {
-    return Array.apply(null, document.querySelectorAll(String(selectors)));
-  }
-  return baseElement
-    ? Array.apply(null, baseElement.querySelectorAll(String(selectors)))
-    : [];
+  const queryElement = getQueryElement(baseElement);
+  return Array.apply(
+    null,
+    queryElement ? queryElement.querySelectorAll(String(selectors)) : []
+  );
 }
 
 function selectDOM(selectors, baseElement) {
-  if (arguments.length === 1) {
-    return document.querySelector(String(selectors));
-  }
-  return baseElement && baseElement.querySelector(String(selectors));
+  const element = getQueryElement(baseElement);
+  return element && element.querySelector(String(selectors));
 }
 
 function selectExists(...args) {
