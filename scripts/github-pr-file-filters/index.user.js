@@ -139,7 +139,6 @@ function extendFileTypesToggle({ onChange }) {
         attributes: {
           checked: state.shouldExtendFileType,
           id: fileFilterExtendToggleId,
-          onchange: onChange,
           type: "checkbox",
         },
         events: { change: onChange },
