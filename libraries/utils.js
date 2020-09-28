@@ -12,7 +12,7 @@ function debounce(fn, wait) {
   };
 }
 
-function request(url, options) {
+function request(url, options = {}) {
   if (!GM_xmlhttpRequest) return fetch(url, options);
   return new Promise((resolve, reject) => {
     options.onabort = options.onabort || reject;
