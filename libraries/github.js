@@ -4,11 +4,13 @@ const API_V3 =
     : `${location.origin}/api/v3/`;
 const REGEX_COMMIT = "commits?/[0-9a-f]{5,40}";
 const REGEX_PR = "^pull/\\d+";
-
-function ns(str) {
-  return `iamogbz/oh-my-scripts/github/${str}`;
-}
 const STORAGE_KEY_GH_TOKEN = ns`GITHUB_TOKEN`;
+
+class APIError extends Error {
+  constructor(...messages) {
+    super(messages.join("\n"));
+  }
+}
 
 function getGithubToken() {
   return window.localStorage.getItem(STORAGE_KEY_GH_TOKEN);
@@ -34,12 +36,6 @@ function getCommitSha() {
   const match = getRepoPath().match(REGEX_COMMIT);
   if (!match) return null;
   return match[0].split("/")[1];
-}
-
-class APIError extends Error {
-  constructor(...messages) {
-    super(messages.join("\n"));
-  }
 }
 
 function getApiError(apiResponse) {

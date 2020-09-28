@@ -16,10 +16,14 @@
 (function () {
   "use strict";
 
+  function selectorNS(str) {
+    return `iamogbz-no-window-open-${str}`;
+  }
+
   const POPUP_ELEMENT_TIMEOUT = 10000; // 10 seconds
-  const POPUP_ELEMENT_ID = "window-open-popup-element";
-  const POPUP_ELEMENT_LINK_ID = "window-open-popup-element-link";
-  const POPUP_ELEMENT_CLS_VISIBLE = "visible";
+  const POPUP_ELEMENT_ID = selectorNS`popup-element`;
+  const POPUP_ELEMENT_LINK_ID = selectorNS`popup-element-link`;
+  const POPUP_ELEMENT_CLS_VISIBLE = selectorNS`popup-element-visible`;
   const POPUP_ELEMENT_CSS = `
 #${POPUP_ELEMENT_ID} {
   align-items: center;
