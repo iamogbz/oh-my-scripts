@@ -16,6 +16,22 @@ function isAbsolutePath(p) {
   return p && /^(?:[a-z]+:)?\/\//i.test(p);
 }
 
+function fileBasename(filePath) {
+  return filePath.split("/").slice(-1).pop();
+}
+
+function getFileType(fileName, numfileTypes = 1) {
+  const delimiter = ".";
+  const [, ...fileTypes] = fileBasename(fileName).split(delimiter);
+  if (fileTypes.length === 0) return null;
+  if (!numfileTypes) {
+    return fileTypes.join(delimiter);
+  }
+  return fileTypes
+    .slice(Math.max(fileTypes.length - numfileTypes, 0))
+    .join(delimiter);
+}
+
 function observeEl(el, listener, options = { childList: true }) {
   const element = typeof el === "string" ? document.querySelector(el) : el;
   if (!element) {

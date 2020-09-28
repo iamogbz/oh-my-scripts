@@ -11,6 +11,7 @@
 // @include      *://*github.com/*
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/utils.js
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/github.js
+// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/github-file.js
 // @grant        none
 // ==/UserScript==
 
