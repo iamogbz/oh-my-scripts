@@ -345,3 +345,72 @@ class ExtendFilePreview {
     ]).then((enabled) => enabled.some(Boolean));
   }
 }
+
+// ==Inline HTML==
+function noPrefix(p) {
+  return isAbsolutePath(p) || p.startsWith("/");
+}
+function insertInto($, selector, tagName, content = "", attributes = {}) {
+  const elem = document.createElement(tagName);
+  for (const [name, value] of Object.entries(attributes)) {
+    elem.setAttribute(name, value);
+  }
+  elem.innerHTML = content;
+  $(selector).append(elem.outerHTML);
+}
+
+function inline({
+  base,
+  html,
+  folder = "",
+  load = (path) => Promise.resolve(""),
+}) {
+  const $ = jQuery(html);
+  const retrieve = (target) => {
+    const noPre = noPrefix(target);
+    return load(noPre ? target : normalisePath(`${folder}/${target}`));
+  };
+
+  const resources = {
+    css: {
+      callback: (v) => {
+        if (!v.attribs.href) return;
+        return retrieve(v.attribs.href).then((content) => {
+          insertInto($, "head", "style", content, { type: "text/css" });
+        });
+      },
+      cleanup: true,
+      selector: `link[rel="stylesheet"]`,
+      tasks: [],
+    },
+    img: {
+      callback: (v) => {
+        const target = v.attribs.src;
+        if (!target) return;
+        const newSrc = noPrefix(target) ? target : `${base}/${target}`;
+        $(v).attr("src", newSrc);
+      },
+      selector: `img`,
+      tasks: [],
+    },
+    /*
+     * This just removes the javascript tags without replacements
+     */
+    js: {
+      callback: (v) => Promise.resolve(),
+      cleanup: true,
+      selector: `script[src*=".js"]`,
+      tasks: [],
+    },
+  };
+
+  const tasks = [];
+  for (const [, r] of Object.entries(resources)) {
+    if (!r.selector) continue;
+    const c = $(r.selector);
+    c.each((_, v) => r.tasks.push(r.callback(v)));
+    tasks.push(Promise.all(r.tasks).then(() => r.cleanup && c.remove()));
+  }
+
+  return Promise.all(tasks).then(() => $.html());
+}

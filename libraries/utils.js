@@ -46,6 +46,14 @@ function isAbsolutePath(p) {
   return p && /^(?:[a-z]+:)?\/\//i.test(p);
 }
 
+function normalisePath(p) {
+  return new URL(p).href;
+}
+
+function fileDirname(filePath) {
+  return filePath.substring(0, filePath.lastIndexOf("/"));
+}
+
 function fileBasename(filePath) {
   return filePath.split("/").slice(-1).pop();
 }
