@@ -47,7 +47,12 @@ function isAbsolutePath(p) {
 }
 
 function normalisePath(p) {
-  return new URL(p).href;
+  try {
+    return new URL(p).href;
+  } catch (e) {
+    const fakeProtocol = "x://";
+    return new URL(`${fakeProtocol}${p}`).href.substr(fakeProtocol.length);
+  }
 }
 
 function fileDirname(filePath) {
