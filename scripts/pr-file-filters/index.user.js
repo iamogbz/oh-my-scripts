@@ -395,5 +395,5 @@ function setupFilters(prFiles) {
 onAjaxedPagesRaw(function () {
   "use strict";
   if (!isPRFiles()) return;
-  getPRFiles().then(setupFilters);
+  return getPRFiles().then(setupFilters);
 });

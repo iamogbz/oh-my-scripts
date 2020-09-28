@@ -123,8 +123,6 @@ function isCommit() {
 }
 
 function onAjaxedPagesRaw(callback) {
-  return domLoaded.then(function onDomLoaded() {
-    document.addEventListener("pjax:end", callback);
-    callback();
-  });
+  document.addEventListener("pjax:end", callback);
+  callback();
 }

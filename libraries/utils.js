@@ -12,24 +12,6 @@ function debounce(fn, wait) {
   };
 }
 
-function hasDomLoaded() {
-  return (
-    document.readyState === "interactive" || document.readyState === "complete"
-  );
-}
-
-const domLoaded = new Promise((resolve) => {
-  if (hasDomLoaded()) {
-    resolve();
-  } else {
-    document.addEventListener("DOMContentLoaded", resolve, {
-      capture: true,
-      once: true,
-      passive: true,
-    });
-  }
-});
-
 function selectAll(selectors, baseElement) {
   if (arguments.length === 1) {
     return Array.apply(null, document.querySelectorAll(String(selectors)));
