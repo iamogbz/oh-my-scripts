@@ -11,7 +11,6 @@
 // @include      *://*github.com/*
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/feat/pr-file-filters/libraries/utils.js
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/feat/pr-file-filters/libraries/github.js
-// @require      https://cdn.jsdelivr.net/npm/lodash@4.17.20/debounce.js
 // @grant        none
 // ==/UserScript==
 

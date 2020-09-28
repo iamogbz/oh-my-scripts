@@ -2,6 +2,16 @@ function ns(str) {
   return `iamogbz/oh-my-scripts/${str}`;
 }
 
+function debounce(fn, wait) {
+  let timeoutId;
+  return function debounced(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      fn(...args);
+    }, wait);
+  };
+}
+
 function selectAll(selectors, baseElement) {
   if (arguments.length === 1) {
     return Array.apply(null, document.querySelectorAll(String(selectors)));
