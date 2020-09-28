@@ -195,7 +195,7 @@ class ExtendFilePreview {
         {
           attributes: {
             "aria-hidden": "true",
-            className: "octicon octicon-file",
+            class: "octicon octicon-file",
             height: 16,
             version: "1.1",
             viewBox: "0 0 12 16",
