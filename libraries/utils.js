@@ -111,13 +111,19 @@ function isElement(element) {
   return element instanceof Element || element instanceof HTMLDocument;
 }
 
+function getTagNS(tagName) {
+  if (tagName === "math") return "http://www.w3.org/1998/Math/MathML";
+  if (tagName === "svg") return "http://www.w3.org/2000/svg";
+  return "http://www.w3.org/1999/xhtml";
+}
+
 function createElement({
   attributes = {},
   children = [],
   events = {},
   tagName,
 }) {
-  const elem = document.createElement(tagName);
+  const elem = document.createElementNS(getTagNS(tagName), tagName);
   for (const [eventType, listener] of Object.entries(events)) {
     elem.addEventListener(eventType, listener);
   }
