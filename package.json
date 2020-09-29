@@ -28,6 +28,7 @@
     "prettier": "^2.1.2",
     "prettier-eslint": "^11.0.0",
     "semantic-release": "^17.1.2",
+    "snapshot-diff": "^0.8.1",
     "ts-jest": "^26.4.0"
   },
   "description": "Userscripts to turbo charge your browser",
@@ -45,7 +46,7 @@
   "jest": {
     "coverageDirectory": "./artifacts/coverage",
     "moduleDirectories": [
-      ".",
+      "./scripts",
       "./node_modules"
     ],
     "preset": "ts-jest",

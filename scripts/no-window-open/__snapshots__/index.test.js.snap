@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`no-window-open blocks window open 1`] = `
+Object {
+  "location": Object {
+    "assign": [Function],
+    "href": "https://example.com",
+    "replace": [Function],
+  },
+}
+`;
+
+exports[`no-window-open hides popup after timer run 1`] = `
+"Snapshot Diff:
+- First value
++ Second value
+
+@@ -1,18 +1,17 @@
+  <body>
+    <div
+-     class=\\"iamogbz-no-window-open-popup-element-visible\\"
++     class=\\"\\"
+      id=\\"iamogbz-no-window-open-popup-element\\"
+    >
+      <div>
+        This page just attempted to open a url.
+  Click on it below to proceed with navigation.
+      </div>
+      
+
+      <a
+-       href=\\"https://example.com\\"
+        id=\\"iamogbz-no-window-open-popup-element-link\\"
+        referrer=\\"noreferrer\\"
+        target=\\"_blank\\"
+      />
+    </div>"
+`;
+
+exports[`no-window-open shows popup after time 1`] = `
+<body>
+  <div
+    id="iamogbz-no-window-open-popup-element"
+  >
+    <div>
+      This page just attempted to open a url.
+Click on it below to proceed with navigation.
+    </div>
+    
+
+    <a
+      href="https://example.com"
+      id="iamogbz-no-window-open-popup-element-link"
+      referrer="noreferrer"
+      target="_blank"
+    />
+  </div>
+</body>
+`;
+
+exports[`no-window-open shows popup after time 2`] = `
+"Snapshot Diff:
+- First value
++ Second value
+
+@@ -1,7 +1,8 @@
+  <body>
+    <div
++     class=\\"iamogbz-no-window-open-popup-element-visible\\"
+      id=\\"iamogbz-no-window-open-popup-element\\"
+    >
+      <div>
+        This page just attempted to open a url.
+  Click on it below to proceed with navigation."
+`;

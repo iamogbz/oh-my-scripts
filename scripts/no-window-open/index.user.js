@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         No Window Open
 // @namespace    https://github.com/iamogbz/oh-my-scripts
-// @version      0.0.2
+// @version      0.0.3
 // @author       iamogbz
 // @description  blocks window open
 // @icon         https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/assets/monkey_128.png
@@ -20,7 +20,8 @@
     return `iamogbz-no-window-open-${str}`;
   }
 
-  const POPUP_ELEMENT_TIMEOUT = 10000; // 10 seconds
+  const POPUP_ELEMENT_TIMEIN = 300; // .3s
+  const POPUP_ELEMENT_TIMEOUT = 10000; // 10s
   const POPUP_ELEMENT_ID = selectorNS`popup-element`;
   const POPUP_ELEMENT_LINK_ID = selectorNS`popup-element-link`;
   const POPUP_ELEMENT_CLS_VISIBLE = selectorNS`popup-element-visible`;
@@ -60,6 +61,7 @@
 `;
   const POPUP_ELEMENT_TEXT = `This page just attempted to open a url.
 Click on it below to proceed with navigation.`;
+  let popupUrl;
 
   function createPopupElement() {
     const element = document.createElement("div");
@@ -80,6 +82,7 @@ Click on it below to proceed with navigation.`;
   }
 
   function setPopupLink(url) {
+    popupUrl = url;
     getOrCreatePopupElement();
     getPopupLinkElement().setAttribute("href", url);
     getPopupLinkElement().innerText = url;
@@ -97,9 +100,28 @@ Click on it below to proceed with navigation.`;
   function onWindowOpen(url) {
     console.log(`window.open(${url})`);
     setPopupLink(url);
-    setTimeout(showNotice, 300);
-    setTimeout(hideNotice, POPUP_ELEMENT_TIMEOUT);
-    return null;
+    setTimeout(showNotice, POPUP_ELEMENT_TIMEIN);
+    setTimeout(hideNotice, POPUP_ELEMENT_TIMEIN + POPUP_ELEMENT_TIMEOUT);
+    // return mock window object that allows setting location
+    return {
+      get location() {
+        return {
+          assign: setPopupLink,
+          replace: setPopupLink,
+          get href() {
+            return popupUrl;
+          },
+          set href(value) {
+            setPopupLink(value);
+          },
+        };
+      },
+      set location(value) {
+        if (!value) return;
+        else if (typeof value === "string") setPopupLink(value);
+        else if (value.href) setPopupLink(value.href);
+      },
+    };
   }
   // ==Run==
   GM_setStyle({ data: POPUP_ELEMENT_CSS });
