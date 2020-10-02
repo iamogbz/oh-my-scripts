@@ -9,7 +9,11 @@
 // @downloadURL  https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/scripts/github-pr-file-filters/index.user.js
 // @supportURL   https://github.com/iamogbz/oh-my-scripts/issues
 // @include      *://*github.com/*
-// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/utils.js
+// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/ns.js
+// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/dom.js
+// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/path.js
+// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/debounce.js
+// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/request.js
 // @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/github.js
 // @grant        none
 // ==/UserScript==
