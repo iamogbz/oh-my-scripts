@@ -5,6 +5,39 @@ const spyConsoleLog = jest
   .spyOn(console, "log")
   .mockImplementation(() => undefined);
 const spyWindowOpen = jest.spyOn(window, "open");
+window.getTagNS = () => "http://www.w3.org/1999/xhtml";
+window.isElement = (element) => {
+  return element instanceof Element || element instanceof HTMLDocument;
+};
+window.createElement = ({
+  attributes = {},
+  children = [],
+  events = {},
+  tagName,
+  tagNS = undefined,
+}) => {
+  const elem = document.createElementNS(tagNS || getTagNS(tagName), tagName);
+  for (const [eventType, listener] of Object.entries(events)) {
+    elem.addEventListener(eventType, listener);
+  }
+  for (const [attrName, value] of Object.entries(attributes)) {
+    if (typeof value === "boolean" && !value) continue;
+    elem.setAttribute(attrName, value);
+  }
+  const unsupportedChildTypes = ["boolean", "function", "symbol", "undefined"];
+  for (const child of children) {
+    if (child === null || unsupportedChildTypes.includes(typeof child)) {
+      console.error(`Appending child of type '${child}' is not supported.`);
+    } else if (isElement(child)) {
+      elem.appendChild(child);
+    } else if (typeof child === "object") {
+      elem.appendChild(createElement(child));
+    } else {
+      elem.appendChild(document.createTextNode(String(child)));
+    }
+  }
+  return elem;
+};
 require("./index.user");
 
 describe("no-window-open", () => {

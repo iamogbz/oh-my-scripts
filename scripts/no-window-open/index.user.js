@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         No Window Open
 // @namespace    https://github.com/iamogbz/oh-my-scripts
-// @version      0.0.3
+// @version      0.0.4
 // @author       iamogbz
 // @description  blocks window open
 // @icon         https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/assets/monkey_128.png
@@ -9,6 +9,7 @@
 // @downloadURL  https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/scripts/no-window-open/index.user.js
 // @supportURL   https://github.com/iamogbz/oh-my-scripts/issues
 // @include      *://*/*
+// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/dom.js
 // @require      https://openuserjs.org/src/libs/Marti/GM_setStyle.min.js
 // @grant        none
 // ==/UserScript==
@@ -24,6 +25,7 @@
   const POPUP_ELEMENT_TIMEOUT = 10000; // 10s
   const POPUP_ELEMENT_ID = selectorNS`popup-element`;
   const POPUP_ELEMENT_LINK_ID = selectorNS`popup-element-link`;
+  const POPUP_ELEMENT_CLOSE_BUTTON_ID = selectorNS`popup-element-close`;
   const POPUP_ELEMENT_CLS_VISIBLE = selectorNS`popup-element-visible`;
   const POPUP_ELEMENT_CSS = `
 #${POPUP_ELEMENT_ID} {
@@ -49,6 +51,18 @@
   right: 8px;
 }
 
+#${POPUP_ELEMENT_ID} #${POPUP_ELEMENT_CLOSE_BUTTON_ID} {
+  background-color: #8d0303EE;
+  border-radius: 2px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 0.8em;
+  margin-top: 8px;
+  padding: 4px 6px;
+  width: 100%;
+}
+
 #${POPUP_ELEMENT_ID} #${POPUP_ELEMENT_LINK_ID} {
   background-color: #0366d6AA;
   border-radius: 2px;
@@ -64,10 +78,29 @@ Click on it below to proceed with navigation.`;
   let popupUrl;
 
   function createPopupElement() {
-    const element = document.createElement("div");
-    element.id = POPUP_ELEMENT_ID;
-    element.innerHTML = `<div>${POPUP_ELEMENT_TEXT}</div>
-<a id="${POPUP_ELEMENT_LINK_ID}" target="_blank" referrer="noreferrer"/>`;
+    const element = createElement({
+      attributes: { id: POPUP_ELEMENT_ID },
+      children: [
+        { children: [POPUP_ELEMENT_TEXT], tagName: "div" },
+        {
+          attributes: {
+            id: POPUP_ELEMENT_LINK_ID,
+            target: "_blank",
+            referrer: "noreferrer",
+          },
+          tagName: "a",
+        },
+        {
+          attributes: {
+            id: POPUP_ELEMENT_CLOSE_BUTTON_ID,
+          },
+          children: ["Dismiss"],
+          events: { click: hideNotice },
+          tagName: "button",
+        },
+      ],
+      tagName: "div",
+    });
     document.body.appendChild(element);
     return element;
   }
@@ -78,14 +111,14 @@ Click on it below to proceed with navigation.`;
   }
 
   function getPopupLinkElement() {
-    return document.getElementById(POPUP_ELEMENT_LINK_ID);
+    return getOrCreatePopupElement().querySelector(`#${POPUP_ELEMENT_LINK_ID}`);
   }
 
   function setPopupLink(url) {
     popupUrl = url;
     getOrCreatePopupElement();
     getPopupLinkElement().setAttribute("href", url);
-    getPopupLinkElement().innerText = url;
+    getPopupLinkElement().innerHTML = url;
   }
 
   function showNotice() {
