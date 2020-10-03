@@ -76,6 +76,7 @@
   const POPUP_ELEMENT_TEXT = `This page just attempted to open a url.
 Click on it below to proceed with navigation.`;
   let popupUrl;
+  let popupHideTimeoutId;
 
   function createPopupElement() {
     const element = createElement({
@@ -99,6 +100,7 @@ Click on it below to proceed with navigation.`;
           tagName: "button",
         },
       ],
+      events: { mouseover: showNotice },
       tagName: "div",
     });
     document.body.appendChild(element);
@@ -123,6 +125,12 @@ Click on it below to proceed with navigation.`;
 
   function showNotice() {
     getOrCreatePopupElement().classList.add(POPUP_ELEMENT_CLS_VISIBLE);
+    hideNoticeTimeout();
+  }
+
+  function showNoticeTimeout() {
+    clearTimeout(popupHideTimeoutId);
+    setTimeout(showNotice, POPUP_ELEMENT_TIMEIN);
   }
 
   function hideNotice() {
@@ -130,11 +138,15 @@ Click on it below to proceed with navigation.`;
     getPopupLinkElement().removeAttribute("href");
   }
 
+  function hideNoticeTimeout() {
+    clearTimeout(popupHideTimeoutId);
+    popupHideTimeoutId = setTimeout(hideNotice, POPUP_ELEMENT_TIMEOUT);
+  }
+
   function onWindowOpen(url) {
     console.log(`window.open(${url})`);
     setPopupLink(url);
-    setTimeout(showNotice, POPUP_ELEMENT_TIMEIN);
-    setTimeout(hideNotice, POPUP_ELEMENT_TIMEIN + POPUP_ELEMENT_TIMEOUT);
+    showNoticeTimeout();
     // return mock window object that allows setting location
     return {
       get location() {

@@ -10,6 +10,31 @@ Object {
 }
 `;
 
+exports[`no-window-open delays hides popup after timer run on mouseover 1`] = `
+"Snapshot Diff:
+- First value
++ Second value
+
+@@ -1,16 +1,15 @@
+  <body>
+    <div
+-     class=\\"iamogbz-no-window-open-popup-element-visible\\"
++     class=\\"\\"
+      id=\\"iamogbz-no-window-open-popup-element\\"
+    >
+      <div>
+        This page just attempted to open a url.
+  Click on it below to proceed with navigation.
+      </div>
+      <a
+-       href=\\"https://example.com\\"
+        id=\\"iamogbz-no-window-open-popup-element-link\\"
+        referrer=\\"noreferrer\\"
+        target=\\"_blank\\"
+      >
+        https://example.com"
+`;
+
 exports[`no-window-open hides popup after timer run 1`] = `
 "Snapshot Diff:
 - First value
