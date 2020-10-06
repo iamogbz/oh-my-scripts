@@ -41,7 +41,7 @@
   overflow: hidden;
   padding: 8px;
   position: fixed;
-  right: -256px;
+  right: -264px;
   text-align: center;
   transition: right 0.3s ease;
   width: 248px;
