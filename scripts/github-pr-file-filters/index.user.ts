@@ -18,16 +18,56 @@
 // @grant        none
 // ==/UserScript==
 
+import {
+  createElement,
+  createElementStyle,
+  selectAll,
+  selectExists,
+  selectOrThrow,
+} from "libraries/dom";
+import {
+  getCleanPathname,
+  githubApi,
+  isPRFiles,
+  onAjaxedPagesRaw,
+} from "libraries/github";
+import { getFileType } from "libraries/paths";
+import { debounce } from "libraries/debounce";
+
+// ==Types & Interfaces
+interface PRFile {
+  fileName: string;
+  isDeleted: boolean;
+}
+
+interface PRFileTypes {
+  [fileType: string]: {
+    count: number;
+    deleted: number;
+  };
+}
+
+interface State {
+  prFiles: PRFile[];
+  prFileTypes: PRFileTypes;
+  selectedFileTypes: Set<string>;
+  shouldExtendFileType: boolean;
+}
+// ==/Types & Interfaces
+
 // ==State & Transitions==
-const state = {
+const state: State = {
   prFileTypes: {},
   prFiles: [],
   selectedFileTypes: new Set(),
   shouldExtendFileType: true,
 };
 
-function setState(diff, callback) {
-  const newState = Object.assign({}, state, diff);
+function setState(
+  diff: Partial<State>,
+  callback: (updated: boolean) => unknown
+) {
+  const newState = { ...state, ...diff };
   if (JSON.stringify(state) === JSON.stringify(newState)) {
     callback(false);
     return;
@@ -38,9 +78,9 @@ function setState(diff, callback) {
 // ==/State & Transitions==
 
 // ==Helpers and Utils==
-function sortObject(unsorted) {
-  const sorted = {};
-  function compare(a, b) {
+function sortObject<T>(unsorted: Record<string, T>) {
+  const sorted: Record<string, T> = {};
+  function compare(a: string, b: string) {
     return a > b ? 1 : 0 - Number(a < b);
   }
   for (const key of Object.keys(unsorted).sort(compare)) {
@@ -55,7 +95,13 @@ function getPRFiles() {
   // Uses v3 as v4 does not contain deleted status information
   return githubApi.v3(apiUrl).then(function (result) {
     if (!result) return [];
-    return result.map(function ({ status, filename }) {
+    return result.map(function ({
+      status,
+      filename,
+    }: {
+      status: string;
+      filename: string;
+    }) {
       return {
         fileName: filename,
         isDeleted: status === "removed",
@@ -65,15 +111,15 @@ function getPRFiles() {
 }
 
 function getExtendedFileType(
-  fileName,
+  fileName: string,
   shouldExtend = state.shouldExtendFileType
 ) {
   const fileType = getFileType(fileName, shouldExtend ? 0 : 1);
   return fileType ? `.${fileType}` : "No extension";
 }
 
-function groupPRFileTypes(prFiles) {
-  const grouped = {};
+function groupPRFileTypes(prFiles: PRFile[]): PRFileTypes {
+  const grouped: Record<string, { count: number; deleted: number }> = {};
   for (const { fileName, isDeleted } of prFiles) {
     const fileType = getExtendedFileType(fileName);
     if (!(fileType in grouped)) {
@@ -89,7 +135,7 @@ function groupPRFileTypes(prFiles) {
   return sortObject(grouped);
 }
 
-function selectorNS(str) {
+function selectorNS(str: string | TemplateStringsArray) {
   return `iamogbz-pr-file-filters-${str}`;
 }
 // ==/Helpers and Utils==
@@ -107,8 +153,8 @@ function getFilterListElement() {
   return selectOrThrow(".select-menu-list .p-2", getFileFilterElement());
 }
 
-function getFilterToggleTypeElement(fileType) {
-  return selectOrThrow(
+function getFilterToggleTypeElement(fileType: string) {
+  return selectOrThrow<HTMLInputElement>(
     `.js-diff-file-type-option[value="${fileType}"]`,
     getFilterListElement()
   );
@@ -116,7 +162,7 @@ function getFilterToggleTypeElement(fileType) {
 // ==/DOM Element Classes and Selectors==
 
 // ==DOM Element Constructors==
-function extendFileTypesToggle({ onChange }) {
+function extendFileTypesToggle({ onChange }: { onChange: EventListener }) {
   return createElement({
     children: [
       {
@@ -137,9 +183,19 @@ function extendFileTypesToggle({ onChange }) {
   });
 }
 
-function fileTypeToggle({ deletedCount, fileType, onChange, totalCount }) {
+function fileTypeToggle({
+  deletedCount,
+  fileType,
+  onChange,
+  totalCount,
+}: {
+  deletedCount: number;
+  fileType: string;
+  onChange: EventListener;
+  totalCount: number;
+}) {
   const nonDeletedCount = totalCount - deletedCount;
-  function markupCount(count) {
+  function markupCount(count: number) {
     return `(${count})`;
   }
   return createElement({
@@ -181,7 +237,13 @@ function fileTypeToggle({ deletedCount, fileType, onChange, totalCount }) {
   });
 }
 
-function selectAllToggle({ count, onClick }) {
+function selectAllToggle({
+  count,
+  onClick,
+}: {
+  count: number;
+  onClick: EventListener;
+}) {
   const typeMarkup = count > 1 ? "types" : "type";
   const selectAllMarkup = `Select all ${count} file ${typeMarkup}`;
   const allSelectedMarkup = `All ${count} file ${typeMarkup} selected`;
@@ -220,7 +282,13 @@ function selectAllToggle({ count, onClick }) {
   });
 }
 
-function deselectAllToggle({ count, onClick }) {
+function deselectAllToggle({
+  count,
+  onClick,
+}: {
+  count: number;
+  onClick: EventListener;
+}) {
   const typeMarkup = count > 1 ? "types" : "type";
   const deselectAllMarkup = `Deselect all ${count} file ${typeMarkup}`;
   const allDeselectedMarkup = `All ${count} file ${typeMarkup} deselected`;
@@ -261,8 +329,8 @@ function deselectAllToggle({ count, onClick }) {
 
 // ==Update DOM from State==
 function extendFileDetailsElements() {
-  for (const elem of selectAll(".file.Details")) {
-    const fileHeaderElem = selectOrThrow(".file-header", elem);
+  for (const elem of selectAll<HTMLElement>(".file.Details")) {
+    const fileHeaderElem = selectOrThrow<HTMLElement>(".file-header", elem);
     if (!fileHeaderElem.dataset.path) {
       return;
     }
@@ -279,7 +347,7 @@ function updateFilterDeselectAllElement() {
   state.selectedFileTypes = new Set(
     fileTypes.filter((fileType) => getFilterToggleTypeElement(fileType).checked)
   );
-  const deselectElement = selectOrThrow(
+  const deselectElement = selectOrThrow<HTMLElement>(
     `.${fileFilterDeselectAllClass}`,
     getFilterListElement()
   );
@@ -289,9 +357,8 @@ function updateFilterDeselectAllElement() {
   );
   deselectElement.classList.add(`text-${isShowingSomeTypes ? "blue" : "gray"}`);
   const { deselectAllMarkup, allDeselectedMarkup } = deselectElement.dataset;
-  deselectElement.innerText = isShowingSomeTypes
-    ? deselectAllMarkup
-    : allDeselectedMarkup;
+  deselectElement.innerText =
+    (isShowingSomeTypes ? deselectAllMarkup : allDeselectedMarkup) ?? "";
 }
 
 function onDeselectAllToggle() {
@@ -343,7 +410,9 @@ function updateFileTypesState() {
 }
 
 function onShouldExtendToggle() {
-  const extendToggleElement = selectOrThrow(`#${fileFilterExtendToggleId}`);
+  const extendToggleElement = selectOrThrow<HTMLInputElement>(
+    `#${fileFilterExtendToggleId}`
+  );
   setState(
     {
       shouldExtendFileType: extendToggleElement
@@ -355,7 +424,7 @@ function onShouldExtendToggle() {
         const filterListElement = getFilterListElement();
         const numFileTypes = Object.keys(state.prFileTypes).length;
         if (state.selectedFileTypes.size !== numFileTypes) {
-          selectOrThrow(
+          selectOrThrow<HTMLInputElement>(
             `.${fileFilterSelectAllClass}`,
             filterListElement
           ).click();
@@ -368,7 +437,7 @@ function onShouldExtendToggle() {
 }
 // ==/Update DOM from State==
 
-function setupFilters(prFiles) {
+function setupFilters(prFiles: PRFile[]) {
   state.prFiles = prFiles;
   const selectMenuHeader = selectOrThrow(
     ".select-menu-header",

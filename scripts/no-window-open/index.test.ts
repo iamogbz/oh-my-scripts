@@ -1,4 +1,4 @@
-const { toMatchDiffSnapshot } = require("snapshot-diff");
+import { toMatchDiffSnapshot } from "snapshot-diff";
 expect.extend({ toMatchDiffSnapshot });
 
 const spyConsoleLog = jest
@@ -8,7 +8,7 @@ const spyWindowOpen = jest.spyOn(window, "open");
 require("./index.user");
 
 describe("no-window-open", () => {
-  beforeAll(jest.useFakeTimers);
+  beforeAll(() => void jest.useFakeTimers());
   afterAll(jest.useRealTimers);
 
   it("blocks window open", () => {
@@ -40,20 +40,20 @@ describe("no-window-open", () => {
     const dummyWindow = window.open("https://example.com");
     const getUrl = () =>
       document.body
-        .querySelector("#iamogbz-no-window-open-popup-element-link")
+        .querySelector("#iamogbz-no-window-open-popup-element-link")!
         .getAttribute("href");
     expect(getUrl()).toEqual("https://example.com");
 
-    dummyWindow.location = "https://example.com/2";
+    Object.assign(dummyWindow, { location: "https://example.com/2" });
     expect(getUrl()).toEqual("https://example.com/2");
 
-    dummyWindow.location.href = "https://example.com/3";
+    dummyWindow!.location.href = "https://example.com/3";
     expect(getUrl()).toEqual("https://example.com/3");
 
-    dummyWindow.location.assign("https://example.com/4");
+    dummyWindow!.location.assign("https://example.com/4");
     expect(getUrl()).toEqual("https://example.com/4");
 
-    dummyWindow.location.replace("https://example.com/5");
+    dummyWindow!.location.replace("https://example.com/5");
     expect(getUrl()).toEqual("https://example.com/5");
   });
 });

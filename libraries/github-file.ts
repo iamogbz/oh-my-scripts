@@ -1,26 +1,47 @@
-function filePreviewNS(str) {
+import {
+  createElement,
+  createElementStyle,
+  getTagNS,
+  observeEl,
+  selectAll,
+  selectDOM,
+  selectExists,
+  selectOrThrow,
+} from "./dom";
+import {
+  getCommitSha,
+  getRepoPath,
+  getUserRepo,
+  githubApi,
+  isCommit,
+  isPRFiles,
+  isSingleFile,
+  onAjaxedPagesRaw,
+} from "./github";
+import { getFileType, isAbsolutePath } from "./paths";
+import { request } from "./request";
+
+export function filePreviewNS(str: string | TemplateStringsArray) {
   return `iamogbz-gh-file-preview-${str}`;
 }
 
-class ExtendFilePreview {
-  constructor() {
-    this.id = null;
-    this.featureClass = null;
-    this.fileTypes = new Set();
-    this.toggleActionSource = "source";
-    this.toggleActionRender = "render";
-    this.frameStyle = {
-      background: "white",
-      border: "none",
-      display: "none",
-      height: "100%",
-      left: 0,
-      padding: 0,
-      position: "absolute",
-      top: 0,
-      width: "100%",
-    };
-  }
+export abstract class ExtendFilePreview {
+  public id!: string;
+  public featureClass!: string;
+  public fileTypes!: Set<string>;
+  public toggleActionSource = "source";
+  public toggleActionRender = "render";
+  public frameStyle = {
+    background: "white",
+    border: "none",
+    display: "none",
+    height: "100%",
+    left: 0,
+    padding: 0,
+    position: "absolute",
+    top: 0,
+    width: "100%",
+  };
 
   setup() {
     onAjaxedPagesRaw(() => {
@@ -29,34 +50,35 @@ class ExtendFilePreview {
     });
   }
 
-  prepareHTML(fileContent, filePath) {
-    throw new Error("Unimplemented method 'prepareHTML'");
-  }
+  abstract async prepareHTML(
+    fileContent?: string,
+    filePath?: string
+  ): Promise<string | undefined>;
 
-  pathToBlob(filePath) {
+  pathToBlob(filePath: string) {
     return `https://raw.githubusercontent.com/${getUserRepo()}/${filePath}`;
   }
 
-  getFileContent(filePath) {
+  getFileContent(filePath: string) {
     return this.safeFetch(
       isAbsolutePath(filePath) ? filePath : this.pathToBlob(filePath)
     )
-      .then((r) => r.text())
+      .then((r) => r.text?.())
       .catch((e) => {
         console.info(e);
-        if (isAbsolutePath(filePath)) return null;
+        if (isAbsolutePath(filePath)) return undefined;
         const [ref, ...rest] = filePath.split("/");
         return githubApi
           .v3(`${this.pathToApi(rest.join("/"))}?ref=${ref}`)
           .then((r) => atob(r.content))
           .catch((e) => {
             console.error(e);
-            return null;
+            return undefined;
           });
       });
   }
 
-  safeFetch(input, init) {
+  safeFetch(input: RequestInfo, init?: RequestInit) {
     return request(input, init).then((r) => {
       if (r.status !== 200) {
         throw new Error(`${r.status} - ${r.statusText}`);
@@ -65,15 +87,15 @@ class ExtendFilePreview {
     });
   }
 
-  isSupportedFile(filePath) {
+  isSupportedFile(filePath: string) {
     return this.fileTypes.has(getFileType(filePath));
   }
 
-  pathToApi(filePath) {
+  pathToApi(filePath: string) {
     return `repos/${getUserRepo()}/contents/${filePath}`;
   }
 
-  selectButton(element) {
+  selectButton(element: HTMLElement) {
     const selectedButton = selectDOM(
       `.BtnGroup.${this.featureClass} .BtnGroup-item.selected`
     );
@@ -82,23 +104,28 @@ class ExtendFilePreview {
     element.blur();
   }
 
-  showSource(frameElem) {
-    return (event) => {
-      const button = event.currentTarget;
+  showSource(frameElem: HTMLIFrameElement) {
+    return (event: Event) => {
+      const button = event.currentTarget as HTMLButtonElement;
       if (button.disabled || !frameElem) return;
       frameElem.style.display = "none";
       const frameParent = frameElem.parentElement;
-      frameParent.style.removeProperty("overflow");
-      frameParent.style.removeProperty("height");
-      frameParent.style.removeProperty("max-height");
+      frameParent?.style.removeProperty("overflow");
+      frameParent?.style.removeProperty("height");
+      frameParent?.style.removeProperty("max-height");
       return this.selectButton(button);
     };
   }
 
-  showRendered(frameElem) {
-    return (event) => {
-      const button = event.currentTarget;
-      if (button.disabled || !frameElem) return;
+  showRendered(frameElem: HTMLIFrameElement) {
+    return (event: Event) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      if (
+        !frameElem.contentWindow ||
+        !frameElem.parentElement ||
+        button.disabled
+      )
+        return;
       frameElem.style.display = "block";
       const frameParent = frameElem.parentElement;
       frameParent.style.overflow = "hidden";
@@ -111,8 +138,8 @@ class ExtendFilePreview {
     };
   }
 
-  updateToggle(button, frameElem) {
-    button.disabled = frameElem === null;
+  updateToggle(button: HTMLButtonElement, frameElem: HTMLIFrameElement) {
+    button.disabled = !frameElem;
     if (button.dataset.toggleAction === this.toggleActionRender) {
       button.onclick = this.showRendered(frameElem);
     }
@@ -121,17 +148,23 @@ class ExtendFilePreview {
     }
     button.setAttribute(
       "aria-label",
-      button.disabled
+      (button.disabled
         ? button.dataset.labelDisabled
-        : button.dataset.labelEnabled
+        : button.dataset.labelEnabled) ?? ""
     );
   }
 
-  viewerButtonToggleGroup({ frameElem, isFileList }) {
+  viewerButtonToggleGroup({
+    frameElem,
+    isFileList,
+  }: {
+    frameElem: HTMLIFrameElement;
+    isFileList: boolean;
+  }) {
     const disabled = frameElem ? false : true;
     const disabledTooltip = "HTML render toggle disabled";
     const svgTagNS = getTagNS("svg");
-    const sourceButton = createElement({
+    const sourceButton = createElement<HTMLButtonElement>({
       attributes: {
         "aria-current": "true",
         class: `btn btn-sm BtnGroup-item tooltipped tooltipped-${
@@ -178,7 +211,7 @@ class ExtendFilePreview {
       tagName: "button",
     });
 
-    const renderButton = createElement({
+    const renderButton = createElement<HTMLButtonElement>({
       attributes: {
         class: `btn btn-sm BtnGroup-item tooltipped tooltipped-${
           isFileList ? "w" : "n"
@@ -230,24 +263,25 @@ class ExtendFilePreview {
     });
   }
 
-  frameElement(props) {
-    return createElement({
-      attributes: Object.assign(
-        {
-          class: this.featureClass,
-          style: createElementStyle(this.frameStyle),
-        },
-        props
-      ),
+  frameElement(props: Record<string, string | undefined>) {
+    return createElement<HTMLIFrameElement>({
+      attributes: {
+        class: this.featureClass,
+        style: createElementStyle(this.frameStyle),
+        ...props,
+      },
       tagName: "iframe",
     });
   }
 
-  addButtonsToFileHeaderActions(actionsElem, frameElem) {
+  addButtonsToFileHeaderActions(
+    actionsElem: HTMLElement,
+    frameElem: HTMLIFrameElement
+  ) {
     const target = `.BtnGroup.${this.featureClass}`;
     if (selectExists(target, actionsElem)) {
-      selectDOM(target, actionsElem).childNodes.forEach((elem) => {
-        this.updateToggle(elem, frameElem);
+      selectDOM(target, actionsElem)?.childNodes.forEach((elem) => {
+        this.updateToggle(elem as HTMLButtonElement, frameElem);
       });
       return;
     }
@@ -260,81 +294,95 @@ class ExtendFilePreview {
     );
   }
 
-  addFrameToFileBody(bodyElem, filePath, canDefer) {
+  async addFrameToFileBody(
+    bodyElem: HTMLBodyElement,
+    filePath: string,
+    canDefer: boolean
+  ) {
     if (canDefer && !selectExists(".js-blob-wrapper", bodyElem)) {
-      return null;
+      return undefined;
     }
     if (selectExists(`iframe.${this.featureClass}`, bodyElem)) {
-      return selectDOM(`iframe.${this.featureClass}`, bodyElem);
+      return selectDOM<HTMLIFrameElement>(
+        `iframe.${this.featureClass}`,
+        bodyElem
+      );
     }
-    return this.getFileContent(filePath)
-      .then((html) => this.prepareHTML(html, filePath))
-      .then((frameHtml) => {
-        const frameElem = this.frameElement({
-          src: `https://htmlpreview.github.io/?${this.pathToBlob(filePath)}`,
-          srcDoc: frameHtml,
-        });
-        bodyElem.style.position = "relative";
-        return bodyElem.appendChild(frameElem);
-      });
+    const frameElem = this.frameElement({
+      src: `https://htmlpreview.github.io/?${this.pathToBlob(filePath)}`,
+      srcDoc: await this.prepareHTML(
+        await this.getFileContent(filePath),
+        filePath
+      ),
+    });
+    bodyElem.style.position = "relative";
+    return bodyElem.appendChild(frameElem);
   }
 
-  extendHtmlFileDetailsElements(commitSha) {
+  extendHtmlFileDetailsElements(commitSha: string) {
     return () =>
       Promise.all(
-        selectAll(".file.Details").map((elem) => {
-          const fileHeaderElem = selectOrThrow(".file-header", elem);
+        selectAll(".file.Details").map(async (elem) => {
+          const fileHeaderElem = selectOrThrow<HTMLElement>(
+            ".file-header",
+            elem
+          );
           if (!fileHeaderElem.dataset.path) return;
           const filePath = `${commitSha}/${fileHeaderElem.dataset.path}`;
           if (!this.isSupportedFile(filePath)) return;
-          return this.addFrameToFileBody(
-            selectOrThrow(".js-file-content", elem),
-            filePath,
-            true
-          )
-            .then((frameElem) =>
-              this.addButtonsToFileHeaderActions(
-                selectOrThrow(
-                  ".file-actions>.flex-items-stretch",
-                  fileHeaderElem
-                ),
-                frameElem
-              )
-            )
-            .catch((e) => console.error(e));
+          try {
+            const frameElem = await this.addFrameToFileBody(
+              selectOrThrow(".js-file-content", elem),
+              filePath,
+              true
+            );
+            if (!frameElem) return;
+            this.addButtonsToFileHeaderActions(
+              selectOrThrow(
+                ".file-actions>.flex-items-stretch",
+                fileHeaderElem
+              ),
+              frameElem
+            );
+          } catch (e) {
+            console.error(e);
+          }
         })
       );
   }
 
-  initCommit() {
-    observeEl("#files", this.extendHtmlFileDetailsElements(getCommitSha()), {
-      childList: true,
-      subtree: true,
-    });
-  }
-
-  initPRFiles() {
-    const commitSha = selectDOM(".js-reviews-container #head_sha").value;
+  initDiff(commitSha?: string) {
+    if (!commitSha) return;
     observeEl("#files", this.extendHtmlFileDetailsElements(commitSha), {
       childList: true,
       subtree: true,
     });
   }
 
-  initSingleFile() {
+  initCommit() {
+    this.initDiff(getCommitSha());
+  }
+
+  initPRFiles() {
+    this.initDiff(
+      selectDOM<HTMLInputElement>(".js-reviews-container #head_sha")?.value
+    );
+  }
+
+  async initSingleFile() {
     const fileHeaderElem = selectOrThrow(".Box.mt-3>.Box-header.py-2");
     const filePath = getRepoPath().replace("blob/", "");
     if (!this.isSupportedFile(filePath)) return;
-    return this.addFrameToFileBody(
+    const frameElem = await this.addFrameToFileBody(
       selectOrThrow(".Box.mt-3>.Box-body.blob-wrapper"),
       filePath,
       false
-    ).then((frameElem) => {
-      this.addButtonsToFileHeaderActions(
-        selectOrThrow(".d-flex", fileHeaderElem),
-        frameElem
-      );
-    });
+    );
+    if (!frameElem) return;
+    this.addButtonsToFileHeaderActions(
+      selectOrThrow(".d-flex", fileHeaderElem),
+      frameElem
+    );
   }
 
   initFeature() {
@@ -344,73 +392,4 @@ class ExtendFilePreview {
       isCommit() && this.initCommit(),
     ]).then((enabled) => enabled.some(Boolean));
   }
-}
-
-// ==Inline HTML==
-function noPrefix(p) {
-  return isAbsolutePath(p) || p.startsWith("/");
-}
-function insertInto($, selector, tagName, content = "", attributes = {}) {
-  const elem = document.createElement(tagName);
-  for (const [name, value] of Object.entries(attributes)) {
-    elem.setAttribute(name, value);
-  }
-  elem.innerHTML = content;
-  $(selector).append(elem.outerHTML);
-}
-
-function inline({
-  base,
-  html,
-  folder = "",
-  load = (path) => Promise.resolve(""),
-}) {
-  const $ = cheerio.load(html);
-  const retrieve = (target) => {
-    const noPre = noPrefix(target);
-    return load(noPre ? target : normalisePath(`${folder}/${target}`));
-  };
-
-  const resources = {
-    css: {
-      callback: (v) => {
-        if (!v.attribs.href) return;
-        return retrieve(v.attribs.href).then((content) => {
-          insertInto($, "head", "style", content, { type: "text/css" });
-        });
-      },
-      cleanup: true,
-      selector: `link[rel="stylesheet"]`,
-      tasks: [],
-    },
-    img: {
-      callback: (v) => {
-        const target = v.attribs.src;
-        if (!target) return;
-        const newSrc = noPrefix(target) ? target : `${base}/${target}`;
-        $(v).attr("src", newSrc);
-      },
-      selector: `img`,
-      tasks: [],
-    },
-    /*
-     * This just removes the javascript tags without replacements
-     */
-    js: {
-      callback: (v) => Promise.resolve(),
-      cleanup: true,
-      selector: `script[src*=".js"]`,
-      tasks: [],
-    },
-  };
-
-  const tasks = [];
-  for (const [, r] of Object.entries(resources)) {
-    if (!r.selector) continue;
-    const c = $(r.selector);
-    c.each((_, v) => r.tasks.push(r.callback(v)));
-    tasks.push(Promise.all(r.tasks).then(() => r.cleanup && c.remove()));
-  }
-
-  return Promise.all(tasks).then(() => $.html());
 }
