@@ -1,9 +1,12 @@
 import * as path from "path";
 import * as fs from "fs";
 import { Configuration } from "webpack";
+import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
 import * as WebpackUserscript from "webpack-userscript";
+import { execSync } from "child_process";
 
 const isDevMode = process.env.NODE_ENV === "development";
+const outputFolder = path.resolve(__dirname, "dist");
 const projectsFolder = path.resolve(__dirname, "scripts");
 const projects = fs
   .readdirSync(projectsFolder, { withFileTypes: true })
@@ -19,7 +22,7 @@ const entries = projects.reduce(
 
 export default {
   devServer: {
-    contentBase: path.join(__dirname, "dist"),
+    contentBase: outputFolder,
   },
   entry: entries,
   mode: isDevMode ? "development" : "production",
@@ -41,15 +44,22 @@ export default {
     ],
   },
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: outputFolder,
     filename: "[name].user.js",
   },
   plugins: [
+    new WebpackCompilerPlugin({
+      listeners: {
+        buildStart: () => execSync(`rm -rf ${outputFolder}`),
+      },
+      name: "Compiler",
+    }),
     new WebpackUserscript({
       headers: () => ({
         namespace: "https://github.com/iamogbz/oh-my-scripts",
         version: isDevMode ? `[version]-build.[buildNo]` : `[version]`,
       }),
+      metajs: false,
     }),
   ],
   resolve: {
