@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
+import { Configuration } from "webpack";
 import * as WebpackUserscript from "webpack-userscript";
 
 const isDevMode = process.env.NODE_ENV === "development";
@@ -11,7 +12,7 @@ const projects = fs
 const entries = projects.reduce(
   (acc, name) => ({
     ...acc,
-    [name]: path.resolve(projectsFolder, name, "index.js"),
+    [name]: path.resolve(projectsFolder, name, "index.user.ts"),
   }),
   {}
 );
@@ -34,6 +35,7 @@ export default {
               presets: ["@babel/preset-typescript"],
             },
           },
+          "ts-loader",
         ],
       },
     ],
@@ -50,4 +52,10 @@ export default {
       }),
     }),
   ],
-};
+  resolve: {
+    extensions: [".js", ".ts", ".jsx", ".tsx"],
+    fallback: { buffer: require.resolve("buffer/") },
+    modules: [path.resolve("."), path.resolve("./node_modules")],
+  },
+  target: "web",
+} as Configuration;

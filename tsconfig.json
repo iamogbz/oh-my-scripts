@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "declaration": true,
+    "declaration": false,
     "downlevelIteration": true,
     "module": "commonjs",
     "moduleResolution": "node",
