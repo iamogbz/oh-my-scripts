@@ -1,3 +1,6 @@
+import { ns } from "./ns";
+import { request } from "./request";
+
 const API_V3 =
   location.hostname === "github.com"
     ? "https://api.github.com/"
@@ -7,7 +10,7 @@ const REGEX_PR = "^pull/\\d+";
 const STORAGE_KEY_GH_TOKEN = ns`GITHUB_TOKEN`;
 
 class APIError extends Error {
-  constructor(...messages) {
+  constructor(...messages: string[]) {
     super(messages.join("\n"));
   }
 }
@@ -16,29 +19,7 @@ function getGithubToken() {
   return window.localStorage.getItem(STORAGE_KEY_GH_TOKEN);
 }
 
-function setGithubToken(value) {
-  window.localStorage.setItem(STORAGE_KEY_GH_TOKEN, value);
-}
-
-function getCleanPathname() {
-  return location.pathname.replace(/^[/]|[/]$/g, "");
-}
-
-function getUserRepo() {
-  return getCleanPathname().split("/").slice(0, 2).join("/");
-}
-
-function getRepoPath() {
-  return getCleanPathname().split("/").slice(2).join("/");
-}
-
-function getCommitSha() {
-  const match = getRepoPath().match(REGEX_COMMIT);
-  if (!match) return null;
-  return match[0].split("/")[1];
-}
-
-function getApiError(apiResponse) {
+function getApiError(apiResponse: { message: string }) {
   if (
     typeof apiResponse.message === "string" &&
     apiResponse.message.includes("API rate limit exceeded")
@@ -63,23 +44,21 @@ function getApiError(apiResponse) {
     getGithubToken()
       ? "Ensure that your token has access to this repo."
       : "Maybe adding a token in the options will fix this issue.",
-    JSON.stringify(apiResponse, null, "\t")
+    JSON.stringify(apiResponse, undefined, "\t")
   );
 }
 
-function apiV3(query, options = { accept404: false }) {
+function apiV3(query: string, options = { accept404: false }) {
   const personalToken = getGithubToken();
 
   return request(API_V3 + query, {
-    headers: Object.assign(
-      {
-        Accept: "application/vnd.github.v3+json",
-        "User-Agent": ns`user-script`,
-      },
-      personalToken ? { Authorization: `token ${personalToken}` } : {}
-    ),
+    headers: {
+      Accept: "application/vnd.github.v3+json",
+      "User-Agent": ns`user-script`,
+      ...(personalToken ? { Authorization: `token ${personalToken}` } : {}),
+    },
   }).then(function (response) {
-    return response.text().then(function (textContent) {
+    return response.text?.().then(function (textContent) {
       // The response might just be a 200 or 404, it's the REST equivalent of `boolean`
       const apiResponse =
         textContent.length > 0
@@ -98,16 +77,6 @@ function apiV3(query, options = { accept404: false }) {
   });
 }
 
-const githubApi = { v3: apiV3 };
-
-function isPR() {
-  return new RegExp(REGEX_PR).test(getRepoPath());
-}
-
-function isPRFiles() {
-  return new RegExp(`${REGEX_PR}/files`).test(getRepoPath());
-}
-
 function isPRCommit() {
   return new RegExp(`${REGEX_PR}/${REGEX_COMMIT}`).test(getRepoPath());
 }
@@ -116,15 +85,39 @@ function isSingleCommit() {
   return new RegExp(`^${REGEX_COMMIT}`).test(getRepoPath());
 }
 
-function isSingleFile() {
-  return /^blob\//.test(getRepoPath());
+export const githubApi = { v3: apiV3 };
+
+export function getCleanPathname() {
+  return location.pathname.replace(/^[/]|[/]$/g, "");
 }
 
-function isCommit() {
+export function getUserRepo() {
+  return getCleanPathname().split("/").slice(0, 2).join("/");
+}
+
+export function getRepoPath() {
+  return getCleanPathname().split("/").slice(2).join("/");
+}
+
+export function getCommitSha() {
+  const match = getRepoPath().match(REGEX_COMMIT);
+  if (!match) return undefined;
+  return match[0].split("/")[1];
+}
+
+export function isCommit() {
   return isSingleCommit() || isPRCommit();
 }
 
-function onAjaxedPagesRaw(callback) {
+export function isSingleFile() {
+  return /^blob\//.test(getRepoPath());
+}
+
+export function isPRFiles() {
+  return new RegExp(`${REGEX_PR}/files`).test(getRepoPath());
+}
+
+export function onAjaxedPagesRaw(callback: () => unknown) {
   document.addEventListener("pjax:end", callback);
   callback();
 }

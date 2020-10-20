@@ -1,22 +1,9 @@
-// ==UserScript==
-// @name         No Window Open
-// @namespace    https://github.com/iamogbz/oh-my-scripts
-// @version      0.0.3
-// @author       iamogbz
-// @description  blocks window open
-// @icon         https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/assets/monkey_128.png
-// @updateURL    https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/scripts/no-window-open/index.user.js
-// @downloadURL  https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/scripts/no-window-open/index.user.js
-// @supportURL   https://github.com/iamogbz/oh-my-scripts/issues
-// @include      *://*/*
-// @require      https://openuserjs.org/src/libs/Marti/GM_setStyle.min.js
-// @grant        none
-// ==/UserScript==
+import { createElement } from "../../libraries/dom";
 
 (function () {
   "use strict";
 
-  function selectorNS(str) {
+  function selectorNS(str: string | TemplateStringsArray) {
     return `iamogbz-no-window-open-${str}`;
   }
 
@@ -61,13 +48,26 @@
 `;
   const POPUP_ELEMENT_TEXT = `This page just attempted to open a url.
 Click on it below to proceed with navigation.`;
-  let popupUrl;
+  let popupUrl: string;
 
   function createPopupElement() {
-    const element = document.createElement("div");
-    element.id = POPUP_ELEMENT_ID;
-    element.innerHTML = `<div>${POPUP_ELEMENT_TEXT}</div>
-<a id="${POPUP_ELEMENT_LINK_ID}" target="_blank" referrer="noreferrer"/>`;
+    const element = createElement({
+      attributes: {
+        id: POPUP_ELEMENT_ID,
+      },
+      children: [
+        { tagName: "div", children: [POPUP_ELEMENT_TEXT] },
+        {
+          attributes: {
+            target: "_blank",
+            referrer: "noreferrer",
+            id: POPUP_ELEMENT_LINK_ID,
+          },
+          tagName: "a",
+        },
+      ],
+      tagName: "div",
+    });
     document.body.appendChild(element);
     return element;
   }
@@ -81,11 +81,11 @@ Click on it below to proceed with navigation.`;
     return document.getElementById(POPUP_ELEMENT_LINK_ID);
   }
 
-  function setPopupLink(url) {
+  function setPopupLink(url: string) {
     popupUrl = url;
     getOrCreatePopupElement();
-    getPopupLinkElement().setAttribute("href", url);
-    getPopupLinkElement().innerText = url;
+    getPopupLinkElement()!.setAttribute("href", url);
+    getPopupLinkElement()!.innerText = url;
   }
 
   function showNotice() {
@@ -94,10 +94,10 @@ Click on it below to proceed with navigation.`;
 
   function hideNotice() {
     getOrCreatePopupElement().classList.remove(POPUP_ELEMENT_CLS_VISIBLE);
-    getPopupLinkElement().removeAttribute("href");
+    getPopupLinkElement()!.removeAttribute("href");
   }
 
-  function onWindowOpen(url) {
+  function onWindowOpen(url: string) {
     console.log(`window.open(${url})`);
     setPopupLink(url);
     setTimeout(showNotice, POPUP_ELEMENT_TIMEIN);
@@ -125,5 +125,7 @@ Click on it below to proceed with navigation.`;
   }
   // ==Run==
   GM_setStyle({ data: POPUP_ELEMENT_CSS });
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   window.open = onWindowOpen;
 })();

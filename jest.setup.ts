@@ -1,4 +1,3 @@
-const NOOP = () => undefined;
 // https://www.tampermonkey.net/documentation.php
 const monkeyGlobals = [
   "GM_addStyle",
@@ -21,6 +20,5 @@ const monkeyGlobals = [
   "GM_xmlhttpRequest",
 ];
 for (const fnName of monkeyGlobals) {
-  global[fnName] = NOOP;
-  jest.spyOn(global, fnName);
+  Object.assign(global, { [fnName]: jest.fn() });
 }
