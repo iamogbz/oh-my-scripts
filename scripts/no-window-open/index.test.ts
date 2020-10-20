@@ -36,6 +36,21 @@ describe("no-window-open", () => {
     expect(prevBody).toMatchDiffSnapshot(document.body);
   });
 
+  it.only("delays hides popup after timer run on mouseover", () => {
+    const url = "https://example.com";
+    window.open(url);
+    jest.advanceTimersByTime(300);
+    const prevBody = document.body.cloneNode(true);
+    jest.advanceTimersByTime(9000);
+    document
+      .getElementById("iamogbz-no-window-open-popup-element")!
+      .dispatchEvent(new MouseEvent("mouseover"));
+    jest.advanceTimersByTime(9000);
+    expect(prevBody).toEqual(document.body);
+    jest.runOnlyPendingTimers();
+    expect(prevBody).toMatchDiffSnapshot(document.body);
+  });
+
   it("sets the url of the popup link via window location", () => {
     const dummyWindow = window.open("https://example.com");
     const getUrl = () =>

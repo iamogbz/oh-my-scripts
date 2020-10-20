@@ -11,6 +11,7 @@ import { createElement } from "../../libraries/dom";
   const POPUP_ELEMENT_TIMEOUT = 10000; // 10s
   const POPUP_ELEMENT_ID = selectorNS`popup-element`;
   const POPUP_ELEMENT_LINK_ID = selectorNS`popup-element-link`;
+  const POPUP_ELEMENT_CLOSE_BUTTON_ID = selectorNS`popup-element-close`;
   const POPUP_ELEMENT_CLS_VISIBLE = selectorNS`popup-element-visible`;
   const POPUP_ELEMENT_CSS = `
 #${POPUP_ELEMENT_ID} {
@@ -26,7 +27,7 @@ import { createElement } from "../../libraries/dom";
   overflow: hidden;
   padding: 8px;
   position: fixed;
-  right: -256px;
+  right: -264px;
   text-align: center;
   transition: right 0.3s ease;
   width: 248px;
@@ -34,6 +35,18 @@ import { createElement } from "../../libraries/dom";
 
 #${POPUP_ELEMENT_ID}.${POPUP_ELEMENT_CLS_VISIBLE} {
   right: 8px;
+}
+
+#${POPUP_ELEMENT_ID} #${POPUP_ELEMENT_CLOSE_BUTTON_ID} {
+  background-color: #8d0303EE;
+  border-radius: 2px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 0.8em;
+  margin-top: 8px;
+  padding: 4px 6px;
+  width: 100%;
 }
 
 #${POPUP_ELEMENT_ID} #${POPUP_ELEMENT_LINK_ID} {
@@ -49,23 +62,31 @@ import { createElement } from "../../libraries/dom";
   const POPUP_ELEMENT_TEXT = `This page just attempted to open a url.
 Click on it below to proceed with navigation.`;
   let popupUrl: string;
+  let popupHideTimeoutId: NodeJS.Timeout;
 
   function createPopupElement() {
-    const element = createElement({
-      attributes: {
-        id: POPUP_ELEMENT_ID,
-      },
+    const element = createElement<HTMLElement>({
+      attributes: { id: POPUP_ELEMENT_ID },
       children: [
-        { tagName: "div", children: [POPUP_ELEMENT_TEXT] },
+        { children: [POPUP_ELEMENT_TEXT], tagName: "div" },
         {
           attributes: {
+            id: POPUP_ELEMENT_LINK_ID,
             target: "_blank",
             referrer: "noreferrer",
-            id: POPUP_ELEMENT_LINK_ID,
           },
           tagName: "a",
         },
+        {
+          attributes: {
+            id: POPUP_ELEMENT_CLOSE_BUTTON_ID,
+          },
+          children: ["Dismiss"],
+          events: { click: hideNotice },
+          tagName: "button",
+        },
       ],
+      events: { mouseover: showNotice },
       tagName: "div",
     });
     document.body.appendChild(element);
@@ -78,7 +99,9 @@ Click on it below to proceed with navigation.`;
   }
 
   function getPopupLinkElement() {
-    return document.getElementById(POPUP_ELEMENT_LINK_ID);
+    return getOrCreatePopupElement().querySelector<HTMLElement>(
+      `#${POPUP_ELEMENT_LINK_ID}`
+    );
   }
 
   function setPopupLink(url: string) {
@@ -90,6 +113,12 @@ Click on it below to proceed with navigation.`;
 
   function showNotice() {
     getOrCreatePopupElement().classList.add(POPUP_ELEMENT_CLS_VISIBLE);
+    hideNoticeTimeout();
+  }
+
+  function showNoticeTimeout() {
+    clearTimeout(popupHideTimeoutId);
+    setTimeout(showNotice, POPUP_ELEMENT_TIMEIN);
   }
 
   function hideNotice() {
@@ -97,11 +126,15 @@ Click on it below to proceed with navigation.`;
     getPopupLinkElement()!.removeAttribute("href");
   }
 
+  function hideNoticeTimeout() {
+    clearTimeout(popupHideTimeoutId);
+    popupHideTimeoutId = setTimeout(hideNotice, POPUP_ELEMENT_TIMEOUT);
+  }
+
   function onWindowOpen(url: string) {
     console.log(`window.open(${url})`);
     setPopupLink(url);
-    setTimeout(showNotice, POPUP_ELEMENT_TIMEIN);
-    setTimeout(hideNotice, POPUP_ELEMENT_TIMEIN + POPUP_ELEMENT_TIMEOUT);
+    showNoticeTimeout();
     // return mock window object that allows setting location
     return {
       get location() {

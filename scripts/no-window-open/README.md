@@ -4,4 +4,4 @@
 
 Blocks the automatic execution of `window.open` in a page, showing a popup instead.
 
-![Example popup](https://user-images.githubusercontent.com/2528959/94383588-7cce5900-010e-11eb-8149-2cfc11239acd.png)
+![Example popup](https://user-images.githubusercontent.com/2528959/94979796-06a56a00-04f3-11eb-864c-2fa153c55db6.png)
