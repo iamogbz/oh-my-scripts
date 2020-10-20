@@ -25,8 +25,7 @@ jobs:
         env:
           NODE_ENV: production
         run: |
-          npm run build:compile
-          npm run build:package
+          npm run build
       - name: Release
         if: github.ref == 'refs/heads/master'
         env:

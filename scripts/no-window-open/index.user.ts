@@ -1,4 +1,4 @@
-import { createElement } from "libraries/dom";
+import { createElement } from "../../libraries/dom";
 
 (function () {
   "use strict";
@@ -124,7 +124,7 @@ Click on it below to proceed with navigation.`;
     };
   }
   // ==Run==
-  window.GM_setStyle({ data: POPUP_ELEMENT_CSS });
+  GM_setStyle({ data: POPUP_ELEMENT_CSS });
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   window.open = onWindowOpen;

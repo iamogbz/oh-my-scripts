@@ -1,5 +1,5 @@
 {
   "ext": "ts,json",
-  "watch": ["scripts/", "libraries/"],
+  "watch": ["libraries/", "scripts/", "typings/", "webpack/"],
   "verbose": true
 }

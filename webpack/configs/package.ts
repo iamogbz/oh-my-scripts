@@ -34,13 +34,18 @@ export default [
       plugins: [
         new WebpackUserscript({
           headers: (data: WebpackUserscript.DataObject) => {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
             const required: string[] =
               require(path.resolve(Paths.COMPILE, Dists.SRC, `${name}.json`)) ??
               [];
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const scriptHeaderObj: WebpackUserscript.HeaderObject = require(path.resolve(
+              Paths.SCRIPTS,
+              name,
+              `header.json`
+            ));
             const headerObj = {
               ...defaultHeaderObj,
-              require: [],
+              ...scriptHeaderObj,
             };
             const uriBase = isProdMode()
               ? `${data.homepage}/raw/master/dist`
@@ -49,7 +54,7 @@ export default [
             return {
               ...headerObj,
               downloadURL: uri(data.filename),
-              require: required.map(uri),
+              require: required.map(uri).concat(scriptHeaderObj.require ?? []),
             };
           },
           metajs: false,

@@ -15,7 +15,7 @@ exports[`no-window-open hides popup after timer run 1`] = `
 - First value
 + Second value
 
-@@ -1,18 +1,17 @@
+@@ -1,16 +1,15 @@
   <body>
     <div
 -     class=\\"iamogbz-no-window-open-popup-element-visible\\"
@@ -26,8 +26,6 @@ exports[`no-window-open hides popup after timer run 1`] = `
         This page just attempted to open a url.
   Click on it below to proceed with navigation.
       </div>
-      
-
       <a
 -       href=\\"https://example.com\\"
         id=\\"iamogbz-no-window-open-popup-element-link\\"
@@ -46,8 +44,6 @@ exports[`no-window-open shows popup after time 1`] = `
       This page just attempted to open a url.
 Click on it below to proceed with navigation.
     </div>
-    
-
     <a
       href="https://example.com"
       id="iamogbz-no-window-open-popup-element-link"

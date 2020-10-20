@@ -105,7 +105,15 @@
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
-      "@semantic-release/github"
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "dists"
+          ],
+          "message": "chore(release): scripts and libraries [skip ci]\n\n${nextRelease.notes}"
+        }
+      ]
     ]
   },
   "scripts": {
