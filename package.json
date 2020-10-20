@@ -22,6 +22,7 @@
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@types/cheerio": "^0.22.22",
+    "@types/fs-extra": "^9.0.2",
     "@types/jest": "^26.0.0",
     "@types/node": "^14.0.1",
     "@types/webpack-dev-server": "^3.11.0",
@@ -33,9 +34,12 @@
     "eslint": "^7.9.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "fs-extra": "^9.0.1",
+    "http-server": "^0.12.3",
     "husky": "^4.3.0",
     "jest": "^26.4.2",
     "lint-staged": "^10.4.0",
+    "nodemon": "^2.0.6",
     "prettier": "^2.1.2",
     "prettier-eslint": "^11.0.0",
     "semantic-release": "^17.1.2",
@@ -54,7 +58,7 @@
     "node": ">=8",
     "npm": ">=6"
   },
-  "homepage": "https://github.com/iamogbz/oh-my-scripts#readme",
+  "homepage": "https://github.com/iamogbz/oh-my-scripts",
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
@@ -105,12 +109,15 @@
     ]
   },
   "scripts": {
-    "build:compile": "env BUILD_STAGE=compile webpack",
-    "build:package": "env BUILD_STAGE=package webpack",
+    "build": "npm run build:compile && npm run build:package",
+    "build:compile": "BUILD_STAGE=compile webpack",
+    "build:package": "BUILD_STAGE=package webpack",
     "commit": "git-cz",
     "coveralls": "cat ./artifacts/coverage/lcov.info | coveralls",
     "lint": "eslint .",
     "release": "semantic-release",
+    "server": "http-server ./dist",
+    "start": "nodemon -x 'npm run build && npm run server'",
     "test": "jest"
   },
   "version": "0.0.1"

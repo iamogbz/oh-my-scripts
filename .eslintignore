@@ -4,3 +4,4 @@ dist/
 internals/
 node_modules/
 server/
+tmp/

@@ -9,6 +9,7 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
+    "resolveJsonModule": true,
     "strict": true,
     "target": "es5"
   },

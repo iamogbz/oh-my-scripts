@@ -1,8 +1,9 @@
 import { execSync } from "child_process";
 import * as path from "path";
+import * as fs from "fs-extra";
 import { NormalModule } from "webpack";
 import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
-import { Paths } from "../constants";
+import { Dists, Paths, RegExps } from "../constants";
 import { getCompileEntries, getConfig } from "../utils";
 
 export default getConfig({
@@ -12,15 +13,7 @@ export default getConfig({
       {
         exclude: /(node_modules|bower_components)/,
         test: /\.tsx?$/,
-        use: [
-          {
-            loader: "babel-loader",
-            options: {
-              presets: ["@babel/preset-typescript"],
-            },
-          },
-          "ts-loader",
-        ],
+        use: ["ts-loader"],
       },
     ],
   },
@@ -29,25 +22,18 @@ export default getConfig({
       chunks: "all",
       cacheGroups: {
         lib: {
-          test: /[\\/]libraries[\\/](.*?).ts$/,
+          test: RegExps.LIB,
           name(module: NormalModule) {
-            // get the name. E.g. libraries/fileName.ts
-            const libraryName = module.resource.match(
-              /[\\/]libraries[\\/](.*?).ts$/
-            )![1];
-            return `lib/${libraryName}`;
+            const libraryName = module.resource.match(RegExps.LIB)![1];
+            return `${Dists.LIB}/${libraryName}`;
           },
         },
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
+        npm: {
+          test: RegExps.NPM,
           name(module: NormalModule) {
-            // get the name. E.g. node_modules/packageName/not/this/part.js
-            // or node_modules/packageName
-            const packageName = module.context.match(
-              /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-            )![1];
+            const packageName = module.context.match(RegExps.NPM)![1];
             // npm package names are URL-safe, but some servers don't like @ symbols
-            return `npm/${packageName.replace("@", "")}`;
+            return `${Dists.NPM}/${packageName.replace("@", "")}`;
           },
         },
       },
@@ -57,18 +43,34 @@ export default getConfig({
   },
   output: {
     filename: "[name].js",
-    path: Paths.RELEASE,
+    path: Paths.COMPILE,
   },
   plugins: [
     new WebpackCompilerPlugin({
       listeners: {
-        buildStart: () => execSync(`rm -rf ${Paths.RELEASE}`),
+        buildStart: () => execSync(`rm -rf ${Paths.COMPILE}`),
       },
       name: "Compiler",
     }),
+    {
+      apply(compiler) {
+        compiler.hooks.afterCompile.tap("Assets", (compilation) => {
+          for (const [name, chunkGroup] of compilation.namedChunkGroups) {
+            fs.outputJSONSync(
+              path.resolve(Paths.COMPILE, `${name}.json`),
+              chunkGroup
+                .getFiles()
+                .filter((fileName) =>
+                  [Dists.LIB, Dists.NPM].some((d) => fileName.startsWith(d))
+                )
+            );
+          }
+        });
+      },
+    },
   ],
   resolve: {
-    extensions: [".js", ".ts", ".jsx", ".tsx"],
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
     fallback: { buffer: require.resolve("buffer/") },
     modules: [path.resolve("."), path.resolve("./node_modules")],
   },

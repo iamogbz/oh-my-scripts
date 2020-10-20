@@ -1,3 +1,5 @@
+import { createElement } from "libraries/dom";
+
 (function () {
   "use strict";
 
@@ -49,10 +51,23 @@ Click on it below to proceed with navigation.`;
   let popupUrl: string;
 
   function createPopupElement() {
-    const element = document.createElement("div");
-    element.id = POPUP_ELEMENT_ID;
-    element.innerHTML = `<div>${POPUP_ELEMENT_TEXT}</div>
-<a id="${POPUP_ELEMENT_LINK_ID}" target="_blank" referrer="noreferrer"/>`;
+    const element = createElement({
+      attributes: {
+        id: POPUP_ELEMENT_ID,
+      },
+      children: [
+        { tagName: "div", children: [POPUP_ELEMENT_TEXT] },
+        {
+          attributes: {
+            target: "_blank",
+            referrer: "noreferrer",
+            id: POPUP_ELEMENT_LINK_ID,
+          },
+          tagName: "a",
+        },
+      ],
+      tagName: "div",
+    });
     document.body.appendChild(element);
     return element;
   }

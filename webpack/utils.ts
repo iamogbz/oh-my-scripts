@@ -3,10 +3,6 @@ import * as path from "path";
 import { Configuration } from "webpack";
 import { BuildStage, NodeEnv, Paths } from "./constants";
 
-export function isDevMode() {
-  return process.env.NODE_ENV === NodeEnv.DEVELOPMENT;
-}
-
 export function isProdMode() {
   return process.env.NODE_ENV === NodeEnv.PRODUCTION;
 }
@@ -26,18 +22,15 @@ export function getProjectNames() {
     .map((dir) => dir.name);
 }
 
-export function getCompileEntries() {
-  return getProjectNames().reduce(
-    (acc, name) => ({
-      ...acc,
-      [`src/${name}`]: path.resolve(Paths.SCRIPTS, name, "index.user.ts"),
-    }),
-    {}
-  );
+export function getCompileEntry(name: string) {
+  return path.resolve(Paths.SCRIPTS, name, "index.user.ts");
 }
 
-export function getStageEntry(name: string) {
-  return { [name]: path.resolve(Paths.RELEASE, "src", `${name}.js`) };
+export function getCompileEntries() {
+  return getProjectNames().reduce(
+    (acc, name) => ({ ...acc, [`src/${name}`]: getCompileEntry(name) }),
+    {}
+  );
 }
 
 export function getConfig(diff: Partial<Configuration>) {

@@ -1,3 +1,6 @@
 {
-
+  "description": "Blocks window open",
+  "name": "No Window Open",
+  "require": ["https://openuserjs.org/src/libs/Marti/GM_setStyle.min.js"],
+  "version": "0.0.3"
 }
