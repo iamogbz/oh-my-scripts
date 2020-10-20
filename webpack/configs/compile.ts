@@ -54,7 +54,7 @@ export default getConfig({
     }),
     {
       apply(compiler) {
-        compiler.hooks.afterCompile.tap("Assets", (compilation) => {
+        compiler.hooks.afterEmit.tap("Assets", (compilation) => {
           for (const [name, chunkGroup] of compilation.namedChunkGroups) {
             fs.outputJSONSync(
               path.resolve(Paths.COMPILE, `${name}.json`),
@@ -71,7 +71,6 @@ export default getConfig({
   ],
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
-    fallback: { buffer: require.resolve("buffer/") },
     modules: [path.resolve("."), path.resolve("./node_modules")],
   },
   target: "web",

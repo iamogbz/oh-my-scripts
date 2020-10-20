@@ -4,7 +4,12 @@ import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
 import * as WebpackUserscript from "webpack-userscript";
 import * as defaultHeaderObj from "../../scripts/header.default.json";
 import { Dists, Paths } from "../constants";
-import { getConfig, getProjectNames, isProdMode } from "../utils";
+import {
+  getConfig,
+  getProjectNames,
+  getResourceKey,
+  isProdMode,
+} from "../utils";
 
 export default [
   getConfig({
@@ -50,10 +55,11 @@ export default [
             const uriBase = isProdMode()
               ? `${data.homepage}/raw/master/dist`
               : "http://localhost:8080";
-            const uri = (path: string) => `${uriBase}/${path}`;
+            const uri = (path: string) =>
+              `${uriBase}/${path}?v=${getResourceKey()}`;
             return {
               ...headerObj,
-              downloadURL: uri(data.filename),
+              downloadURL: uri(data.filename.replace(".js", ".user.js")),
               require: required.map(uri).concat(scriptHeaderObj.require ?? []),
             };
           },
