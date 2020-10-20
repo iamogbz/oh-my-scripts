@@ -100,7 +100,7 @@
     "url": "git+https://github.com/iamogbz/oh-my-scripts.git"
   },
   "release": {
-    "dryRun": true,
+    "dryRun": false,
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
@@ -108,7 +108,7 @@
         "@semantic-release/git",
         {
           "assets": [
-            "dists"
+            "dist"
           ],
           "message": "chore(release): scripts and libraries [skip ci]\n\n${nextRelease.notes}"
         }
