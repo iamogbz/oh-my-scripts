@@ -1,23 +1,9 @@
-// ==UserScript==
-// @name         No Window Open
-// @namespace    https://github.com/iamogbz/oh-my-scripts
-// @version      0.0.4
-// @author       iamogbz
-// @description  blocks window open
-// @icon         https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/assets/monkey_128.png
-// @updateURL    https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/scripts/no-window-open/index.user.js
-// @downloadURL  https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/scripts/no-window-open/index.user.js
-// @supportURL   https://github.com/iamogbz/oh-my-scripts/issues
-// @include      *://*/*
-// @require      https://raw.githubusercontent.com/iamogbz/oh-my-scripts/master/libraries/dom.js
-// @require      https://openuserjs.org/src/libs/Marti/GM_setStyle.min.js
-// @grant        none
-// ==/UserScript==
+import { createElement } from "../../libraries/dom";
 
 (function () {
   "use strict";
 
-  function selectorNS(str) {
+  function selectorNS(str: string | TemplateStringsArray) {
     return `iamogbz-no-window-open-${str}`;
   }
 
@@ -75,11 +61,11 @@
 `;
   const POPUP_ELEMENT_TEXT = `This page just attempted to open a url.
 Click on it below to proceed with navigation.`;
-  let popupUrl;
-  let popupHideTimeoutId;
+  let popupUrl: string;
+  let popupHideTimeoutId: NodeJS.Timeout;
 
   function createPopupElement() {
-    const element = createElement({
+    const element = createElement<HTMLElement>({
       attributes: { id: POPUP_ELEMENT_ID },
       children: [
         { children: [POPUP_ELEMENT_TEXT], tagName: "div" },
@@ -113,14 +99,16 @@ Click on it below to proceed with navigation.`;
   }
 
   function getPopupLinkElement() {
-    return getOrCreatePopupElement().querySelector(`#${POPUP_ELEMENT_LINK_ID}`);
+    return getOrCreatePopupElement().querySelector<HTMLElement>(
+      `#${POPUP_ELEMENT_LINK_ID}`
+    );
   }
 
-  function setPopupLink(url) {
+  function setPopupLink(url: string) {
     popupUrl = url;
     getOrCreatePopupElement();
-    getPopupLinkElement().setAttribute("href", url);
-    getPopupLinkElement().innerHTML = url;
+    getPopupLinkElement()!.setAttribute("href", url);
+    getPopupLinkElement()!.innerText = url;
   }
 
   function showNotice() {
@@ -135,7 +123,7 @@ Click on it below to proceed with navigation.`;
 
   function hideNotice() {
     getOrCreatePopupElement().classList.remove(POPUP_ELEMENT_CLS_VISIBLE);
-    getPopupLinkElement().removeAttribute("href");
+    getPopupLinkElement()!.removeAttribute("href");
   }
 
   function hideNoticeTimeout() {
@@ -143,7 +131,7 @@ Click on it below to proceed with navigation.`;
     popupHideTimeoutId = setTimeout(hideNotice, POPUP_ELEMENT_TIMEOUT);
   }
 
-  function onWindowOpen(url) {
+  function onWindowOpen(url: string) {
     console.log(`window.open(${url})`);
     setPopupLink(url);
     showNoticeTimeout();
@@ -170,5 +158,7 @@ Click on it below to proceed with navigation.`;
   }
   // ==Run==
   GM_setStyle({ data: POPUP_ELEMENT_CSS });
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   window.open = onWindowOpen;
 })();

@@ -13,30 +13,51 @@
       "path": "cz-conventional-changelog"
     }
   },
-  "dependencies": {},
+  "dependencies": {
+    "buffer": "^5.6.0",
+    "cheerio": "^1.0.0-rc.3"
+  },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@semantic-release/git": "^9.0.0",
+    "@types/cheerio": "^0.22.22",
+    "@types/fs-extra": "^9.0.2",
+    "@types/jest": "^26.0.0",
+    "@types/node": "^14.0.1",
+    "@types/webpack-dev-server": "^3.11.0",
+    "@typescript-eslint/eslint-plugin": "^4.4.1",
+    "@typescript-eslint/parser": "^4.4.1",
     "commitizen": "^4.2.1",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.9.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "fs-extra": "^9.0.1",
+    "http-server": "^0.12.3",
     "husky": "^4.3.0",
     "jest": "^26.4.2",
     "lint-staged": "^10.4.0",
+    "nodemon": "^2.0.6",
     "prettier": "^2.1.2",
     "prettier-eslint": "^11.0.0",
     "semantic-release": "^17.1.2",
     "snapshot-diff": "^0.8.1",
-    "ts-jest": "^26.4.0"
+    "ts-jest": "^26.4.0",
+    "ts-loader": "^8.0.5",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.3",
+    "webpack": "^5.1.2",
+    "webpack-cli": "^4.0.0",
+    "webpack-compiler-plugin": "^1.1.3",
+    "webpack-userscript": "^2.5.6"
   },
   "description": "Userscripts to turbo charge your browser",
   "engines": {
     "node": ">=8",
     "npm": ">=6"
   },
-  "homepage": "https://github.com/iamogbz/oh-my-scripts#readme",
+  "homepage": "https://github.com/iamogbz/oh-my-scripts",
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
@@ -51,7 +72,7 @@
     ],
     "preset": "ts-jest",
     "setupFilesAfterEnv": [
-      "<rootDir>/jest.setup.js"
+      "<rootDir>/jest.setup.ts"
     ],
     "testPathIgnorePatterns": [
       "./artifacts/",
@@ -83,14 +104,27 @@
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
-      "@semantic-release/github"
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "dists"
+          ],
+          "message": "chore(release): scripts and libraries [skip ci]\n\n${nextRelease.notes}"
+        }
+      ]
     ]
   },
   "scripts": {
+    "build": "npm run build:compile && npm run build:package",
+    "build:compile": "BUILD_STAGE=compile webpack",
+    "build:package": "BUILD_STAGE=package webpack",
     "commit": "git-cz",
     "coveralls": "cat ./artifacts/coverage/lcov.info | coveralls",
     "lint": "eslint .",
     "release": "semantic-release",
+    "server": "http-server ./dist",
+    "start": "nodemon -x 'npm run build && npm run server'",
     "test": "jest"
   },
   "version": "0.0.1"

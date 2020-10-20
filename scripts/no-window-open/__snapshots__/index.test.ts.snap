@@ -31,8 +31,8 @@ exports[`no-window-open delays hides popup after timer run on mouseover 1`] = `
         id=\\"iamogbz-no-window-open-popup-element-link\\"
         referrer=\\"noreferrer\\"
         target=\\"_blank\\"
-      >
-        https://example.com"
+      />
+      <button"
 `;
 
 exports[`no-window-open hides popup after timer run 1`] = `
