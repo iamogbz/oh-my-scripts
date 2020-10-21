@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as fs from "fs-extra";
+import { NormalModule } from "webpack";
 import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
 import { Dists, Paths, RegExps } from "../constants";
 import { getCompileEntries, getConfig } from "../utils";
@@ -21,14 +22,14 @@ export default getConfig({
       cacheGroups: {
         lib: {
           test: RegExps.LIB,
-          name(module) {
+          name(module: NormalModule) {
             const libraryName = module.resource.match(RegExps.LIB)![1];
             return `${Dists.LIB}/${libraryName}`;
           },
         },
         npm: {
           test: RegExps.NPM,
-          name(module) {
+          name(module: NormalModule) {
             const packageName = module.context.match(RegExps.NPM)![1];
             // npm package names are URL-safe, but some servers don't like @ symbols
             return `${Dists.NPM}/${packageName.replace("@", "")}`;
@@ -46,19 +47,7 @@ export default getConfig({
   plugins: [
     new WebpackCompilerPlugin({
       listeners: {
-        buildStart: () => {
-          fs.removeSync(Paths.COMPILE);
-          fs.removeSync(Paths.RELEASE);
-        },
-        buildEnd: () => {
-          [Dists.LIB, Dists.NPM].forEach((folder) => {
-            const from = `${Paths.COMPILE}/${folder}`;
-            if (!fs.existsSync(from)) return;
-            fs.copySync(from, `${Paths.RELEASE}/${folder}`, {
-              filter: (src) => !src.split(".js")[1],
-            });
-          });
-        },
+        buildStart: () => fs.removeSync(Paths.COMPILE),
       },
       name: "Compiler",
     }),
@@ -70,7 +59,7 @@ export default getConfig({
               path.resolve(Paths.COMPILE, `${name}.json`),
               chunkGroup
                 .getFiles()
-                .filter((fileName: string) =>
+                .filter((fileName) =>
                   [Dists.LIB, Dists.NPM].some((d) => fileName.startsWith(d))
                 )
             );
