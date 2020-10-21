@@ -1,5 +1,5 @@
 import * as path from "path";
-import { execSync } from "child_process";
+import * as fs from "fs-extra";
 import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
 import * as WebpackUserscript from "webpack-userscript";
 import * as defaultHeaderObj from "../../scripts/header.default.json";
@@ -17,13 +17,15 @@ export default [
     plugins: [
       new WebpackCompilerPlugin({
         listeners: {
-          buildStart: () => execSync(`rm -rf ${Paths.RELEASE}`),
-          compileStart: () =>
-            [Dists.LIB, Dists.NPM].forEach((folder) =>
-              execSync(
-                `mkdir -p ${Paths.RELEASE} && cp -r ${Paths.COMPILE}/${folder} ${Paths.RELEASE}`
-              )
-            ),
+          buildStart: () => fs.removeSync(Paths.RELEASE),
+          buildEnd: () =>
+            [Dists.LIB, Dists.NPM].forEach((folder) => {
+              const from = `${Paths.COMPILE}/${folder}`;
+              if (!fs.existsSync(from)) return;
+              fs.copySync(from, `${Paths.RELEASE}/${folder}`, {
+                filter: (src) => !src.split(".js")[1],
+              });
+            }),
         },
         name: "Copy",
       }),

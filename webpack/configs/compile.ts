@@ -1,4 +1,3 @@
-import { execSync } from "child_process";
 import * as path from "path";
 import * as fs from "fs-extra";
 import { NormalModule } from "webpack";
@@ -48,7 +47,7 @@ export default getConfig({
   plugins: [
     new WebpackCompilerPlugin({
       listeners: {
-        buildStart: () => execSync(`rm -rf ${Paths.COMPILE}`),
+        buildStart: () => fs.removeSync(Paths.COMPILE),
       },
       name: "Compiler",
     }),

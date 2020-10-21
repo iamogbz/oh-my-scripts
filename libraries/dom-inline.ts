@@ -1,4 +1,4 @@
-import * as cheerio from "cheerio";
+import "cheerio";
 import { isAbsolutePath, normalisePath } from "./paths";
 
 function noPrefix(p: string) {
@@ -31,7 +31,7 @@ export async function inline({
   folder: string;
   load?(url: string): Promise<string | undefined>;
 }) {
-  const $ = cheerio.load(html);
+  const $ = window.cheerio.load(html);
   const retrieve = (target: string) => {
     const noPre = noPrefix(target);
     return load(noPre ? target : normalisePath(`${folder}/${target}`));
