@@ -36,7 +36,7 @@ export function getCompileEntries() {
 
 export function getConfig(diff: Partial<Configuration>) {
   return {
-    mode: process.env.NODE_ENV,
+    mode: process.env.NODE_ENV ?? NodeEnv.PRODUCTION,
     ...diff,
   };
 }
