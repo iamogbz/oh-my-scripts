@@ -17,20 +17,42 @@ export default [
     plugins: [
       new WebpackCompilerPlugin({
         listeners: {
+          // Clear the release target folder on build start
           buildStart: () => fs.removeSync(Paths.RELEASE),
+          // Copy the compiled library and npm distributables
           buildEnd: () =>
             [Dists.LIB, Dists.NPM].forEach((folder) => {
               const from = `${Paths.COMPILE}/${folder}`;
               if (!fs.existsSync(from)) return;
               fs.copySync(from, `${Paths.RELEASE}/${folder}`, {
-                filter: (src) => !src.split(".js")[1],
+                // Only include folders or JS files
+                filter: (src, dest) => {
+                  const shouldInclude = /[\d\w_-](\.js)?$/.test(src);
+                  if (shouldInclude) {
+                    src.endsWith(".js") &&
+                      console.log(
+                        "\x1b[32m\x1b[1msuccess\x1b[0m",
+                        path.relative(process.cwd(), dest),
+                        "[copied]\n"
+                      );
+                  } else {
+                    console.log(
+                      "\x1b[93m\x1b[1mwarning\x1b[0m",
+                      path.relative(process.cwd(), dest),
+                      "[ignored]\n"
+                    );
+                  }
+                  return shouldInclude;
+                },
               });
             }),
         },
         name: "Copy",
+        stageMessages: {},
       }),
     ],
   }),
+  // Build user script for each project
   ...getProjectNames().map((name) => {
     return getConfig({
       entry: { [name]: path.resolve(Paths.COMPILE, Dists.SRC, `${name}.js`) },
@@ -41,24 +63,30 @@ export default [
       plugins: [
         new WebpackUserscript({
           headers: (data: WebpackUserscript.DataObject) => {
+            // Get the list of dependencies extracted in the build:compile stage
             const required: string[] =
               require(path.resolve(Paths.COMPILE, Dists.SRC, `${name}.json`)) ??
               [];
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const scriptHeaderObj: WebpackUserscript.HeaderObject = require(path.resolve(
-              Paths.SCRIPTS,
-              name,
-              `header.json`
-            ));
+
+            // Get the supplementary header object for each user script
+            const scriptHeaderObj: WebpackUserscript.HeaderObject =
+              require(path.resolve(Paths.SCRIPTS, name, "header.json")) ?? {};
+
+            // Override defaults with userscript defined headers
             const headerObj = {
               ...defaultHeaderObj,
               ...scriptHeaderObj,
             };
+
+            // Use github as host in production mode else local server
             const uriBase = isProdMode()
               ? `${data.homepage}/raw/master/dist`
               : "http://localhost:8080";
+            // Append each path with a resource key to override cache
+            // Useful for local development or on new release
             const uri = (path: string) =>
               `${uriBase}/${path}?v=${getResourceKey()}`;
+
             return {
               ...headerObj,
               downloadURL: uri(data.filename.replace(".js", ".user.js")),

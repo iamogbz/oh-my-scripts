@@ -20,6 +20,7 @@ export default getConfig({
     splitChunks: {
       chunks: "all",
       cacheGroups: {
+        // These are the share userscript libraries
         lib: {
           test: RegExps.LIB,
           name(module: NormalModule) {
@@ -27,6 +28,7 @@ export default getConfig({
             return `${Dists.LIB}/${libraryName}`;
           },
         },
+        // These are the shared npm package chunks
         npm: {
           test: RegExps.NPM,
           name(module: NormalModule) {
@@ -47,18 +49,24 @@ export default getConfig({
   plugins: [
     new WebpackCompilerPlugin({
       listeners: {
+        // Clear the compile target folder on build start
         buildStart: () => fs.removeSync(Paths.COMPILE),
       },
       name: "Compiler",
+      // do not print out stage message
+      stageMessages: {},
     }),
     {
       apply(compiler) {
+        // For each named chunk (entry) save the list of dependencies
+        // Used in the build:package stage to generate script require
         compiler.hooks.afterEmit.tap("Assets", (compilation) => {
           for (const [name, chunkGroup] of compilation.namedChunkGroups) {
             fs.outputJSONSync(
               path.resolve(Paths.COMPILE, `${name}.json`),
               chunkGroup
                 .getFiles()
+                // Strictly only include shared library and node modules
                 .filter((fileName) =>
                   [Dists.LIB, Dists.NPM].some((d) => fileName.startsWith(d))
                 )
