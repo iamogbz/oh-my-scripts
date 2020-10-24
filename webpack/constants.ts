@@ -30,5 +30,5 @@ export const RegExps = {
   // or node_modules/packageName
   NPM: /[\\/]node_modules[\\/](.*?)([\\/]|$)/,
   // get the name. E.g. libraries/fileName.ts
-  LIB: /[\\/]libraries[\\/](.*?).ts$/,
+  LIB: /[\\/]libraries[\\/](.*?)\.ts$/,
 };

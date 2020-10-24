@@ -55,8 +55,12 @@ export abstract class ExtendFilePreview {
     filePath?: string
   ): Promise<string | undefined>;
 
+  pathToFile(filePath: string) {
+    return `${getUserRepo()}/${filePath}`;
+  }
+
   pathToBlob(filePath: string) {
-    return `https://raw.githubusercontent.com/${getUserRepo()}/${filePath}`;
+    return `https://raw.githubusercontent.com/${this.pathToFile(filePath)}`;
   }
 
   getFileContent(filePath: string) {
@@ -309,7 +313,7 @@ export abstract class ExtendFilePreview {
       );
     }
     const frameElem = this.frameElement({
-      src: `https://htmlpreview.github.io/?${this.pathToBlob(filePath)}`,
+      src: `https://rawgit.com/${this.pathToFile(filePath)}`,
       srcDoc: await this.prepareHTML(
         await this.getFileContent(filePath),
         filePath
