@@ -4,6 +4,7 @@ exports[`no-window-open blocks window open 1`] = `
 Object {
   "location": Object {
     "assign": [Function],
+    "close": [Function],
     "href": "https://example.com",
     "replace": [Function],
   },

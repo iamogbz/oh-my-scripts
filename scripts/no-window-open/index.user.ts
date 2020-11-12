@@ -139,6 +139,7 @@ Click on it below to proceed with navigation.`;
       get location() {
         return {
           assign: setPopupLink,
+          close: hideNotice,
           replace: setPopupLink,
           get href() {
             return popupUrl;
