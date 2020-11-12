@@ -123,7 +123,6 @@ Click on it below to proceed with navigation.`;
 
   function hideNotice() {
     getOrCreatePopupElement().classList.remove(POPUP_ELEMENT_CLS_VISIBLE);
-    getPopupLinkElement()!.removeAttribute("href");
   }
 
   function hideNoticeTimeout() {
