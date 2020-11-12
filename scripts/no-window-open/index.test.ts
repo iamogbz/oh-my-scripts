@@ -36,7 +36,7 @@ describe("no-window-open", () => {
     expect(prevBody).toMatchDiffSnapshot(document.body);
   });
 
-  it.only("delays hides popup after timer run on mouseover", () => {
+  it("delays hides popup after timer run on mouseover", () => {
     const url = "https://example.com";
     window.open(url);
     jest.advanceTimersByTime(300);

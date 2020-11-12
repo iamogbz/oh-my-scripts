@@ -108,7 +108,7 @@ Click on it below to proceed with navigation.`;
     popupUrl = url;
     getOrCreatePopupElement();
     getPopupLinkElement()!.setAttribute("href", url);
-    getPopupLinkElement()!.innerText = url;
+    getPopupLinkElement()!.innerHTML = url;
   }
 
   function showNotice() {
