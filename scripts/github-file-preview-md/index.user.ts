@@ -21,12 +21,33 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
     })
       .then((r) => r.text?.())
       .then((renderedHtml) => {
-        return renderedHtml
-          ?.replace(/<a/g, `<a target="_blank"`)
-          .replace(/href="#/g, `style="cursor:default" no-href="#`)
-          .replace(".collapse-button{", ".collapse-button{display:none;")
-          .replace(".collapse-content{max-height:0;", ".collapse-content{");
+        if (!renderedHtml) return "";
+        const lineNumber = (n: number) =>
+          `<span class="blob-num bg-gray-light js-line-number" style="display: inline-block; margin-right: 10px">${n}</span>`;
+        return this.replaceText(renderedHtml, "<pre>", "</pre>", (text) =>
+          text
+            ?.split(/\r?\n/)
+            .map((line, i) => `${lineNumber(i + 1)}${line}`)
+            .join("\n")
+        );
       });
+  }
+
+  replaceText(
+    text: string,
+    startTag: string,
+    endTag: string,
+    replaceFn: (content: string) => string
+  ): string {
+    const startIndex = text.indexOf(startTag);
+    const endIndex = text.lastIndexOf(endTag);
+    return (
+      text.substring(0, startIndex) +
+      startTag +
+      replaceFn(text.substring(startIndex + startTag.length, endIndex)) +
+      endTag +
+      text.substring(endIndex + endTag.length)
+    );
   }
 
   frameElement(attrs: Record<string, string | undefined>) {
