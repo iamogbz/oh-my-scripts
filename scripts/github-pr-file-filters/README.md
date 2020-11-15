@@ -1,4 +1,4 @@
-# Github PR File Filters
+# GitHub PR File Filters
 
 [Install](https://github.com/iamogbz/oh-my-scripts/raw/master/dist/github-pr-file-filters.user.js)
 

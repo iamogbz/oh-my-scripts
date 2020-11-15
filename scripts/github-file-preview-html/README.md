@@ -1,4 +1,4 @@
-# Github File Preview HTML
+# GitHub File Preview HTML
 
 [Install](https://github.com/iamogbz/oh-my-scripts/raw/master/dist/github-file-preview-html.user.js)
 

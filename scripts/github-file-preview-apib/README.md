@@ -1,4 +1,4 @@
-# Github File Preview APIB
+# GitHub File Preview APIB
 
 [Install](https://github.com/iamogbz/oh-my-scripts/raw/master/dist/github-file-preview-apib.user.js)
 

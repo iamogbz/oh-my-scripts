@@ -1,4 +1,4 @@
-# Github File Preview Markdown
+# GitHub File Preview Markdown
 
 [Install](https://github.com/iamogbz/oh-my-scripts/raw/master/dist/github-file-preview-md.user.js)
 
