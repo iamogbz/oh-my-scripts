@@ -15,10 +15,16 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
   }
 
   async prepareHTML(fileContent: string) {
-    const text = "```markdown\n" + fileContent.replace(/`/g, "\\`") + "```";
+    const fencedCodeTag = "```";
+    const fencedCodeTagPlaceholder = "FENCED-CODE-TAG-PLACEHOLDER";
+    const unfencedContent = `${fencedCodeTag}markdown\n${fileContent.replace(
+      new RegExp(fencedCodeTag, "g"),
+      fencedCodeTagPlaceholder
+    )}${fencedCodeTag}`;
+
     return request("https://api.github.com/markdown", {
       method: "POST",
-      data: JSON.stringify({ text }),
+      data: JSON.stringify({ text: unfencedContent }),
     })
       .then((r) => r.text?.())
       .then((renderedHtml) => {
@@ -26,11 +32,14 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
         const lineNumber = (n: number) =>
           `<span class="blob-num bg-gray-light js-line-number" style="display: inline-block; margin-right: 10px">${n}</span>`;
         return this.replaceText(
-          renderedHtml.replace(/\\`/g, "`"),
+          renderedHtml.replace(
+            new RegExp(fencedCodeTagPlaceholder, "g"),
+            fencedCodeTag
+          ),
           "<pre>",
           "</pre>",
-          (text) =>
-            text
+          (prerenderedMd) =>
+            prerenderedMd
               ?.split(/\r?\n/)
               .map((line, i) => `${lineNumber(i + 1)}${line}`)
               .join("\n")
