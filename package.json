@@ -14,8 +14,7 @@
     }
   },
   "dependencies": {
-    "cheerio": "git+http://github.com/iamogbz/cheerio-web.git",
-    "highlight.js": "^10.3.2"
+    "cheerio": "git+http://github.com/iamogbz/cheerio-web.git"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",

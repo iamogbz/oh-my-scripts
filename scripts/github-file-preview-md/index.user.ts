@@ -1,7 +1,5 @@
-// import * as hljs from "highlight.js/lib/core";
-// import * as markdown from "highlight.js/lib/languages/markdown";
-
 import { selectDOM } from "libraries/dom";
+import { isSingleFile, onAjaxedPagesRaw } from "libraries/github";
 import { ExtendFilePreview, filePreviewNS } from "libraries/github-file";
 import { request } from "libraries/request";
 
@@ -60,12 +58,16 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
       `.btn.BtnGroup-item[data-toggle-action="${this.toggleActionRender}"]`
     )?.click();
   }
+
+  setup() {
+    onAjaxedPagesRaw(() => {
+      if (!isSingleFile()) return;
+      this.initFeature();
+    });
+  }
 }
 
 (function () {
   "use strict";
-  // hljs.registerLanguage("md", markdown);
-  // const highlightCSS = GM_getResourceText("HIGHLIGHT_CSS");
-  // GM_addStyle(highlightCSS);
   new ExtendFilePreviewMD().setup();
 })();

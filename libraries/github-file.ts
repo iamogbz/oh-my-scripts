@@ -196,14 +196,14 @@ export abstract class ExtendFilePreview {
             class: "octicon octicon-code",
             height: 16,
             version: "1.1",
-            viewBox: "0 0 14 16",
-            width: 14,
+            viewBox: "0 0 16 16",
+            width: 16,
           },
           children: [
             {
               attributes: {
                 d:
-                  "M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z",
+                  "M4.72 3.22a.75.75 0 011.06 1.06L2.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L.47 8.53a.75.75 0 010-1.06l4.25-4.25zm6.56 0a.75.75 0 10-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 101.06 1.06l4.25-4.25a.75.75 0 000-1.06l-4.25-4.25z",
                 "fill-rule": "evenodd",
               },
               tagName: "path",
@@ -240,14 +240,13 @@ export abstract class ExtendFilePreview {
             class: "octicon octicon-file",
             height: 16,
             version: "1.1",
-            viewBox: "0 0 12 16",
-            width: 12,
+            viewBox: "0 0 16 16",
+            width: 16,
           },
           children: [
             {
               attributes: {
-                d: `M6 5H2V4h4v1zM2 8h7V7H2v1zm0 2h7V9H2v1zm0 2h7v-1H2v1zm10-7.5V14c0 .55-.45
-                1-1 1H1c-.55 0-1-.45-1-1V2c0-.55.45-1 1-1h7.5L12 4.5zM11 5L8 2H1v12h10V5z`,
+                d: `M3.75 1.5a.25.25 0 00-.25.25v11.5c0 .138.112.25.25.25h8.5a.25.25 0 00.25-.25V6H9.75A1.75 1.75 0 018 4.25V1.5H3.75zm5.75.56v2.19c0 .138.112.25.25.25h2.19L9.5 2.06zM2 1.75C2 .784 2.784 0 3.75 0h5.086c.464 0 .909.184 1.237.513l3.414 3.414c.329.328.513.773.513 1.237v8.086A1.75 1.75 0 0112.25 15h-8.5A1.75 1.75 0 012 13.25V1.75z`,
                 "fill-rule": "evenodd",
               },
               tagName: "path",
