@@ -110,7 +110,7 @@
     "lint": "eslint .",
     "release": "semantic-release",
     "server": "http-server ./dist",
-    "start": "nodemon -x 'npm run build && npm run server'",
+    "start": "env NODE_ENV=development nodemon -x 'npm run build && npm run server'",
     "test": "tsc --noEmit && jest"
   },
   "version": "0.0.1"

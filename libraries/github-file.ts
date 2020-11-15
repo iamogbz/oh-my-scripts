@@ -378,7 +378,7 @@ export abstract class ExtendFilePreview {
     const filePath = getRepoPath().replace("blob/", "");
     if (!this.isSupportedFile(filePath)) return;
     const frameElem = await this.addFrameToFileBody(
-      selectOrThrow(".Box.mt-3>.Box-body.blob-wrapper"),
+      selectOrThrow(".Box.mt-3>.Box-body"),
       filePath,
       false
     );
