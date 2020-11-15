@@ -1,8 +1,9 @@
-import * as hljs from "highlight.js/lib/core";
-import * as markdown from "highlight.js/lib/languages/markdown";
+// import * as hljs from "highlight.js/lib/core";
+// import * as markdown from "highlight.js/lib/languages/markdown";
 
 import { selectDOM } from "libraries/dom";
 import { ExtendFilePreview, filePreviewNS } from "libraries/github-file";
+import { request } from "libraries/request";
 
 class ExtendFilePreviewMD extends ExtendFilePreview {
   constructor() {
@@ -10,10 +11,35 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
     this.id = filePreviewNS`extend-md`;
     this.fileTypes = new Set(["md"]);
     this.featureClass = filePreviewNS`extend-md`;
+    this.frameTagName = "div";
+    this.frameStyle.height = "auto";
   }
 
   async prepareHTML(fileContent: string) {
-    return hljs.highlight("md", fileContent).value;
+    const text = "```markdown\n" + fileContent + "```";
+    return request("https://api.github.com/markdown", {
+      method: "POST",
+      data: JSON.stringify({ text }),
+    })
+      .then((r) => r.text?.())
+      .then((renderedHtml) => {
+        return renderedHtml
+          ?.replace(/<a/g, `<a target="_blank"`)
+          .replace(/href="#/g, `style="cursor:default" no-href="#`)
+          .replace(".collapse-button{", ".collapse-button{display:none;")
+          .replace(".collapse-content{max-height:0;", ".collapse-content{");
+      });
+  }
+
+  frameElement(attrs: Record<string, string | undefined>) {
+    const frame = super.frameElement(attrs);
+    frame.removeAttribute("srcdoc");
+    frame.innerHTML = attrs.srcDoc!;
+    return frame;
+  }
+
+  getScrollHeight(frameElem: HTMLIFrameElement) {
+    return frameElem.scrollHeight;
   }
 
   // swap source and rendered since github renders markdown by default
@@ -38,7 +64,8 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
 
 (function () {
   "use strict";
-  // @ts-expect-error highlight library type errors https://github.com/highlightjs/highlight.js/issues/2682
-  hljs.registerLanguage("md", markdown);
+  // hljs.registerLanguage("md", markdown);
+  // const highlightCSS = GM_getResourceText("HIGHLIGHT_CSS");
+  // GM_addStyle(highlightCSS);
   new ExtendFilePreviewMD().setup();
 })();

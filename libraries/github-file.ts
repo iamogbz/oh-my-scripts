@@ -29,18 +29,20 @@ export abstract class ExtendFilePreview {
   public id!: string;
   public featureClass!: string;
   public fileTypes!: Set<string>;
+  public frameTagName = "iframe";
   public toggleActionSource = "source";
   public toggleActionRender = "render";
   public frameStyle = {
     background: "white",
     border: "none",
-    display: "none",
+    display: "block",
     height: "100%",
     left: 0,
     padding: 0,
     position: "absolute",
     top: 0,
     width: "100%",
+    visibility: "hidden",
   };
 
   setup() {
@@ -112,7 +114,7 @@ export abstract class ExtendFilePreview {
     return (event: Event) => {
       const button = event.currentTarget as HTMLButtonElement;
       if (button.disabled || !frameElem) return;
-      frameElem.style.display = "none";
+      frameElem.style.visibility = "hidden";
       const frameParent = frameElem.parentElement;
       frameParent?.style.removeProperty("overflow");
       frameParent?.style.removeProperty("height");
@@ -124,22 +126,25 @@ export abstract class ExtendFilePreview {
   showRendered(frameElem: HTMLIFrameElement) {
     return (event: Event) => {
       const button = event.currentTarget as HTMLButtonElement;
-      if (
-        !frameElem.contentWindow ||
-        !frameElem.parentElement ||
-        button.disabled
-      )
-        return;
-      frameElem.style.display = "block";
-      const frameParent = frameElem.parentElement;
+      const frameParent = this.getContainerElement(frameElem);
+      const scrollHeight = this.getScrollHeight(frameElem);
+      if (!frameParent || !scrollHeight || button.disabled) return;
+      frameElem.style.visibility = "visible";
       frameParent.style.overflow = "hidden";
-      const height = `${
-        frameElem.contentWindow.document.body.scrollHeight + 32
-      }px`;
+      const height = `${scrollHeight}px`;
       frameParent.style.height = height;
       frameParent.style.maxHeight = height;
       return this.selectButton(button);
     };
+  }
+
+  getContainerElement(frameElem: HTMLIFrameElement) {
+    return frameElem.parentElement;
+  }
+
+  getScrollHeight(frameElem: HTMLIFrameElement) {
+    if (!frameElem.contentWindow) return 0;
+    return frameElem.contentWindow.document.body.scrollHeight + 32;
   }
 
   updateToggle(button: HTMLButtonElement, frameElem: HTMLIFrameElement) {
@@ -267,14 +272,14 @@ export abstract class ExtendFilePreview {
     });
   }
 
-  frameElement(props: Record<string, string | undefined>) {
+  frameElement(attrs: Record<string, string | undefined>) {
     return createElement<HTMLIFrameElement>({
       attributes: {
         class: this.featureClass,
         style: createElementStyle(this.frameStyle),
-        ...props,
+        ...attrs,
       },
-      tagName: "iframe",
+      tagName: this.frameTagName,
     });
   }
 
@@ -306,11 +311,9 @@ export abstract class ExtendFilePreview {
     if (canDefer && !selectExists(".js-blob-wrapper", bodyElem)) {
       return undefined;
     }
-    if (selectExists(`iframe.${this.featureClass}`, bodyElem)) {
-      return selectDOM<HTMLIFrameElement>(
-        `iframe.${this.featureClass}`,
-        bodyElem
-      );
+    const frameSelector = `${this.frameTagName}.${this.featureClass}`;
+    if (selectExists(frameSelector, bodyElem)) {
+      return selectDOM<HTMLIFrameElement>(frameSelector, bodyElem);
     }
     const frameElem = this.frameElement({
       src: `https://rawgit.com/${this.pathToFile(filePath)}`,
