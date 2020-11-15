@@ -15,7 +15,7 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
   }
 
   async prepareHTML(fileContent: string) {
-    const text = "```markdown\n" + fileContent + "```";
+    const text = "```markdown\n" + fileContent.replace(/`/g, "\\`") + "```";
     return request("https://api.github.com/markdown", {
       method: "POST",
       data: JSON.stringify({ text }),
@@ -25,11 +25,15 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
         if (!renderedHtml) return "";
         const lineNumber = (n: number) =>
           `<span class="blob-num bg-gray-light js-line-number" style="display: inline-block; margin-right: 10px">${n}</span>`;
-        return this.replaceText(renderedHtml, "<pre>", "</pre>", (text) =>
-          text
-            ?.split(/\r?\n/)
-            .map((line, i) => `${lineNumber(i + 1)}${line}`)
-            .join("\n")
+        return this.replaceText(
+          renderedHtml.replace(/\\`/g, "`"),
+          "<pre>",
+          "</pre>",
+          (text) =>
+            text
+              ?.split(/\r?\n/)
+              .map((line, i) => `${lineNumber(i + 1)}${line}`)
+              .join("\n")
         );
       });
   }
