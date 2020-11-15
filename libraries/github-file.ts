@@ -134,6 +134,7 @@ export abstract class ExtendFilePreview {
       const height = `${scrollHeight}px`;
       frameParent.style.height = height;
       frameParent.style.maxHeight = height;
+      frameParent.scrollLeft = 0;
       return this.selectButton(button);
     };
   }
