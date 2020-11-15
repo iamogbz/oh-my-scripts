@@ -32,7 +32,7 @@ export abstract class ExtendFilePreview {
   public frameTagName = "iframe";
   public toggleActionSource = "source";
   public toggleActionRender = "render";
-  public frameStyle = {
+  public frameStyle: Record<string, number | string> = {
     background: "white",
     border: "none",
     display: "block",

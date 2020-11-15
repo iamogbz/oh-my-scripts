@@ -11,6 +11,7 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
     this.featureClass = filePreviewNS`extend-md`;
     this.frameTagName = "div";
     this.frameStyle.height = "auto";
+    this.frameStyle.overflow = "scroll hidden";
   }
 
   async prepareHTML(fileContent: string) {
