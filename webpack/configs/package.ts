@@ -87,10 +87,14 @@ export default [
             const uri = (path: string) =>
               `${uriBase}/${path}?v=${getResourceKey()}`;
 
+            // Plugin will emit the file ending with .user.js
+            const downloadURL = uri(data.filename.replace(".js", ".user.js"));
+
             return {
               ...headerObj,
-              downloadURL: uri(data.filename.replace(".js", ".user.js")),
+              downloadURL,
               require: required.map(uri).concat(scriptHeaderObj.require ?? []),
+              updateURL: downloadURL,
             };
           },
           metajs: false,
