@@ -6,6 +6,7 @@ import * as defaultHeaderObj from "../../scripts/header.default.json";
 import { Dists, Paths } from "../constants";
 import {
   getConfig,
+  getGitVersionTag,
   getProjectNames,
   getResourceKey,
   isProdMode,
@@ -74,6 +75,7 @@ export default [
 
             // Override defaults with userscript defined headers
             const headerObj = {
+              version: getGitVersionTag() || "0.0.1",
               ...defaultHeaderObj,
               ...scriptHeaderObj,
             };

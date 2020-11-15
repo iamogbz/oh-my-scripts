@@ -45,6 +45,10 @@ export function getGitCommitHash() {
   return execSync("git rev-parse HEAD").toString();
 }
 
+export function getGitVersionTag() {
+  return execSync("git describe --tags --abbrev=0").toString().substr(1);
+}
+
 export function getResourceKey(size = 7) {
   return isProdMode()
     ? getGitCommitHash().substr(0, size)
