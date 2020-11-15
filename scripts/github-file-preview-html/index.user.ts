@@ -18,6 +18,11 @@ class ExtendFilePreviewHTML extends ExtendFilePreview {
       load: this.getFileContent.bind(this),
     });
   }
+
+  getScrollHeight(frameElem: HTMLIFrameElement) {
+    if (!frameElem.contentWindow) return 0;
+    return frameElem.contentWindow.document.body.scrollHeight + 1;
+  }
 }
 
 (function () {

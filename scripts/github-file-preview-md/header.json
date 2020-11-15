@@ -1,0 +1,6 @@
+{
+  "description": "Render the raw markdown in thub",
+  "grant": ["GM_xmlhttpRequest"],
+  "include": ["*://github.com/*"],
+  "name": "GitHub File Preview Markdown"
+}

@@ -1,6 +1,6 @@
 export function request(
   url: RequestInfo,
-  options?: RequestInit
+  options?: RequestInit & { data?: string }
 ): Promise<Partial<Response>> {
   if (!window.GM_xmlhttpRequest) return fetch(url, options);
   return new Promise((resolve, reject) => {
