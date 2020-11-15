@@ -19,6 +19,7 @@
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@semantic-release/exec": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
     "@types/cheerio": "^0.22.22",
     "@types/fs-extra": "^9.0.4",
@@ -99,22 +100,6 @@
     "type": "git",
     "url": "git+https://github.com/iamogbz/oh-my-scripts.git"
   },
-  "release": {
-    "dryRun": false,
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      [
-        "@semantic-release/git",
-        {
-          "assets": [
-            "dist"
-          ],
-          "message": "chore(release): scripts and libraries [skip ci]\n\n${nextRelease.notes}"
-        }
-      ]
-    ]
-  },
   "scripts": {
     "build": "npm run build:compile && npm run build:package",
     "build:compile": "BUILD_STAGE=compile webpack",
@@ -125,7 +110,7 @@
     "release": "semantic-release",
     "server": "http-server ./dist",
     "start": "nodemon -x 'npm run build && npm run server'",
-    "test": "jest"
+    "test": "tsc --noEmit && jest"
   },
   "version": "0.0.1"
 }

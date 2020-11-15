@@ -5,7 +5,7 @@ import { Configuration } from "webpack";
 import { BuildStage, NodeEnv, Paths } from "./constants";
 
 export function isProdMode() {
-  return process.env.NODE_ENV === NodeEnv.PRODUCTION;
+  return process.env.NODE_ENV !== NodeEnv.DEVELOPMENT;
 }
 
 export function isCompileStage() {
@@ -36,17 +36,13 @@ export function getCompileEntries() {
 
 export function getConfig(diff: Partial<Configuration>) {
   return {
-    mode: process.env.NODE_ENV ?? NodeEnv.PRODUCTION,
+    mode: isProdMode() ? NodeEnv.PRODUCTION : NodeEnv.DEVELOPMENT,
     ...diff,
   };
 }
 
 export function getGitCommitHash() {
-  return execSync("git rev-parse HEAD").toString();
-}
-
-export function getGitVersionTag() {
-  return execSync("git describe --tags --abbrev=0").toString().substr(1);
+  return execSync("git rev-parse HEAD").toString().trim();
 }
 
 export function getResourceKey(size = 7) {
