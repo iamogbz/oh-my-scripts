@@ -2,7 +2,7 @@
 const { execSync } = require("child_process");
 
 const run = (command) => execSync(command).toString().trim();
-const getGitCurrentBranch = () => run("git rev-parse --abbrev-ref HEAD");
+const getGitCurrentBranch = () => run("echo ${GITHUB_REF##*/}");
 const getGitVersionTag = () => run("git describe --tags --abbrev=0");
 
 const branch = getGitCurrentBranch();
