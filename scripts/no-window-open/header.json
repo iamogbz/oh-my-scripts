@@ -2,5 +2,5 @@
   "description": "Blocks window open",
   "grant": ["none"],
   "name": "No Window Open",
-  "require": ["https://openuserjs.org/src/libs/Marti/GM_setStyle.min.js"]
+  "require": ["https://raw.githubusercontent.com/Martii/UserScripts/d8d8829/lib/GM_setStyle/GM_setStyle.js"]
 }
