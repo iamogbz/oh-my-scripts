@@ -2,12 +2,10 @@
 const { execSync } = require("child_process");
 
 const run = (command) => execSync(command).toString().trim();
-const getGitCurrentBranch = () =>
-  process.env.GITHUB_REF?.replace("refs/heads/", "") ??
-  run("git branch --show-current");
-const getGitVersionTag = () => run("git describe --tags --abbrev=0");
 
-const branch = getGitCurrentBranch();
+const branch =
+  (process.env.GITHUB_REF || "").replace("refs/heads/", "") ||
+  run("git branch --show-current");
 
 try {
   run(`git ls-remote --exit-code --heads origin '${branch}'`);
@@ -28,7 +26,9 @@ module.exports = {
       "@semantic-release/exec",
       {
         [dryRun ? "verifyConditionsCmd" : "verifyReleaseCmd"]: `env VERSION=${
-          dryRun ? getGitVersionTag() : "${nextRelease.version}"
+          dryRun
+            ? run("git describe --tags --abbrev=0")
+            : "${nextRelease.version}"
         } npm run build`,
       },
     ],
