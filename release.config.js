@@ -2,10 +2,19 @@
 const { execSync } = require("child_process");
 
 const run = (command) => execSync(command).toString().trim();
-const getGitCurrentBranch = () => run("echo ${GITHUB_REF##*/}");
+const getGitCurrentBranch = () =>
+  process.env.GITHUB_REF?.replace("refs/heads/", "") ??
+  run("git branch --show-current");
 const getGitVersionTag = () => run("git describe --tags --abbrev=0");
 
 const branch = getGitCurrentBranch();
+
+try {
+  run(`git ls-remote --exit-code --heads origin '${branch}'`);
+} catch (e) {
+  throw new Error(`Branch '${branch}' needs to exist on remote to run release`);
+}
+
 console.log("current branch:", branch);
 const dryRun = branch != "master";
 
