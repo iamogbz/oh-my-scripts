@@ -1,5 +1,5 @@
 import { selectDOM } from "libraries/dom";
-import { isSingleFile, onAjaxedPagesRaw } from "libraries/github";
+import { isSingleFile } from "libraries/github";
 import { ExtendFilePreview, filePreviewNS } from "libraries/github-file";
 import { request } from "libraries/request";
 
@@ -94,11 +94,8 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
     )?.click();
   }
 
-  setup() {
-    onAjaxedPagesRaw(() => {
-      if (!isSingleFile()) return;
-      this.initFeature();
-    });
+  initCondition() {
+    return isSingleFile();
   }
 }
 
