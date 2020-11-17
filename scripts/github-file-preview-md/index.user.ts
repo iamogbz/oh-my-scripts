@@ -11,7 +11,7 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
     this.featureClass = filePreviewNS`extend-md`;
     this.frameTagName = "div";
     this.frameStyle.height = "auto";
-    this.frameStyle.overflow = "scroll hidden";
+    this.frameStyle.overflow = "hidden";
   }
 
   async prepareHTML(fileContent: string) {
@@ -29,20 +29,36 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
       .then((r) => r.text?.())
       .then((renderedHtml) => {
         if (!renderedHtml) return "";
-        const lineNumber = (n: number) =>
-          `<span class="blob-num bg-gray-light js-line-number" style="display: inline-block; margin-right: 10px">${n}</span>`;
+        const startTag = ["<pre>", '<div style="display: flex">'];
+        const endTag = ["</pre>", "</div>"];
         return this.replaceText(
-          renderedHtml.replace(
-            new RegExp(fencedCodeTagPlaceholder, "g"),
-            fencedCodeTag
-          ),
-          "<pre>",
-          "</pre>",
-          (prerenderedMd) =>
-            prerenderedMd
-              ?.split(/\r?\n/)
-              .map((line, i) => `${lineNumber(i + 1)}${line}`)
-              .join("\n")
+          renderedHtml
+            .replace(new RegExp(fencedCodeTagPlaceholder, "g"), fencedCodeTag)
+            .replace(startTag[0], startTag[1])
+            .replace(endTag[0], endTag[1]),
+          startTag[1],
+          endTag[1],
+          (prerenderedMd) => {
+            const lines = prerenderedMd.split(/\r?\n/);
+            const renderedLineNumbers = lines
+              .map(
+                (_, i) =>
+                  `<span class="blob-num bg-gray-light js-line-number" style="margin-right: 10px; display: inline-block; height: 20px;">${
+                    i + 1
+                  }</span>`
+              )
+              .join("");
+            const renderedLines = lines
+              .map(
+                (line) =>
+                  `<pre style="display: block; height: 20px;">${line}</pre>`
+              )
+              .join("\n");
+            return `
+              <div style="display: flex; flex-direction: column">${renderedLineNumbers}</div>
+              <div style="overflow: scroll hidden">${renderedLines}</div>
+            `;
+          }
         );
       });
   }
