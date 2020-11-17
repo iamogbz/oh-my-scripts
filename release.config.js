@@ -6,6 +6,7 @@ const getGitCurrentBranch = () => run("echo ${GITHUB_REF##*/}");
 const getGitVersionTag = () => run("git describe --tags --abbrev=0");
 
 const branch = getGitCurrentBranch();
+console.log("current branch:", branch);
 const dryRun = branch != "master";
 
 module.exports = {
