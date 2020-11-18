@@ -93,11 +93,19 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
 
   // swap source and rendered since github renders markdown by default
   showSource(frameElem: HTMLIFrameElement) {
-    return super.showRendered(frameElem);
+    const showSource = super.showRendered(frameElem);
+    return (e: Event) => {
+      frameElem.parentElement?.classList.remove("p-5", "p-xl-6");
+      return showSource(e);
+    };
   }
 
   showRendered(frameElem: HTMLIFrameElement) {
-    return super.showSource(frameElem);
+    const showRendered = super.showSource(frameElem);
+    return (e: Event) => {
+      frameElem.parentElement?.classList.add("p-5", "p-xl-6");
+      return showRendered(e);
+    };
   }
 
   addButtonsToFileHeaderActions(
