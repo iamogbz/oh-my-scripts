@@ -6,8 +6,8 @@ import * as defaultHeaderObj from "../../scripts/header.default.json";
 import { Dists, Paths } from "../constants";
 import {
   getConfig,
+  getGitCommitHash,
   getProjectNames,
-  getResourceKey,
   isProdMode,
 } from "../utils";
 
@@ -80,13 +80,15 @@ export default [
             };
 
             // Use github as host in production mode else local server
+            // pin release to commit hash for production
             const uriBase = isProdMode()
-              ? `${data.homepage}/raw/master/dist`
+              ? `${data.homepage}/raw/${getGitCommitHash().substr(0, 7)}/dist`
               : "http://localhost:8080";
-            // Append each path with a resource key to override cache
-            // Useful for local development or on new release
-            const uri = (path: string) =>
-              `${uriBase}/${path}?v=${getResourceKey()}`;
+            // Append each path with a resource key to override cache for local dev
+            const urlSuffix = isProdMode()
+              ? ""
+              : `v=${Math.random().toString(36).substring(7)}`;
+            const uri = (path: string) => `${uriBase}/${path}${urlSuffix}`;
 
             // Plugin will emit the file ending with .user.js
             const downloadURL = uri(data.filename.replace(".js", ".user.js"));

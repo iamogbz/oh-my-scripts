@@ -44,9 +44,3 @@ export function getConfig(diff: Partial<Configuration>) {
 export function getGitCommitHash() {
   return execSync("git rev-parse HEAD").toString().trim();
 }
-
-export function getResourceKey(size = 7) {
-  return isProdMode()
-    ? getGitCommitHash().substr(0, size)
-    : Math.random().toString(36).substring(size);
-}
