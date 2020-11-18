@@ -1,5 +1,5 @@
 import { selectDOM } from "libraries/dom";
-import { isSingleFile, onAjaxedPagesRaw } from "libraries/github";
+import { isSingleFile } from "libraries/github";
 import { ExtendFilePreview, filePreviewNS } from "libraries/github-file";
 import { request } from "libraries/request";
 
@@ -11,7 +11,7 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
     this.featureClass = filePreviewNS`extend-md`;
     this.frameTagName = "div";
     this.frameStyle.height = "auto";
-    this.frameStyle.overflow = "scroll hidden";
+    this.frameStyle.overflow = "hidden";
   }
 
   async prepareHTML(fileContent: string) {
@@ -29,20 +29,36 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
       .then((r) => r.text?.())
       .then((renderedHtml) => {
         if (!renderedHtml) return "";
-        const lineNumber = (n: number) =>
-          `<span class="blob-num bg-gray-light js-line-number" style="display: inline-block; margin-right: 10px">${n}</span>`;
+        const startTag = ["<pre>", '<div style="display: flex">'];
+        const endTag = ["</pre>", "</div>"];
         return this.replaceText(
-          renderedHtml.replace(
-            new RegExp(fencedCodeTagPlaceholder, "g"),
-            fencedCodeTag
-          ),
-          "<pre>",
-          "</pre>",
-          (prerenderedMd) =>
-            prerenderedMd
-              ?.split(/\r?\n/)
-              .map((line, i) => `${lineNumber(i + 1)}${line}`)
-              .join("\n")
+          renderedHtml
+            .replace(new RegExp(fencedCodeTagPlaceholder, "g"), fencedCodeTag)
+            .replace(startTag[0], startTag[1])
+            .replace(endTag[0], endTag[1]),
+          startTag[1],
+          endTag[1],
+          (prerenderedMd) => {
+            const lines = prerenderedMd.split(/\r?\n/);
+            const renderedLineNumbers = lines
+              .map(
+                (_, i) =>
+                  `<span class="blob-num bg-gray-light js-line-number" style="margin-right: 10px; display: inline-block; height: 20px;">${
+                    i + 1
+                  }</span>`
+              )
+              .join("");
+            const renderedLines = lines
+              .map(
+                (line) =>
+                  `<pre style="display: block; height: 20px;">${line}</pre>`
+              )
+              .join("\n");
+            return `
+              <div style="display: flex; flex-direction: column">${renderedLineNumbers}</div>
+              <div style="overflow: scroll hidden">${renderedLines}</div>
+            `;
+          }
         );
       });
   }
@@ -77,11 +93,19 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
 
   // swap source and rendered since github renders markdown by default
   showSource(frameElem: HTMLIFrameElement) {
-    return super.showRendered(frameElem);
+    const showSource = super.showRendered(frameElem);
+    return (e: Event) => {
+      frameElem.parentElement?.classList.remove("p-5", "p-xl-6");
+      return showSource(e);
+    };
   }
 
   showRendered(frameElem: HTMLIFrameElement) {
-    return super.showSource(frameElem);
+    const showRendered = super.showSource(frameElem);
+    return (e: Event) => {
+      frameElem.parentElement?.classList.add("p-5", "p-xl-6");
+      return showRendered(e);
+    };
   }
 
   addButtonsToFileHeaderActions(
@@ -94,11 +118,8 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
     )?.click();
   }
 
-  setup() {
-    onAjaxedPagesRaw(() => {
-      if (!isSingleFile()) return;
-      this.initFeature();
-    });
+  initCondition() {
+    return isSingleFile();
   }
 }
 

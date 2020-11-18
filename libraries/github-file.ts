@@ -45,9 +45,13 @@ export abstract class ExtendFilePreview {
     visibility: "hidden",
   };
 
+  initCondition() {
+    return isCommit() || isPRFiles() || isSingleFile();
+  }
+
   setup() {
     onAjaxedPagesRaw(() => {
-      if (!(isCommit() || isPRFiles() || isSingleFile())) return;
+      if (!this.initCondition()) return;
       this.initFeature();
     });
   }
