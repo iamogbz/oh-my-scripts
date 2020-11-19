@@ -81,8 +81,9 @@ export default [
 
             // Use github as host in production mode else local server
             // pin release to commit hash for production
+            const gitCommitHash = getGitCommitHash().substr(0, 7);
             const uriBase = isProdMode()
-              ? `${data.homepage}/raw/${getGitCommitHash().substr(0, 7)}/dist`
+              ? `${data.homepage}/raw/${gitCommitHash}/dist`
               : "http://localhost:8080";
             // Append each path with a resource key to override cache for local dev
             const urlSuffix = isProdMode()
@@ -97,7 +98,7 @@ export default [
               ...headerObj,
               downloadURL,
               require: required.map(uri).concat(scriptHeaderObj.require ?? []),
-              updateURL: downloadURL,
+              updateURL: downloadURL.replace(`/${gitCommitHash}/`, "/master/"),
             };
           },
           metajs: false,
