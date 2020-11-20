@@ -56,7 +56,7 @@ export abstract class ExtendFilePreview {
     });
   }
 
-  abstract async prepareHTML(
+  abstract prepareHTML(
     fileContent?: string,
     filePath?: string
   ): Promise<string | undefined>;
