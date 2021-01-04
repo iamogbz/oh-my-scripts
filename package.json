@@ -31,7 +31,7 @@
     "buffer": "^6.0.3",
     "commitizen": "^4.2.2",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^7.16.0",
+    "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-prettier": "^3.3.0",
     "fs-extra": "^9.0.1",
