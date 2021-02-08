@@ -35,6 +35,7 @@ import { createElement } from "../../libraries/dom";
 
 #${POPUP_ELEMENT_ID}.${POPUP_ELEMENT_CLS_VISIBLE} {
   right: 8px;
+  z-index: ${Number.POSITIVE_INFINITY};
 }
 
 #${POPUP_ELEMENT_ID} #${POPUP_ELEMENT_CLOSE_BUTTON_ID} {
@@ -89,13 +90,14 @@ Click on it below to proceed with navigation.`;
       events: { mouseover: showNotice },
       tagName: "div",
     });
-    document.body.appendChild(element);
     return element;
   }
 
   function getOrCreatePopupElement() {
-    const element = document.getElementById(POPUP_ELEMENT_ID);
-    return element || createPopupElement();
+    const element =
+      document.getElementById(POPUP_ELEMENT_ID) || createPopupElement();
+    document.body.appendChild(element);
+    return element;
   }
 
   function getPopupLinkElement() {
