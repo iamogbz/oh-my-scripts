@@ -35,7 +35,7 @@ import { createElement } from "../../libraries/dom";
 
 #${POPUP_ELEMENT_ID}.${POPUP_ELEMENT_CLS_VISIBLE} {
   right: 8px;
-  z-index: ${Number.POSITIVE_INFINITY};
+  z-index: ${Number.MAX_SAFE_INTEGER};
 }
 
 #${POPUP_ELEMENT_ID} #${POPUP_ELEMENT_CLOSE_BUTTON_ID} {
