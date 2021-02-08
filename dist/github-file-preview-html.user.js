@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        GitHub File Preview HTML
-// @version     1.1.6
+// @version     1.1.7
 // @author      iamogbz
 // @description Render HTML files in github
 // @homepage    https://github.com/iamogbz/oh-my-scripts
@@ -9,33 +9,33 @@
 // @namespace   iamogbz/oh-my-scripts
 // @grant       GM_xmlhttpRequest
 // @include     *://github.com/*
-// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/github-file-preview-html.user.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/lib/dom.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/lib/github.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/lib/paths.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/lib/request.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/lib/ns.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/lib/github-file.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/lodash.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/cheerio.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/htmlparser2.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/entities.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/domutils.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/css-select.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/nth-check.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/domhandler.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/lib/dom-inline.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/string_decoder.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/safe-buffer.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/inherits.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/ieee754.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/events.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/domelementtype.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/dom-serializer.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/css-what.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/buffer.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/boolbase.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/a51e930/dist/npm/base64-js.js
+// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/github-file-preview-html.user.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/dom.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/github.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/paths.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/request.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/ns.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/github-file.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/lodash.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/cheerio.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/htmlparser2.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/entities.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/domutils.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/css-select.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/nth-check.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/domhandler.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/dom-inline.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/string_decoder.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/safe-buffer.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/inherits.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/ieee754.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/events.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/domelementtype.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/dom-serializer.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/css-what.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/buffer.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/boolbase.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/base64-js.js
 // @updateURL   https://github.com/iamogbz/oh-my-scripts/raw/master/dist/github-file-preview-html.user.js
 // ==/UserScript==
 
