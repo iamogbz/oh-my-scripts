@@ -202,9 +202,8 @@ function fileTypeToggle({
               class: "text-normal js-file-type-count",
               "data-all-file-count-markup": markupCount(totalCount),
               "data-deleted-file-count-markup": markupCount(deletedCount),
-              "data-non-deleted-file-count-markup": markupCount(
-                nonDeletedCount
-              ),
+              "data-non-deleted-file-count-markup":
+                markupCount(nonDeletedCount),
             },
             children: [markupCount(totalCount)],
             tagName: "span",
