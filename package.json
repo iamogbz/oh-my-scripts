@@ -17,8 +17,8 @@
     "cheerio": "git+http://github.com/iamogbz/cheerio-web.git"
   },
   "devDependencies": {
-    "@commitlint/cli": "^12.1.4",
-    "@commitlint/config-conventional": "^12.1.4",
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
     "@semantic-release/exec": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
     "@types/cheerio": "^0.22.22",
@@ -26,29 +26,29 @@
     "@types/jest": "^26.0.24",
     "@types/node": "^16.4.1",
     "@types/webpack-dev-server": "^3.11.5",
-    "@typescript-eslint/eslint-plugin": "^4.28.4",
-    "@typescript-eslint/parser": "^4.28.4",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
     "buffer": "^6.0.3",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^7.31.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "fs-extra": "^10.0.0",
     "http-server": "^0.12.3",
     "husky": "^7.0.1",
     "jest": "^26.6.3",
-    "lint-staged": "^11.0.1",
+    "lint-staged": "^11.1.2",
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
-    "prettier-eslint": "^12.0.0",
+    "prettier-eslint": "^13.0.0",
     "semantic-release": "^17.4.4",
     "snapshot-diff": "^0.9.0",
     "ts-jest": "^26.5.6",
-    "ts-loader": "^9.2.3",
+    "ts-loader": "^9.2.5",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5",
-    "webpack": "^5.46.0",
+    "webpack": "^5.48.0",
     "webpack-cli": "^4.7.2",
     "webpack-compiler-plugin": "^1.1.5",
     "webpack-userscript": "^2.5.8"
@@ -59,12 +59,6 @@
     "npm": ">=6"
   },
   "homepage": "https://github.com/iamogbz/oh-my-scripts",
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
-    }
-  },
   "jest": {
     "coverageDirectory": "./artifacts/coverage",
     "moduleDirectories": [
