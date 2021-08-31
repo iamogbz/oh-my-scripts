@@ -26,7 +26,7 @@
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.6",
     "@types/webpack-dev-server": "^4.0.3",
-    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/eslint-plugin": "^4.30.0",
     "@typescript-eslint/parser": "^4.29.3",
     "buffer": "^6.0.3",
     "commitizen": "^4.2.4",
