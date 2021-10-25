@@ -24,7 +24,7 @@
     "@types/cheerio": "^0.22.22",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.0.2",
-    "@types/node": "^16.11.3",
+    "@types/node": "^16.11.4",
     "@types/webpack-dev-server": "^4.3.1",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
