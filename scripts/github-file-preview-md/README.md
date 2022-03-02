@@ -1,6 +1,6 @@
 # GitHub File Preview Markdown
 
-GitHub now supports this natively; albiet with a page refresh. If you still want to use this instead, see below.
+> __GitHub now supports this natively. If you still want to use this instead, maybe to avoid the page refresh in the native implementation, see below.__
 
 [Install](https://github.com/iamogbz/oh-my-scripts/raw/master/dist/github-file-preview-md.user.js)
 

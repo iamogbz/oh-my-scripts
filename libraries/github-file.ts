@@ -380,7 +380,7 @@ export abstract class ExtendFilePreview {
   }
 
   async initSingleFile() {
-    const fileHeaderElem = selectOrThrow(".Box.mt-3>.Box-header.py-2");
+    const fileHeaderElem = selectOrThrow(".Box-header.js-blob-header");
     const filePath = getRepoPath().replace("blob/", "");
     if (!this.isSupportedFile(filePath)) return;
     const frameElem = await this.addFrameToFileBody(
