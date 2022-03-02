@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        GitHub File Preview APIB
-// @version     1.1.8
+// @version     1.1.9
 // @author      iamogbz
 // @description Render Apiary blueprint files in github
 // @homepage    https://github.com/iamogbz/oh-my-scripts
@@ -9,13 +9,13 @@
 // @namespace   iamogbz/oh-my-scripts
 // @grant       GM_xmlhttpRequest
 // @include     *://github.com/*
-// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/github-file-preview-apib.user.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/dom.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/github.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/paths.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/request.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/ns.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/github-file.js
+// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/github-file-preview-apib.user.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/dom.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/github.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/paths.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/request.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/ns.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/github-file.js
 // @updateURL   https://github.com/iamogbz/oh-my-scripts/raw/master/dist/github-file-preview-apib.user.js
 // ==/UserScript==
 
