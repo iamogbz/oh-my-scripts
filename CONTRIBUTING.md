@@ -48,6 +48,8 @@ Available on:
 
 > Default localhost can be overridden by using the `DEV_SERVER` environment variable to provide an authority url without the trailing slash e.g. `DEV_SERVER='https://my.server.dev:9090' npm start`
 
+> Version can also be overridden by providing the `VERSION` environment variable before launching the dev server.
+
 * Access the server at <http://localhost:8080> and click on any script to install it. You need an extension in your browser to auto install and pull updates to the script, see [what to know before starting](#what-should-i-know-before-i-get-started)
 
 * Make changes, wait for build and refresh your browser to pull the new changes. You might need to configure your user script to always refresh and not use a cache

@@ -106,5 +106,5 @@
     "start": "env NODE_ENV=development nodemon -x 'npm run build && npm run server'",
     "test": "tsc --noEmit && jest"
   },
-  "version": "0.0.1"
+  "version": "0.0.0"
 }

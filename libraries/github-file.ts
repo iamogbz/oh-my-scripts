@@ -348,10 +348,7 @@ export abstract class ExtendFilePreview {
             );
             if (!frameElem) return;
             this.addButtonsToFileHeaderActions(
-              selectOrThrow(
-                ".file-actions>.flex-items-stretch",
-                fileHeaderElem
-              ),
+              selectOrThrow(".file-actions>.d-flex", fileHeaderElem),
               frameElem
             );
           } catch (e) {

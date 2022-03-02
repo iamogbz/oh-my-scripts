@@ -74,7 +74,7 @@ export default [
 
             // Override defaults with userscript defined headers
             const headerObj = {
-              version: process.env.VERSION || "0.0.1",
+              version: process.env.VERSION || "0.0.0",
               ...defaultHeaderObj,
               ...scriptHeaderObj,
             };
@@ -98,7 +98,9 @@ export default [
               ...headerObj,
               downloadURL,
               require: required.map(uri).concat(scriptHeaderObj.require ?? []),
-              updateURL: downloadURL.replace(`/${gitCommitHash}/`, "/master/"),
+              updateURL: downloadURL
+                .replace(`/${gitCommitHash}/`, "/master/")
+                .replace(/\?.+/, ""),
             };
           },
           metajs: false,
