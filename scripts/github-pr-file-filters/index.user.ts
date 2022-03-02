@@ -55,6 +55,14 @@ function setState(
   Object.assign(state, newState);
   callback(true);
 }
+
+function getDeselectedFileTypes() {
+  return new Set(
+    Object.keys(state.prFileTypes).filter(
+      (t) => !state.selectedFileTypes.has(t)
+    )
+  );
+}
 // ==/State & Transitions==
 
 // ==Helpers and Utils==
@@ -130,7 +138,7 @@ function getFileFilterElement() {
 }
 
 function getFilterListElement() {
-  return selectOrThrow(".select-menu-list .p-2", getFileFilterElement());
+  return selectOrThrow(".select-menu-list .pt-2", getFileFilterElement());
 }
 
 function getFilterToggleTypeElement(fileType: string) {
@@ -138,6 +146,10 @@ function getFilterToggleTypeElement(fileType: string) {
     `.js-diff-file-type-option[value="${fileType}"]`,
     getFilterListElement()
   );
+}
+
+function getSelectTypeElementClass(isShowingSomeTypes: boolean) {
+  return `color-fg-${isShowingSomeTypes ? "accent" : "muted"}`;
 }
 // ==/DOM Element Classes and Selectors==
 
@@ -228,8 +240,7 @@ function selectAllToggle({
   const allSelectedMarkup = `All ${count} file ${typeMarkup} selected`;
   return createElement({
     attributes: {
-      class: "ml-1",
-      style: createElementStyle({ padding: "4px 0 0" }),
+      class: "ml-1 mt-1",
     },
     children: [
       {
@@ -240,14 +251,19 @@ function selectAllToggle({
               class: "js-file-filter-select-all",
               hidden: true,
               type: "checkbox",
+              "data-action": "change:file-filter#enableAllFileInputs",
+              "data-target": "file-filter.selectAllInput",
             },
             tagName: "input",
           },
           {
             attributes: {
-              class: `${fileFilterSelectAllClass} no-underline text-normal text-gray`,
+              class: `${fileFilterSelectAllClass} no-underline text-normal ${getSelectTypeElementClass(
+                false
+              )}`,
               "data-all-selected-markup": allSelectedMarkup,
               "data-select-all-markup": selectAllMarkup,
+              "data-target": "file-filter.selectAllContainer",
             },
             events: { click: onClick },
             children: [allSelectedMarkup],
@@ -273,8 +289,8 @@ function deselectAllToggle({
   const allDeselectedMarkup = `All ${count} file ${typeMarkup} deselected`;
   return createElement({
     attributes: {
-      class: "ml-1",
-      style: createElementStyle({ padding: "6px 0 0" }),
+      class: "ml-1 mt-1",
+      style: createElementStyle({ padding: "2px 0 0" }),
     },
     children: [
       {
@@ -289,7 +305,9 @@ function deselectAllToggle({
           },
           {
             attributes: {
-              class: `${fileFilterDeselectAllClass} no-underline text-normal text-blue`,
+              class: `${fileFilterDeselectAllClass} no-underline text-normal ${getSelectTypeElementClass(
+                true
+              )}`,
               "data-all-deselected-markup": allDeselectedMarkup,
               "data-deselect-all-markup": deselectAllMarkup,
             },
@@ -326,23 +344,36 @@ function updateFilterDeselectAllElement() {
   state.selectedFileTypes = new Set(
     fileTypes.filter((fileType) => getFilterToggleTypeElement(fileType).checked)
   );
+
+  const selectElement = selectOrThrow<HTMLElement>(
+    `.${fileFilterSelectAllClass}`,
+    getFilterListElement()
+  );
+  const isShowingAllTypes =
+    state.selectedFileTypes.size === new Set(fileTypes).size;
+  selectElement.classList.remove(getSelectTypeElementClass(isShowingAllTypes));
+  selectElement.classList.add(getSelectTypeElementClass(!isShowingAllTypes));
+  const { selectAllMarkup, allSelectedMarkup } = selectElement.dataset;
+  selectElement.innerText =
+    (isShowingAllTypes ? allSelectedMarkup : selectAllMarkup) ?? "";
+
   const deselectElement = selectOrThrow<HTMLElement>(
     `.${fileFilterDeselectAllClass}`,
     getFilterListElement()
   );
   const isShowingSomeTypes = state.selectedFileTypes.size > 0;
   deselectElement.classList.remove(
-    `text-${isShowingSomeTypes ? "gray" : "blue"}`
+    getSelectTypeElementClass(!isShowingSomeTypes)
   );
-  deselectElement.classList.add(`text-${isShowingSomeTypes ? "blue" : "gray"}`);
+  deselectElement.classList.add(getSelectTypeElementClass(isShowingSomeTypes));
   const { deselectAllMarkup, allDeselectedMarkup } = deselectElement.dataset;
   deselectElement.innerText =
     (isShowingSomeTypes ? deselectAllMarkup : allDeselectedMarkup) ?? "";
 }
 
-function onDeselectAllToggle() {
-  if (state.selectedFileTypes.size > 0) {
-    for (const fileType of state.selectedFileTypes) {
+function onSelectBulkToggle(fileTypes: Set<string>) {
+  if (fileTypes.size > 0) {
+    for (const fileType of fileTypes) {
       getFilterToggleTypeElement(fileType).click();
     }
   } else {
@@ -350,27 +381,38 @@ function onDeselectAllToggle() {
   }
 }
 
+function onDeselectAllToggle() {
+  onSelectBulkToggle(state.selectedFileTypes);
+}
+
+function onSelectAllToggle() {
+  onSelectBulkToggle(getDeselectedFileTypes());
+}
+
 function extendFilterListElement() {
   const filterList = getFilterListElement();
   filterList.textContent = "";
   const { prFileTypes } = state;
   const fileTypes = Object.keys(prFileTypes);
-  const onChange = debounce(updateFilterDeselectAllElement, 50);
+  const onFileToggle = debounce(updateFilterDeselectAllElement, 50);
   for (const fileType of fileTypes) {
     const props = {
       deletedCount: prFileTypes[fileType].deleted,
       fileType,
-      onChange,
+      onChange: onFileToggle,
       totalCount: prFileTypes[fileType].count,
     };
     filterList.append(fileTypeToggle(props));
   }
 
+  const onSelectToggle = debounce(onSelectAllToggle, 50);
   filterList.append(
-    selectAllToggle({ count: fileTypes.length, onClick: onChange })
+    selectAllToggle({ count: fileTypes.length, onClick: onSelectToggle })
   );
-  const onClick = debounce(onDeselectAllToggle, 50);
-  filterList.append(deselectAllToggle({ count: fileTypes.length, onClick }));
+  const onDeselectToggle = debounce(onDeselectAllToggle, 50);
+  filterList.append(
+    deselectAllToggle({ count: fileTypes.length, onClick: onDeselectToggle })
+  );
   updateFilterDeselectAllElement();
 }
 
