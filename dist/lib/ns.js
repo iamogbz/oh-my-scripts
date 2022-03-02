@@ -1,1 +1,1 @@
-(self.webpackChunkoh_my_scripts=self.webpackChunkoh_my_scripts||[]).push([[218],{7819:(s,e)=>{"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.ns=void 0,e.ns=function(s){return"iamogbz/oh-my-scripts/"+s}}}]);
+"use strict";(self.webpackChunkoh_my_scripts=self.webpackChunkoh_my_scripts||[]).push([[218],{7819:(s,e)=>{Object.defineProperty(e,"__esModule",{value:!0}),e.ns=void 0,e.ns=function(s){return"iamogbz/oh-my-scripts/".concat(s)}}}]);

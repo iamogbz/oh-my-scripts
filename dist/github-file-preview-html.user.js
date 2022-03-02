@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        GitHub File Preview HTML
-// @version     1.1.7
+// @version     1.1.8
 // @author      iamogbz
 // @description Render HTML files in github
 // @homepage    https://github.com/iamogbz/oh-my-scripts
@@ -9,34 +9,34 @@
 // @namespace   iamogbz/oh-my-scripts
 // @grant       GM_xmlhttpRequest
 // @include     *://github.com/*
-// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/github-file-preview-html.user.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/dom.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/github.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/paths.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/request.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/ns.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/github-file.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/lodash.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/cheerio.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/htmlparser2.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/entities.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/domutils.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/css-select.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/nth-check.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/domhandler.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/lib/dom-inline.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/string_decoder.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/safe-buffer.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/inherits.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/ieee754.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/events.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/domelementtype.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/dom-serializer.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/css-what.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/buffer.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/boolbase.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/0b27891/dist/npm/base64-js.js
+// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/github-file-preview-html.user.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/dom.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/github.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/paths.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/request.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/ns.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/github-file.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/lodash.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/cheerio.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/htmlparser2.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/entities.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/domutils.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/css-select.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/nth-check.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/domhandler.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/lib/dom-inline.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/string_decoder.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/safe-buffer.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/inherits.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/ieee754.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/events.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/domelementtype.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/dom-serializer.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/css-what.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/buffer.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/boolbase.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/219427c/dist/npm/base64-js.js
 // @updateURL   https://github.com/iamogbz/oh-my-scripts/raw/master/dist/github-file-preview-html.user.js
 // ==/UserScript==
 
-(()=>{var t={4354:function(t,e,r){"use strict";var n,o=this&&this.__extends||(n=function(t,e){return(n=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var r in e)Object.prototype.hasOwnProperty.call(e,r)&&(t[r]=e[r])})(t,e)},function(t,e){function r(){this.constructor=t}n(t,e),t.prototype=null===e?Object.create(e):(r.prototype=e.prototype,new r)}),i=this&&this.__makeTemplateObject||function(t,e){return Object.defineProperty?Object.defineProperty(t,"raw",{value:e}):t.raw=e,t};Object.defineProperty(e,"__esModule",{value:!0});var l,a,c=r(3125),p=r(1543),s=r(8008);(new(function(t){function e(){var e=t.call(this)||this;return e.id=p.filePreviewNS(l||(l=i(["extend-html"],["extend-html"]))),e.fileTypes=new Set(["html","xhtml"]),e.featureClass=p.filePreviewNS(a||(a=i(["extend-html"],["extend-html"]))),e}return o(e,t),e.prototype.prepareHTML=function(t,e){return c.inline({base:s.fileDirname(this.pathToBlob(e)),folder:s.fileDirname(e),html:t.replace(/<a/g,'<a target="_blank"'),load:this.getFileContent.bind(this)})},e.prototype.getScrollHeight=function(t){return t.contentWindow?t.contentWindow.document.body.scrollHeight+1:0},e}(p.ExtendFilePreview))).setup()},6994:()=>{}},e={};function r(n){if(e[n])return e[n].exports;var o=e[n]={id:n,loaded:!1,exports:{}};return t[n].call(o.exports,o,o.exports,r),o.loaded=!0,o.exports}r.m=t,r.x=t=>{},r.g=function(){if("object"==typeof globalThis)return globalThis;try{return this||new Function("return this")()}catch(t){if("object"==typeof window)return window}}(),r.o=(t,e)=>Object.prototype.hasOwnProperty.call(t,e),r.nmd=t=>(t.paths=[],t.children||(t.children=[]),t),(()=>{var t={582:0},e=[[4354,509,830,270,903,218,610,337,461,592,709,246,81,997,998,232,963,689,992,268,788,818,164,366,763,62,38]],n=t=>{},o=(o,i)=>{for(var l,a,[c,p,s,u]=i,h=0,f=[];h<c.length;h++)a=c[h],r.o(t,a)&&t[a]&&f.push(t[a][0]),t[a]=0;for(l in p)r.o(p,l)&&(r.m[l]=p[l]);for(s&&s(r),o&&o(i);f.length;)f.shift()();return u&&e.push.apply(e,u),n()},i=self.webpackChunkoh_my_scripts=self.webpackChunkoh_my_scripts||[];function l(){for(var n,o=0;o<e.length;o++){for(var i=e[o],l=!0,a=1;a<i.length;a++){var c=i[a];0!==t[c]&&(l=!1)}l&&(e.splice(o--,1),n=r(r.s=i[0]))}return 0===e.length&&(r.x(),r.x=t=>{}),n}i.forEach(o.bind(null,0)),i.push=o.bind(null,i.push.bind(i));var a=r.x;r.x=()=>(r.x=a||(t=>{}),(n=l)())})(),r.x()})();
+(()=>{var e,t={4354:function(e,t,r){"use strict";var n,o=this&&this.__extends||(n=function(e,t){return n=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(e,t){e.__proto__=t}||function(e,t){for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r])},n(e,t)},function(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Class extends value "+String(t)+" is not a constructor or null");function r(){this.constructor=e}n(e,t),e.prototype=null===t?Object.create(t):(r.prototype=t.prototype,new r)}),i=this&&this.__makeTemplateObject||function(e,t){return Object.defineProperty?Object.defineProperty(e,"raw",{value:t}):e.raw=t,e};Object.defineProperty(t,"__esModule",{value:!0});var l,a,c=r(3125),s=r(1543),u=r(8008);(new(function(e){function t(){var t=e.call(this)||this;return t.id=(0,s.filePreviewNS)(l||(l=i(["extend-html"],["extend-html"]))),t.fileTypes=new Set(["html","xhtml"]),t.featureClass=(0,s.filePreviewNS)(a||(a=i(["extend-html"],["extend-html"]))),t}return o(t,e),t.prototype.prepareHTML=function(e,t){return(0,c.inline)({base:(0,u.fileDirname)(this.pathToBlob(t)),folder:(0,u.fileDirname)(t),html:e.replace(/<a/g,'<a target="_blank"'),load:this.getFileContent.bind(this)})},t.prototype.getScrollHeight=function(e){return e.contentWindow?e.contentWindow.document.body.scrollHeight+1:0},t}(s.ExtendFilePreview))).setup()},247:()=>{}},r={};function n(e){var o=r[e];if(void 0!==o)return o.exports;var i=r[e]={id:e,loaded:!1,exports:{}};return t[e].call(i.exports,i,i.exports,n),i.loaded=!0,i.exports}n.m=t,e=[],n.O=(t,r,o,i)=>{if(!r){var l=1/0;for(u=0;u<e.length;u++){for(var[r,o,i]=e[u],a=!0,c=0;c<r.length;c++)(!1&i||l>=i)&&Object.keys(n.O).every((e=>n.O[e](r[c])))?r.splice(c--,1):(a=!1,i<l&&(l=i));if(a){e.splice(u--,1);var s=o();void 0!==s&&(t=s)}}return t}i=i||0;for(var u=e.length;u>0&&e[u-1][2]>i;u--)e[u]=e[u-1];e[u]=[r,o,i]},n.g=function(){if("object"==typeof globalThis)return globalThis;try{return this||new Function("return this")()}catch(e){if("object"==typeof window)return window}}(),n.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),n.nmd=e=>(e.paths=[],e.children||(e.children=[]),e),(()=>{var e={582:0};n.O.j=t=>0===e[t];var t=(t,r)=>{var o,i,[l,a,c]=r,s=0;if(l.some((t=>0!==e[t]))){for(o in a)n.o(a,o)&&(n.m[o]=a[o]);if(c)var u=c(n)}for(t&&t(r);s<l.length;s++)i=l[s],n.o(e,i)&&e[i]&&e[i][0](),e[i]=0;return n.O(u)},r=self.webpackChunkoh_my_scripts=self.webpackChunkoh_my_scripts||[];r.forEach(t.bind(null,0)),r.push=t.bind(null,r.push.bind(r))})();var o=n.O(void 0,[509,830,270,903,218,610,337,461,592,709,246,81,997,998,232,963,689,992,268,788,818,164,366,763,62,38],(()=>n(4354)));o=n.O(o)})();
