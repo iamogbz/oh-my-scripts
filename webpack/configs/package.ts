@@ -84,11 +84,11 @@ export default [
             const gitCommitHash = getGitCommitHash().substr(0, 7);
             const uriBase = isProdMode()
               ? `${data.homepage}/raw/${gitCommitHash}/dist`
-              : "http://localhost:8080";
+              : process.env.DEV_SERVER || "http://localhost:8080";
             // Append each path with a resource key to override cache for local dev
             const urlSuffix = isProdMode()
               ? ""
-              : `v=${Math.random().toString(36).substring(7)}`;
+              : `?v=${Math.random().toString(36).substring(7)}`;
             const uri = (path: string) => `${uriBase}/${path}${urlSuffix}`;
 
             // Plugin will emit the file ending with .user.js

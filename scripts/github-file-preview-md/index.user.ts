@@ -1,4 +1,4 @@
-import { selectDOM } from "libraries/dom";
+import { selectAll, selectDOM } from "libraries/dom";
 import { isSingleFile } from "libraries/github";
 import { ExtendFilePreview, filePreviewNS } from "libraries/github-file";
 import { request } from "libraries/request";
@@ -112,10 +112,21 @@ class ExtendFilePreviewMD extends ExtendFilePreview {
     actionsElem: HTMLElement,
     frameElem: HTMLIFrameElement
   ) {
+    this.hideNativeButtons(actionsElem);
     super.addButtonsToFileHeaderActions(actionsElem, frameElem);
     selectDOM<HTMLButtonElement>(
       `.btn.BtnGroup-item[data-toggle-action="${this.toggleActionRender}"]`
     )?.click();
+  }
+
+  hideNativeButtons(baseElement: HTMLElement) {
+    const nativeActionBtn = (s: string) => `.BtnGroup>a.${s}[href*=".md"]`;
+    const nativeActionBtns = ["source", "rendered"]
+      .map(nativeActionBtn)
+      .join(",");
+    selectAll<HTMLAnchorElement>(nativeActionBtns, baseElement).map(
+      (a) => (a.style.display = "none")
+    );
   }
 
   initCondition() {
