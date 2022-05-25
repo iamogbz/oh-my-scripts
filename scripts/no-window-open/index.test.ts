@@ -52,7 +52,7 @@ describe("no-window-open", () => {
   });
 
   it("sets the url of the popup link via window location", () => {
-    const dummyWindow = window.open("https://example.com");
+    const dummyWindow = window.open("https://example.com")!;
     const getUrl = () =>
       document.body
         .querySelector("#iamogbz-no-window-open-popup-element-link")!
