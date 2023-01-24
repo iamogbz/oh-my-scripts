@@ -11,6 +11,14 @@ import {
   isProdMode,
 } from "../utils";
 
+const DEFAULT_VERSION = process.env.VERSION || "0.0.0";
+const DEV_SERVER = process.env.DEV_SERVER || "http://localhost:8080";
+
+console.log(`
+> DEV_SERVER=${DEV_SERVER}
+> DEFAULT_VERSION=${DEFAULT_VERSION}
+`)
+
 export default [
   getConfig({
     entry: {},
@@ -74,7 +82,7 @@ export default [
 
             // Override defaults with userscript defined headers
             const headerObj = {
-              version: process.env.VERSION || "0.0.0",
+              version: DEFAULT_VERSION,
               ...defaultHeaderObj,
               ...scriptHeaderObj,
             };
@@ -84,7 +92,7 @@ export default [
             const gitCommitHash = getGitCommitHash().substr(0, 7);
             const uriBase = isProdMode()
               ? `${data.homepage}/raw/${gitCommitHash}/dist`
-              : process.env.DEV_SERVER || "http://localhost:8080";
+              : DEV_SERVER;
             // Append each path with a resource key to override cache for local dev
             const urlSuffix = isProdMode()
               ? ""

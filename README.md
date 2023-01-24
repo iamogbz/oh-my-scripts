@@ -2,6 +2,8 @@
 
 User scripts to turbo charge your browser.
 
+[![Build](https://github.com/iamogbz/oh-my-scripts/actions/workflows/nodejs.yml/badge.svg)](https://github.com/iamogbz/oh-my-scripts/actions/workflows/nodejs.yml)
+
 ## Installing
 
 1. Make sure you have user scripts enabled in your browser:
