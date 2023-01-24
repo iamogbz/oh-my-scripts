@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        GitHub PR File Filters
-// @version     1.1.9
+// @version     1.2.0
 // @author      iamogbz
 // @description Extend GitHub PR File Types Filter
 // @homepage    https://github.com/iamogbz/oh-my-scripts
@@ -9,13 +9,13 @@
 // @namespace   iamogbz/oh-my-scripts
 // @grant       GM_xmlhttpRequest
 // @include     *://github.com/*
-// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/github-pr-file-filters.user.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/dom.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/github.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/paths.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/request.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/ns.js
-// @require     https://github.com/iamogbz/oh-my-scripts/raw/cdcc0b8/dist/lib/debounce.js
+// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/dca7499/dist/github-pr-file-filters.user.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/dca7499/dist/lib/dom.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/dca7499/dist/lib/github.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/dca7499/dist/lib/paths.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/dca7499/dist/lib/request.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/dca7499/dist/lib/ns.js
+// @require     https://github.com/iamogbz/oh-my-scripts/raw/dca7499/dist/lib/debounce.js
 // @updateURL   https://github.com/iamogbz/oh-my-scripts/raw/master/dist/github-pr-file-filters.user.js
 // ==/UserScript==
 
