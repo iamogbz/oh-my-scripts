@@ -17,7 +17,7 @@ const DEV_SERVER = process.env.DEV_SERVER || "http://localhost:8080";
 console.log(`
 > DEV_SERVER=${DEV_SERVER}
 > DEFAULT_VERSION=${DEFAULT_VERSION}
-`)
+`);
 
 export default [
   getConfig({
