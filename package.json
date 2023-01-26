@@ -95,13 +95,15 @@
     "url": "git+https://github.com/iamogbz/oh-my-scripts.git"
   },
   "scripts": {
-    "build": "npm run build:compile && npm run build:package",
+    "build": "npm run build:compile && npm run build:package && npm run dist:ignore",
     "build:compile": "BUILD_STAGE=compile webpack",
     "build:package": "BUILD_STAGE=package webpack",
+    "dist:ignore": "git update-index --assume-unchanged ./dist/*.* ./dist/**/*.*",
+    "dist:repair": "git update-index --no-assume-unchanged ./dist/*.* ./dist/**/*.*",
     "commit": "git-cz",
     "coveralls": "cat ./artifacts/coverage/lcov.info | coveralls",
     "lint": "eslint .",
-    "release": "semantic-release",
+    "release": "npm run dist:repair && semantic-release",
     "server": "http-server ./dist",
     "start": "env NODE_ENV=development nodemon -x 'npm run build && npm run server'",
     "preview": "DEV_SERVER=https://${CODESPACE_NAME}-8080.preview.app.github.dev npm start",
