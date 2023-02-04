@@ -1,2 +1,103 @@
 <!DOCTYPE html>
-<!-- example forms in here to demo -->
+<html>
+
+<head>
+  <title>Formless Demo Page</title>
+  <style type="text/css">
+    html,
+    body {
+      align-items: center;
+      border: none;
+      justify-content: center;
+      left: 0;
+      margin: 0;
+      padding: 0;
+      position: relative;
+      text-align: center;
+      top: 0;
+    }
+
+    .flex {
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      flex-wrap: wrap;
+    }
+
+    .flex.hr-box {
+      align-items: flex-start;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .flex.vd-box {
+      align-items: stretch;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+  </style>
+</head>
+
+<body class="flex vd-box">
+  <h1>Form Less Demo</h1>
+  <div class="flex hr-box">
+    <fieldset class="flex vd-box">
+      <legend>Form</legend>
+      <form id="form-a" name="form-a" class="flex vd-box" method="GET">
+        <div class="flex hr-box">
+          <input type="color" id="form-a-field-color" name="form-a-field-color" placeholder="###" />
+          <input type="checkbox" id="form-a-field-check-a" name="form-a-field-check-a" placeholder="Something Here!"
+            value="Checked-B" />
+          <input type="checkbox" id="form-a-field-check-b" name="form-a-field-check-b" placeholder="Something Else!"
+            value="Checked-C" />
+        </div>
+        <fieldset>
+          <legend>Clock</legend>
+          <input type="datetime-local" id="form-a-field-datetime" name="form-a-field-datetime"
+            placeholder="Local Date Time" />
+          <input type="date" id="form-a-field-date" name="form-a-field-date" placeholder="Date" />
+          <input type="time" id="form-a-field-time" name="form-a-field-time" placeholder="Time" />
+          <input type="week" id="form-a-field-week" name="form-a-field-week" placeholder="Week" />
+          <input type="month" id="form-a-field-month" name="form-a-field-month" placeholder="Month" />
+        </fieldset>
+        <input type="file" id="form-a-field-file" name="form-a-field-file" placeholder="File" />
+        <input type="hidden" id="form-a-field-hidden" name="form-a-field-hidden" placeholder="*Hidden*" />
+        <input type="text" id="form-a-field-text-a" name="form-a-field-text-a" placeholder="Text..." />
+        <textarea id="form-a-field-text-area" name="form-a-field-text-area" placeholder="More Text..."></textarea>
+        <select name="form-a-field-select">
+          <option disabled selected value>Choose!</option>
+          <option value="form-a-field-select-option-a">Option A</option>
+          <option value="form-a-field-select-option-b">Option B</option>
+          <optgroup label="Group">
+            <option value="form-a-field-select-option-c">Option C</option>
+            <option value="form-a-field-select-option-d">Option D</option>
+          </optgroup>
+        </select>
+        <input type="reset" id="form-a-field-reset" name="form-a-field-reset" />
+        <output name="form-a-field-output" value="{Output}"></output>
+        <button type="submit" id="form-a-btn-submit" name="form-a-btn-submit">Submit</button>
+      </form>
+    </fieldset>
+    <fieldset class="flex vd-box">
+      <legend>Floating</legend>
+      <input type="email" id="form-a-field-email" name="form-a-field-email" placeholder="Email" />
+      <input type="password" id="form-a-field-password" name="form-a-field-password" placeholder="hunter2" />
+      <input type="number" id="floating-field-number" name="floating-field-number" placeholder="123…" />
+      <div class="flex hr-box">
+        <label for="form-a-field-radio-a">Choose:</label>
+        <input type="radio" id="floating-field-radio-a" name="floating-field-radio-a" placeholder="Anything!"
+          value="A" />
+        <input type="radio" id="floating-field-radio-b" name="floating-field-radio-a" value="B" />
+        <input type="radio" id="floating-field-radio-c" name="floating-field-radio-a" value="C" />
+      </div>
+      <input type="range" id="floating-field-range" name="floating-field-range" placeholder="[0..9]" min="0" max="9" />
+      <input type="search" id="floating-field-search" name="floating-field-search" placeholder="???" />
+      <input type="tel" id="floating-field-tel" name="floating-field-tel" placeholder="+0 (000) 000-000" />
+      <input type="url" id="floating-field-url" name="floating-field-url" placeholder="://:" />
+      <button type="menu" id="floating-btn-menu" name="floating-btn-menu" menu="demo-menu">Menu</button>
+      <input type="submit" id="floating-btn-submit" name="floating-btn-submit" />
+    </fieldset>
+  </div>
+</body>
+
+</html>
