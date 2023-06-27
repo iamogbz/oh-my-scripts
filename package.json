@@ -40,7 +40,7 @@
     "jest": "^26.6.3",
     "lint-staged": "^13.2.2",
     "nodemon": "^2.0.20",
-    "prettier": "^2.8.4",
+    "prettier": "^2.8.8",
     "prettier-eslint": "^15.0.1",
     "semantic-release": "^20.1.0",
     "snapshot-diff": "^0.10.0",
