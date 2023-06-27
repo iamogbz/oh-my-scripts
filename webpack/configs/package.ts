@@ -69,15 +69,15 @@ export default [
         path: Paths.RELEASE,
       },
       plugins: [
-        new WebpackUserscript({
-          headers: (data: WebpackUserscript.DataObject) => {
+        new WebpackUserscript.UserscriptPlugin({
+          headers: (data) => {
             // Get the list of dependencies extracted in the build:compile stage
             const required: string[] =
               require(path.resolve(Paths.COMPILE, Dists.SRC, `${name}.json`)) ??
               [];
 
             // Get the supplementary header object for each user script
-            const scriptHeaderObj: WebpackUserscript.HeaderObject =
+            const scriptHeaderObj: WebpackUserscript.HeadersProps =
               require(path.resolve(Paths.SCRIPTS, name, "header.json")) ?? {};
 
             // Override defaults with userscript defined headers
@@ -100,12 +100,20 @@ export default [
             const uri = (path: string) => `${uriBase}/${path}${urlSuffix}`;
 
             // Plugin will emit the file ending with .user.js
-            const downloadURL = uri(data.filename.replace(".js", ".user.js"));
+            const downloadURL = uri(
+              (data.filename as string).replace(".js", ".user.js")
+            );
 
             return {
               ...headerObj,
               downloadURL,
-              require: required.map(uri).concat(scriptHeaderObj.require ?? []),
+              require: required
+                .map(uri)
+                .concat(
+                  (Array.isArray(scriptHeaderObj.require)
+                    ? scriptHeaderObj.require
+                    : [scriptHeaderObj.require]) as string[]
+                ),
               updateURL: downloadURL
                 .replace(`/${gitCommitHash}/`, "/master/")
                 .replace(/\?.+/, ""),
