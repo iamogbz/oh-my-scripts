@@ -45,7 +45,7 @@ const state: State = {
 
 function setState(
   diff: Partial<State>,
-  callback: (updated: boolean) => unknown
+  callback: (updated: boolean) => unknown,
 ) {
   const newState = { ...state, ...diff };
   if (JSON.stringify(state) === JSON.stringify(newState)) {
@@ -59,8 +59,8 @@ function setState(
 function getDeselectedFileTypes() {
   return new Set(
     Object.keys(state.prFileTypes).filter(
-      (t) => !state.selectedFileTypes.has(t)
-    )
+      (t) => !state.selectedFileTypes.has(t),
+    ),
   );
 }
 // ==/State & Transitions==
@@ -100,7 +100,7 @@ function getPRFiles() {
 
 function getExtendedFileType(
   fileName: string,
-  shouldExtend = state.shouldExtendFileType
+  shouldExtend = state.shouldExtendFileType,
 ) {
   const fileType = getFileType(fileName, shouldExtend ? 0 : 1);
   return fileType ? `.${fileType}` : "No extension";
@@ -144,7 +144,7 @@ function getFilterListElement() {
 function getFilterToggleTypeElement(fileType: string) {
   return selectOrThrow<HTMLInputElement>(
     `.js-diff-file-type-option[value="${fileType}"]`,
-    getFilterListElement()
+    getFilterListElement(),
   );
 }
 
@@ -259,7 +259,7 @@ function selectAllToggle({
           {
             attributes: {
               class: `${fileFilterSelectAllClass} no-underline text-normal ${getSelectTypeElementClass(
-                false
+                false,
               )}`,
               "data-all-selected-markup": allSelectedMarkup,
               "data-select-all-markup": selectAllMarkup,
@@ -306,7 +306,7 @@ function deselectAllToggle({
           {
             attributes: {
               class: `${fileFilterDeselectAllClass} no-underline text-normal ${getSelectTypeElementClass(
-                true
+                true,
               )}`,
               "data-all-deselected-markup": allDeselectedMarkup,
               "data-deselect-all-markup": deselectAllMarkup,
@@ -342,12 +342,14 @@ function updateFilterDeselectAllElement() {
   const { prFileTypes } = state;
   const fileTypes = Object.keys(prFileTypes);
   state.selectedFileTypes = new Set(
-    fileTypes.filter((fileType) => getFilterToggleTypeElement(fileType).checked)
+    fileTypes.filter(
+      (fileType) => getFilterToggleTypeElement(fileType).checked,
+    ),
   );
 
   const selectElement = selectOrThrow<HTMLElement>(
     `.${fileFilterSelectAllClass}`,
-    getFilterListElement()
+    getFilterListElement(),
   );
   const isShowingAllTypes =
     state.selectedFileTypes.size === new Set(fileTypes).size;
@@ -359,11 +361,11 @@ function updateFilterDeselectAllElement() {
 
   const deselectElement = selectOrThrow<HTMLElement>(
     `.${fileFilterDeselectAllClass}`,
-    getFilterListElement()
+    getFilterListElement(),
   );
   const isShowingSomeTypes = state.selectedFileTypes.size > 0;
   deselectElement.classList.remove(
-    getSelectTypeElementClass(!isShowingSomeTypes)
+    getSelectTypeElementClass(!isShowingSomeTypes),
   );
   deselectElement.classList.add(getSelectTypeElementClass(isShowingSomeTypes));
   const { deselectAllMarkup, allDeselectedMarkup } = deselectElement.dataset;
@@ -407,11 +409,11 @@ function extendFilterListElement() {
 
   const onSelectToggle = debounce(onSelectAllToggle, 50);
   filterList.append(
-    selectAllToggle({ count: fileTypes.length, onClick: onSelectToggle })
+    selectAllToggle({ count: fileTypes.length, onClick: onSelectToggle }),
   );
   const onDeselectToggle = debounce(onDeselectAllToggle, 50);
   filterList.append(
-    deselectAllToggle({ count: fileTypes.length, onClick: onDeselectToggle })
+    deselectAllToggle({ count: fileTypes.length, onClick: onDeselectToggle }),
   );
   updateFilterDeselectAllElement();
 }
@@ -426,13 +428,13 @@ function updateFileTypesState() {
         extendFileDetailsElements();
         extendFilterListElement();
       }
-    }
+    },
   );
 }
 
 function onShouldExtendToggle() {
   const extendToggleElement = selectOrThrow<HTMLInputElement>(
-    `#${fileFilterExtendToggleId}`
+    `#${fileFilterExtendToggleId}`,
   );
   setState(
     {
@@ -447,13 +449,13 @@ function onShouldExtendToggle() {
         if (state.selectedFileTypes.size !== numFileTypes) {
           selectOrThrow<HTMLInputElement>(
             `.${fileFilterSelectAllClass}`,
-            filterListElement
+            filterListElement,
           ).click();
         }
 
         updateFileTypesState();
       }
-    }
+    },
   );
 }
 // ==/Update DOM from State==
@@ -462,11 +464,11 @@ function setupFilters(prFiles: PRFile[]) {
   state.prFiles = prFiles;
   const selectMenuHeader = selectOrThrow(
     ".select-menu-header",
-    getFileFilterElement()
+    getFileFilterElement(),
   );
   if (selectExists(`#${fileFilterExtendToggleId}`, selectMenuHeader)) return;
   selectMenuHeader.append(
-    extendFileTypesToggle({ onChange: onShouldExtendToggle })
+    extendFileTypesToggle({ onChange: onShouldExtendToggle }),
   );
   updateFileTypesState();
 }

@@ -58,7 +58,7 @@ export abstract class ExtendFilePreview {
 
   abstract prepareHTML(
     fileContent?: string,
-    filePath?: string
+    filePath?: string,
   ): Promise<string | undefined>;
 
   pathToFile(filePath: string) {
@@ -71,7 +71,7 @@ export abstract class ExtendFilePreview {
 
   getFileContent(filePath: string) {
     return this.safeFetch(
-      isAbsolutePath(filePath) ? filePath : this.pathToBlob(filePath)
+      isAbsolutePath(filePath) ? filePath : this.pathToBlob(filePath),
     )
       .then((r) => r.text?.())
       .catch((e) => {
@@ -107,7 +107,7 @@ export abstract class ExtendFilePreview {
 
   selectButton(element: HTMLElement) {
     const selectedButton = selectDOM(
-      `.BtnGroup.${this.featureClass} .BtnGroup-item.selected`
+      `.BtnGroup.${this.featureClass} .BtnGroup-item.selected`,
     );
     if (selectedButton) selectedButton.classList.remove("selected");
     element.classList.add("selected");
@@ -164,7 +164,7 @@ export abstract class ExtendFilePreview {
       "aria-label",
       (button.disabled
         ? button.dataset.labelDisabled
-        : button.dataset.labelEnabled) ?? ""
+        : button.dataset.labelEnabled) ?? "",
     );
   }
 
@@ -288,7 +288,7 @@ export abstract class ExtendFilePreview {
 
   addButtonsToFileHeaderActions(
     actionsElem: HTMLElement,
-    frameElem: HTMLIFrameElement
+    frameElem: HTMLIFrameElement,
   ) {
     const target = `.BtnGroup.${this.featureClass}`;
     if (selectExists(target, actionsElem)) {
@@ -302,14 +302,14 @@ export abstract class ExtendFilePreview {
         frameElem,
         isFileList: isPRFiles() || isCommit(),
       }),
-      actionsElem.firstChild
+      actionsElem.firstChild,
     );
   }
 
   async addFrameToFileBody(
     bodyElem: HTMLBodyElement,
     filePath: string,
-    canDefer: boolean
+    canDefer: boolean,
   ) {
     if (canDefer && !selectExists(".js-blob-wrapper", bodyElem)) {
       return undefined;
@@ -322,7 +322,7 @@ export abstract class ExtendFilePreview {
       src: `https://rawgit.com/${this.pathToFile(filePath)}`,
       srcDoc: await this.prepareHTML(
         await this.getFileContent(filePath),
-        filePath
+        filePath,
       ),
     });
     bodyElem.style.position = "relative";
@@ -335,7 +335,7 @@ export abstract class ExtendFilePreview {
         selectAll(".file.Details").map(async (elem) => {
           const fileHeaderElem = selectOrThrow<HTMLElement>(
             ".file-header",
-            elem
+            elem,
           );
           if (!fileHeaderElem.dataset.path) return;
           const filePath = `${commitSha}/${fileHeaderElem.dataset.path}`;
@@ -344,17 +344,17 @@ export abstract class ExtendFilePreview {
             const frameElem = await this.addFrameToFileBody(
               selectOrThrow(".js-file-content", elem),
               filePath,
-              true
+              true,
             );
             if (!frameElem) return;
             this.addButtonsToFileHeaderActions(
               selectOrThrow(".file-actions>.d-flex", fileHeaderElem),
-              frameElem
+              frameElem,
             );
           } catch (e) {
             console.error(e);
           }
-        })
+        }),
       );
   }
 
@@ -372,7 +372,7 @@ export abstract class ExtendFilePreview {
 
   initPRFiles() {
     this.initDiff(
-      selectDOM<HTMLInputElement>(".js-reviews-container #head_sha")?.value
+      selectDOM<HTMLInputElement>(".js-reviews-container #head_sha")?.value,
     );
   }
 
@@ -383,12 +383,12 @@ export abstract class ExtendFilePreview {
     const frameElem = await this.addFrameToFileBody(
       selectOrThrow(".Box.mt-3>.Box-body"),
       filePath,
-      false
+      false,
     );
     if (!frameElem) return;
     this.addButtonsToFileHeaderActions(
       selectOrThrow(".d-flex", fileHeaderElem),
-      frameElem
+      frameElem,
     );
   }
 

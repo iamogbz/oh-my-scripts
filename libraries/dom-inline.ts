@@ -9,7 +9,7 @@ function insertInto(
   selector: string,
   tagName: string,
   content = "",
-  attributes = {}
+  attributes = {},
 ) {
   const elem = document.createElement(tagName);
   for (const [name, value] of Object.entries(attributes)) {

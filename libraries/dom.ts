@@ -32,16 +32,16 @@ export function getTagNS(tagName: string) {
 
 export function selectAll<T extends Element>(
   selectors: string,
-  baseElement?: Element
+  baseElement?: Element,
 ) {
   return Array.from(
-    getQueryElement(baseElement).querySelectorAll<T>(selectors)
+    getQueryElement(baseElement).querySelectorAll<T>(selectors),
   );
 }
 
 export function selectDOM<T extends Element>(
   selectors: string,
-  baseElement?: Element
+  baseElement?: Element,
 ): T | undefined {
   return getQueryElement(baseElement)?.querySelector(`${selectors}`) as T;
 }
@@ -52,7 +52,7 @@ export function selectExists(selectors: string, baseElement?: Element) {
 
 export function selectOrThrow<T extends Element>(
   selectors: string,
-  baseElement?: Element
+  baseElement?: Element,
 ): T {
   const result = selectDOM<T>(selectors, baseElement);
   if (!result) {
@@ -100,7 +100,7 @@ export function createElementStyle(style = {}) {
 export function observeEl(
   el: string | Element,
   listener: MutationCallback,
-  options: MutationObserverInit = { childList: true }
+  options: MutationObserverInit = { childList: true },
 ) {
   const element = typeof el === "string" ? selectDOM(el) : el;
   if (!element) {

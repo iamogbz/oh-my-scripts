@@ -102,7 +102,7 @@ Click on it below to proceed with navigation.`;
 
   function getPopupLinkElement() {
     return getOrCreatePopupElement().querySelector<HTMLElement>(
-      `#${POPUP_ELEMENT_LINK_ID}`
+      `#${POPUP_ELEMENT_LINK_ID}`,
     );
   }
 

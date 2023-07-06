@@ -68,8 +68,8 @@ export default getConfig({
                 .getFiles()
                 // Strictly only include shared library and node modules
                 .filter((fileName) =>
-                  [Dists.LIB, Dists.NPM].some((d) => fileName.startsWith(d))
-                )
+                  [Dists.LIB, Dists.NPM].some((d) => fileName.startsWith(d)),
+                ),
             );
           }
         });

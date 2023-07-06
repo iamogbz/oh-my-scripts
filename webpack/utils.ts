@@ -30,7 +30,7 @@ export function getCompileEntry(name: string) {
 export function getCompileEntries() {
   return getProjectNames().reduce(
     (acc, name) => ({ ...acc, [`src/${name}`]: getCompileEntry(name) }),
-    {}
+    {},
   );
 }
 

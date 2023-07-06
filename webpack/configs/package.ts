@@ -41,13 +41,13 @@ export default [
                       console.log(
                         "\x1b[32m\x1b[1msuccess\x1b[0m",
                         path.relative(process.cwd(), dest),
-                        "[copied]\n"
+                        "[copied]\n",
                       );
                   } else {
                     console.log(
                       "\x1b[93m\x1b[1mwarning\x1b[0m",
                       path.relative(process.cwd(), dest),
-                      "[ignored]\n"
+                      "[ignored]\n",
                     );
                   }
                   return shouldInclude;
@@ -101,7 +101,7 @@ export default [
 
             // Plugin will emit the file ending with .user.js
             const downloadURL = uri(
-              (data.filename as string).replace(".js", ".user.js")
+              (data.filename as string).replace(".js", ".user.js"),
             );
 
             return {
@@ -112,7 +112,7 @@ export default [
                 .concat(
                   (Array.isArray(scriptHeaderObj.require)
                     ? scriptHeaderObj.require
-                    : [scriptHeaderObj.require]) as string[]
+                    : [scriptHeaderObj.require]) as string[],
                 ),
               updateURL: downloadURL
                 .replace(`/${gitCommitHash}/`, "/master/")

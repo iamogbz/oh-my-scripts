@@ -29,13 +29,13 @@ function getApiError(apiResponse: { message: string }) {
       getGithubToken()
         ? "It may be time for a walk!"
         : "Set your token in the options or take a walk!",
-      " 🍃 🌞"
+      " 🍃 🌞",
     );
   }
 
   if (apiResponse.message === "Bad credentials") {
     return new APIError(
-      "The token seems to be incorrect or expired. Update it in the options."
+      "The token seems to be incorrect or expired. Update it in the options.",
     );
   }
 
@@ -44,7 +44,7 @@ function getApiError(apiResponse: { message: string }) {
     getGithubToken()
       ? "Ensure that your token has access to this repo."
       : "Maybe adding a token in the options will fix this issue.",
-    JSON.stringify(apiResponse, undefined, "\t")
+    JSON.stringify(apiResponse, undefined, "\t"),
   );
 }
 
