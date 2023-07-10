@@ -7,21 +7,17 @@ User scripts to turbo charge your browser.
 ## Installing
 
 1. Make sure you have user scripts enabled in your browser:
+   - Open source:
+      - [Greasemonkey](https://github.com/greasemonkey/greasemonkey): [Firefox](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)
+      - [Userscripts](https://github.com/quoid/userscripts): [Safari](https://github.com/quoid/userscripts)
+   - Closed source:
+      - [Tampermonkey](https://github.com/Tampermonkey/tampermonkey): [Chrome](https://tampermonkey.net/?ext=dhdg&browser=chrome)
 
-| Browser    | Extension                                                          |
-| ---------- | ------------------------------------------------------------------ |
-| Firefox    | [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=firefox) |
-| Chrome     | [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=chrome)  |
-| Opera      | [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=opera)   |
-| Safari     | [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=safari)  |
-| Dolphin    | [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=dolphin) |
-| UC Browser | [Tampermonkey](https://tampermonkey.net/?ext=dhdg&browser=ucweb)   |
-
-2. Select a script from the [scripts folder](https://github.com/iamogbz/oh-my-scripts/tree/master/scripts) and click to install:
+2. Select a script from the [scripts folder](https://github.com/iamogbz/oh-my-scripts/tree/master/scripts) and click to install
 
 ## Updating
 
-Userscripts are set up to automatically update. You can check for updates from within the Greasemonkey or Tampermonkey menu, or click on the install link again to get the update.
+Userscripts are set up to automatically update. You can check for updates from within your user script manager e.g. Greasemonkey, or click on the install link again to get the update.
 
 ## Reading
 
