@@ -3,9 +3,7 @@ const { execSync } = require("child_process");
 
 const run = (command) => execSync(command).toString().trim();
 
-const branch =
-  (process.env.GITHUB_REF || "").replace("refs/heads/", "") ||
-  run("git branch --show-current");
+const branch = process.env.BRANCH_NAME || run("git branch --show-current");
 
 try {
   run(`git ls-remote --exit-code --heads origin '${branch}'`);

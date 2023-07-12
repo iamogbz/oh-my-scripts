@@ -1,6 +1,0 @@
-{
-  "description": "Extend GitHub PR File Types Filter",
-  "grant": ["GM_xmlhttpRequest"],
-  "include": ["*://github.com/*"],
-  "name": "GitHub PR File Filters"
-}
