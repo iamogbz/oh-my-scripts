@@ -6,13 +6,14 @@ import * as defaultHeaderObj from "../../scripts/header.default.json";
 import { Dists, Paths } from "../constants";
 import {
   getConfig,
-  getGitCommitHash,
+  // getGitCommitHash,
   getProjectNames,
   isProdMode,
 } from "../utils";
 
 const DEFAULT_VERSION = process.env.VERSION || "0.0.0";
 const DEV_SERVER = process.env.DEV_SERVER || "http://localhost:8080";
+const RELEASE_BRANCH = "release";
 
 console.log(`
 > DEV_SERVER=${DEV_SERVER}
@@ -82,17 +83,18 @@ export default [
 
             // Override defaults with userscript defined headers
             const headerObj = {
-              version: DEFAULT_VERSION,
               ...initialHeaderObj,
+              version: DEFAULT_VERSION,
               ...defaultHeaderObj,
               ...scriptHeaderObj,
             };
 
             // Use github as host in production mode else local server
             // pin release to commit hash for production
-            const gitCommitHash = getGitCommitHash().substr(0, 7);
+            // const gitCommitHash = getGitCommitHash().substr(0, 7);
+            const gitCommitHash = DEFAULT_VERSION;
             const uriBase = isProdMode()
-              ? `${initialHeaderObj.homepage}/raw/${gitCommitHash}/dist`
+              ? `${initialHeaderObj.homepage}/raw/${gitCommitHash}`
               : DEV_SERVER;
             // Append each path with a resource key to override cache for local dev
             const urlSuffix = isProdMode()
@@ -114,7 +116,7 @@ export default [
                     : [scriptHeaderObj.require].filter(Boolean)) as string[],
                 ),
               updateURL: downloadURL
-                .replace(`/${gitCommitHash}/`, "/master/")
+                .replace(`/${gitCommitHash}/`, `/${RELEASE_BRANCH}/`)
                 .replace(/\?.+/, ""),
             };
 
