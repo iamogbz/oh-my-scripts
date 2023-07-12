@@ -29,6 +29,7 @@ jobs:
       - name: Release
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
         env:
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           npm run release
