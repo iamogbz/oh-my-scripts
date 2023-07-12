@@ -70,7 +70,7 @@ export default [
       },
       plugins: [
         new WebpackUserscript.UserscriptPlugin({
-          headers: (data) => {
+          headers: (initialHeaderObj, entryPoint) => {
             // Get the list of dependencies extracted in the build:compile stage
             const required: string[] =
               require(path.resolve(Paths.COMPILE, Dists.SRC, `${name}.json`)) ??
@@ -83,6 +83,7 @@ export default [
             // Override defaults with userscript defined headers
             const headerObj = {
               version: DEFAULT_VERSION,
+              ...initialHeaderObj,
               ...defaultHeaderObj,
               ...scriptHeaderObj,
             };
@@ -91,7 +92,7 @@ export default [
             // pin release to commit hash for production
             const gitCommitHash = getGitCommitHash().substr(0, 7);
             const uriBase = isProdMode()
-              ? `${data.homepage}/raw/${gitCommitHash}/dist`
+              ? `${initialHeaderObj.homepage}/raw/${gitCommitHash}/dist`
               : DEV_SERVER;
             // Append each path with a resource key to override cache for local dev
             const urlSuffix = isProdMode()
@@ -100,11 +101,9 @@ export default [
             const uri = (path: string) => `${uriBase}/${path}${urlSuffix}`;
 
             // Plugin will emit the file ending with .user.js
-            const downloadURL = uri(
-              (data.filename as string).replace(".js", ".user.js"),
-            );
+            const downloadURL = uri(entryPoint.fileInfo.userjsFile);
 
-            return {
+            const finalHeaderObj = {
               ...headerObj,
               downloadURL,
               require: required
@@ -112,12 +111,14 @@ export default [
                 .concat(
                   (Array.isArray(scriptHeaderObj.require)
                     ? scriptHeaderObj.require
-                    : [scriptHeaderObj.require]) as string[],
+                    : [scriptHeaderObj.require].filter(Boolean)) as string[],
                 ),
               updateURL: downloadURL
                 .replace(`/${gitCommitHash}/`, "/master/")
                 .replace(/\?.+/, ""),
             };
+
+            return finalHeaderObj;
           },
           metajs: false,
         }),
