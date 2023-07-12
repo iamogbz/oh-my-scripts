@@ -27,7 +27,7 @@ module.exports = {
           dryRun
             ? run("git describe --tags --abbrev=0")
             : "${nextRelease.version}"
-        } npm run build`,
+        } npm run build && npm run dist:repair`,
       },
     ],
     [

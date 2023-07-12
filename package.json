@@ -103,7 +103,7 @@
     "commit": "git-cz",
     "coveralls": "cat ./artifacts/coverage/lcov.info | coveralls",
     "lint": "eslint .",
-    "release": "npm run dist:repair && semantic-release",
+    "release": "semantic-release",
     "server": "http-server ./dist",
     "start": "env NODE_ENV=development nodemon -x 'npm run build && npm run server'",
     "preview": "DEV_SERVER=https://${CODESPACE_NAME}-8080.preview.app.github.dev npm start",
