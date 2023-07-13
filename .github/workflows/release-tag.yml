@@ -1,3 +1,4 @@
+name: Release Tag
 on:
   push:
     branches:
@@ -25,25 +26,25 @@ jobs:
       - name: Check Existing Tag
         id: check_tag
         run: |
-          new_tag=${{ steps.latest_tag.outputs.tag }}
-          new_tag=${new_tag#"v"}
+          tag=${{ steps.latest_tag.outputs.tag }}
+          new_tag=${tag#"v"}
           if git rev-parse $new_tag >/dev/null 2>&1; then
             echo "Tag $new_tag already exists"
             echo "::set-output name=tag_exists::true"
           else
+            echo "::set-output name=new_tag::$new_tag"
             echo "::set-output name=tag_exists::false"
           fi
 
       - name: Retag Commit
         id: retag
         run: |
-          new_tag=${{ steps.latest_tag.outputs.tag }}
-          new_tag=${new_tag#"v"}
+          new_tag=${{ steps.check_tag.outputs.new_tag }}
           if [[ "${{ steps.check_tag.outputs.tag_exists }}" == "true" ]]; then
             echo "Tag $new_tag already exists, skipping retag"
             echo "::set-output name=retag_success::false"
           else
-            git tag -d ${{ steps.latest_tag.outputs.tag }}
+            git checkout gh-pages
             git tag $new_tag
             echo "::set-output name=retag_success::true"
           fi
