@@ -10,10 +10,12 @@ import {
 } from "./dom";
 import {
   getCommitSha,
+  getCompareHeadSha,
   getRepoPath,
   getUserRepo,
   githubApi,
   isCommit,
+  isCompare,
   isPRFiles,
   isSingleFile,
   onAjaxedPagesRaw,
@@ -46,7 +48,7 @@ export abstract class ExtendFilePreview {
   };
 
   initCondition() {
-    return isCommit() || isPRFiles() || isSingleFile();
+    return isCommit() || isCompare() || isPRFiles() || isSingleFile();
   }
 
   setup() {
@@ -360,7 +362,8 @@ export abstract class ExtendFilePreview {
 
   initDiff(commitSha?: string) {
     if (!commitSha) return;
-    observeEl("#files", this.extendHtmlFileDetailsElements(commitSha), {
+    const initListener = this.extendHtmlFileDetailsElements(commitSha);
+    observeEl("#files", initListener, {
       childList: true,
       subtree: true,
     });
@@ -368,6 +371,10 @@ export abstract class ExtendFilePreview {
 
   initCommit() {
     this.initDiff(getCommitSha());
+  }
+
+  initCompare() {
+    this.initDiff(getCompareHeadSha());
   }
 
   initPRFiles() {
@@ -381,22 +388,27 @@ export abstract class ExtendFilePreview {
     const filePath = getRepoPath().replace("blob/", "");
     if (!this.isSupportedFile(filePath)) return;
     const frameElem = await this.addFrameToFileBody(
-      selectOrThrow(".Box.mt-3>.Box-body"),
+      selectOrThrow("section[aria-labelledby='file-name-id']"),
       filePath,
       false,
     );
     if (!frameElem) return;
     this.addButtonsToFileHeaderActions(
-      selectOrThrow(".d-flex", fileHeaderElem),
+      selectOrThrow("ul[aria-label='File view']", fileHeaderElem),
       frameElem,
     );
   }
 
   initFeature() {
+    const initPRFiles = isPRFiles() && this.initPRFiles();
+    const initSingleFile = isSingleFile() && this.initSingleFile();
+    const initCommit = isCommit() && this.initCommit();
+    const initCompare = isCompare() && this.initCompare();
     return Promise.all([
-      isPRFiles() && this.initPRFiles(),
-      isSingleFile() && this.initSingleFile(),
-      isCommit() && this.initCommit(),
+      initPRFiles,
+      initSingleFile,
+      initCommit,
+      initCompare,
     ]).then((enabled) => enabled.some(Boolean));
   }
 }

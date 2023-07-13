@@ -5,6 +5,7 @@ const API_V3 =
   location.hostname === "github.com"
     ? "https://api.github.com/"
     : `${location.origin}/api/v3/`;
+const REGEX_COMPARE = "compare?/([0-9a-f]{5,40})\\.{3}([0-9a-f]{5,40})";
 const REGEX_COMMIT = "commits?/[0-9a-f]{5,40}";
 const REGEX_PR = "^pull/\\d+";
 const STORAGE_KEY_GH_TOKEN = ns`GITHUB_TOKEN`;
@@ -105,8 +106,22 @@ export function getCommitSha() {
   return match[0].split("/")[1];
 }
 
+function getComparedShas() {
+  const match = getRepoPath().match(REGEX_COMPARE);
+  if (!match) return undefined;
+  return match.slice(1, 3);
+}
+
+export function getCompareHeadSha() {
+  return getComparedShas()?.[1];
+}
+
 export function isCommit() {
   return isSingleCommit() || isPRCommit();
+}
+
+export function isCompare() {
+  return new RegExp(REGEX_COMPARE).test(getRepoPath());
 }
 
 export function isSingleFile() {
