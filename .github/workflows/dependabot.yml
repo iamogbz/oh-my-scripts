@@ -1,4 +1,4 @@
-name: Dependabot
+name: dependabot
 on: pull_request_target
 
 jobs:

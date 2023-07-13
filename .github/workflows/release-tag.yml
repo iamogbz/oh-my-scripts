@@ -1,4 +1,4 @@
-name: Release Tag
+name: release-tag
 on:
   push:
     branches:
@@ -44,11 +44,10 @@ jobs:
             echo "Tag $new_tag already exists, skipping retag"
             echo "::set-output name=retag_success::false"
           else
-            git checkout gh-pages
             git tag $new_tag
             echo "::set-output name=retag_success::true"
           fi
 
       - name: Push Tag
         if: steps.retag.outputs.retag_success == 'true'
-        run: git push origin ${{ steps.retag.outputs.new_tag }}
+        run: git push origin ${{ steps.check_tag.outputs.new_tag }}
