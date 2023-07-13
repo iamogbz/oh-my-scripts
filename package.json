@@ -95,7 +95,7 @@
     "url": "git+https://github.com/iamogbz/oh-my-scripts.git"
   },
   "scripts": {
-    "build": "npm run build:compile && npm run build:package && npm run dist:ignore",
+    "build": "npm run build:compile && npm run build:package",
     "build:compile": "BUILD_STAGE=compile webpack",
     "build:package": "BUILD_STAGE=package webpack",
     "dist:ignore": "git ls-files | grep dist/ | xargs git update-index --assume-unchanged",

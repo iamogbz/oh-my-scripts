@@ -102,17 +102,32 @@ export function observeEl(
   listener: MutationCallback,
   options: MutationObserverInit = { childList: true },
 ) {
-  const element = typeof el === "string" ? selectDOM(el) : el;
-  if (!element) {
-    return;
-  }
+  let hasAttachedElementObserver = false;
+  const elementObserver = new MutationObserver(listener);
 
-  // Run on updates
-  const observer = new MutationObserver(listener);
-  observer.observe(element, options);
+  const documentObserver = new MutationObserver(() => {
+    if (hasAttachedElementObserver) {
+      // in case another update happens before disconnect completes
+      documentObserver.disconnect();
+      return;
+    }
+    const element = typeof el === "string" ? selectDOM(el) : el;
+    if (!element) {
+      return;
+    }
+    // Run on updates
+    elementObserver.observe(element, options);
+    // Run the first time
+    listener.call(elementObserver, [], elementObserver);
+    // do not run this again
+    hasAttachedElementObserver = true;
+    documentObserver.disconnect();
+  });
 
-  // Run the first time
-  listener.call(observer, [], observer);
+  documentObserver.observe(document.getRootNode(), {
+    childList: true,
+    subtree: true,
+  });
 
-  return observer;
+  return elementObserver;
 }

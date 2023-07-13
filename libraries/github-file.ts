@@ -10,10 +10,12 @@ import {
 } from "./dom";
 import {
   getCommitSha,
+  getCompareHeadSha,
   getRepoPath,
   getUserRepo,
   githubApi,
   isCommit,
+  isCompare,
   isPRFiles,
   isSingleFile,
   onAjaxedPagesRaw,
@@ -46,7 +48,7 @@ export abstract class ExtendFilePreview {
   };
 
   initCondition() {
-    return isCommit() || isPRFiles() || isSingleFile();
+    return isCommit() || isCompare() || isPRFiles() || isSingleFile();
   }
 
   setup() {
@@ -176,7 +178,7 @@ export abstract class ExtendFilePreview {
     isFileList: boolean;
   }) {
     const disabled = frameElem ? false : true;
-    const disabledTooltip = "HTML render toggle disabled";
+    const disabledTooltip = "Render toggle disabled";
     const svgTagNS = getTagNS("svg");
     const sourceButton = createElement<HTMLButtonElement>({
       attributes: {
@@ -275,6 +277,84 @@ export abstract class ExtendFilePreview {
     });
   }
 
+  fileViewerButtonToggle({
+    actionsElem,
+    frameElem,
+  }: {
+    actionsElem: HTMLElement;
+    frameElem: HTMLIFrameElement;
+  }) {
+    const buttonSelectedAttribute = "aria-current";
+    const buttonSelector = `button[${buttonSelectedAttribute}]`;
+
+    const previousButtons = Array.from(
+      actionsElem.querySelectorAll(
+        buttonSelector,
+      ) as NodeListOf<HTMLButtonElement>,
+    );
+
+    const selectedButtonTemplate = previousButtons.filter(
+      (elem) => elem.getAttribute(buttonSelectedAttribute) === "true",
+    )[0];
+    const clsSelectedButton = selectedButtonTemplate.getAttribute("class");
+    const clsSelectedButtonWrapper =
+      selectedButtonTemplate.parentElement!.getAttribute("class");
+
+    const unselectedButtonTemplate = previousButtons.filter(
+      (elem) => elem.getAttribute(buttonSelectedAttribute) === "false",
+    )[0];
+    const clsUnselectedButton = unselectedButtonTemplate.getAttribute("class");
+    const clsUnselectedButtonWrapper =
+      unselectedButtonTemplate.parentElement?.getAttribute("class");
+
+    const tempElement = document.createElement("div");
+    tempElement.innerHTML = `<!-- github-file-${this.id}-created-button -->
+    <li class="${clsUnselectedButtonWrapper}">
+    <button aria-current="false" data-hotkey="Meta+/ Meta+p" class="${clsUnselectedButton}">
+    <span class="segmentedControl-content">
+    <div class="Box-sc-g0xbh4-0 segmentedControl-text">Preview</div>
+    </span>
+    </button>
+    </li>`;
+    const previewButtonWrapper =
+      tempElement.firstElementChild! as HTMLLIElement;
+
+    const previewButton: HTMLButtonElement =
+      previewButtonWrapper.querySelector(buttonSelector)!;
+
+    const styleButtonOnSelect = (btn: HTMLButtonElement) => {
+      btn.setAttribute(buttonSelectedAttribute, "true");
+      clsSelectedButton && btn.setAttribute("class", clsSelectedButton);
+      clsSelectedButtonWrapper &&
+        btn.parentElement?.setAttribute("class", clsSelectedButtonWrapper);
+    };
+
+    const styleButtonOnDeselect = (btn: HTMLButtonElement) => {
+      btn.setAttribute(buttonSelectedAttribute, "false");
+      clsUnselectedButton && btn.setAttribute("class", clsUnselectedButton);
+      clsSelectedButtonWrapper &&
+        btn.parentElement?.setAttribute("class", clsSelectedButtonWrapper);
+    };
+
+    previewButtonWrapper.addEventListener("click", (e) => {
+      this.showRendered(frameElem)(e);
+      styleButtonOnSelect(previewButton);
+      previousButtons.forEach(styleButtonOnDeselect);
+    });
+
+    previousButtons.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        this.showSource(frameElem)(e);
+        styleButtonOnSelect(btn);
+        styleButtonOnDeselect(previewButton);
+      });
+    });
+
+    this.updateToggle(previewButton, frameElem);
+
+    return previewButtonWrapper;
+  }
+
   frameElement(attrs: Record<string, string | undefined>) {
     return createElement<HTMLIFrameElement>({
       attributes: {
@@ -297,11 +377,17 @@ export abstract class ExtendFilePreview {
       });
       return;
     }
+    const isFileList = isPRFiles() || isCommit() || isCompare();
+    if (isFileList) {
+      actionsElem.style.alignItems = "center";
+    }
     actionsElem.insertBefore(
-      this.viewerButtonToggleGroup({
-        frameElem,
-        isFileList: isPRFiles() || isCommit(),
-      }),
+      isFileList
+        ? this.viewerButtonToggleGroup({
+            frameElem,
+            isFileList,
+          })
+        : this.fileViewerButtonToggle({ actionsElem, frameElem }),
       actionsElem.firstChild,
     );
   }
@@ -360,7 +446,8 @@ export abstract class ExtendFilePreview {
 
   initDiff(commitSha?: string) {
     if (!commitSha) return;
-    observeEl("#files", this.extendHtmlFileDetailsElements(commitSha), {
+    const initListener = this.extendHtmlFileDetailsElements(commitSha);
+    observeEl("#files", initListener, {
       childList: true,
       subtree: true,
     });
@@ -370,6 +457,10 @@ export abstract class ExtendFilePreview {
     this.initDiff(getCommitSha());
   }
 
+  initCompare() {
+    this.initDiff(getCompareHeadSha());
+  }
+
   initPRFiles() {
     this.initDiff(
       selectDOM<HTMLInputElement>(".js-reviews-container #head_sha")?.value,
@@ -377,26 +468,30 @@ export abstract class ExtendFilePreview {
   }
 
   async initSingleFile() {
-    const fileHeaderElem = selectOrThrow(".Box-header.js-blob-header");
     const filePath = getRepoPath().replace("blob/", "");
     if (!this.isSupportedFile(filePath)) return;
     const frameElem = await this.addFrameToFileBody(
-      selectOrThrow(".Box.mt-3>.Box-body"),
+      selectOrThrow("section[aria-labelledby='file-name-id']"),
       filePath,
       false,
     );
     if (!frameElem) return;
     this.addButtonsToFileHeaderActions(
-      selectOrThrow(".d-flex", fileHeaderElem),
+      selectOrThrow("ul[aria-label='File view']"),
       frameElem,
     );
   }
 
   initFeature() {
+    const initPRFiles = isPRFiles() && this.initPRFiles();
+    const initSingleFile = isSingleFile() && this.initSingleFile();
+    const initCommit = isCommit() && this.initCommit();
+    const initCompare = isCompare() && this.initCompare();
     return Promise.all([
-      isPRFiles() && this.initPRFiles(),
-      isSingleFile() && this.initSingleFile(),
-      isCommit() && this.initCommit(),
+      initPRFiles,
+      initSingleFile,
+      initCommit,
+      initCompare,
     ]).then((enabled) => enabled.some(Boolean));
   }
 }
