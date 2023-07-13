@@ -378,6 +378,9 @@ export abstract class ExtendFilePreview {
       return;
     }
     const isFileList = isPRFiles() || isCommit() || isCompare();
+    if (isFileList) {
+      actionsElem.style.alignItems = "center";
+    }
     actionsElem.insertBefore(
       isFileList
         ? this.viewerButtonToggleGroup({
