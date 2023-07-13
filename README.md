@@ -13,7 +13,7 @@ User scripts to turbo charge your browser.
    - Closed source:
       - [Tampermonkey](https://github.com/Tampermonkey/tampermonkey): [Chrome](https://tampermonkey.net/?ext=dhdg&browser=chrome)
 
-2. Select a script from the [release branch](https://github.com/iamogbz/oh-my-scripts/tree/gh-pages) and click to install
+2. Choose a script from the [release page](https://ogbizi.com/oh-my-scripts/release), open file to install
    - Documentation for each available in their respective [scripts folder](https://github.com/iamogbz/oh-my-scripts/tree/master/scripts)
 
 ## Updating

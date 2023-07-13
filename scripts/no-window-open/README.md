@@ -1,6 +1,6 @@
 # No Window Open
 
-[Install](https://github.com/iamogbz/oh-my-scripts/raw/master/dist/no-window-open.user.js)
+[Install](https://github.com/iamogbz/oh-my-scripts/raw/gh-pages/no-window-open.user.js)
 
 Blocks the automatic execution of `window.open` in a page, showing a popup instead.
 
