@@ -21,7 +21,7 @@ jobs:
         id: latest_tag
         run: |
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
-          echo "::set-output name=tag::$latest_tag"
+          echo "tag=$latest_tag" >> $GITHUB_OUTPUT
 
       - name: Check Existing Tag
         id: check_tag
@@ -30,10 +30,10 @@ jobs:
           new_tag=${tag#"v"}
           if git rev-parse $new_tag >/dev/null 2>&1; then
             echo "Tag $new_tag already exists"
-            echo "::set-output name=tag_exists::true"
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=new_tag::$new_tag"
-            echo "::set-output name=tag_exists::false"
+            echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Retag Commit
@@ -42,10 +42,10 @@ jobs:
           new_tag=${{ steps.check_tag.outputs.new_tag }}
           if [[ "${{ steps.check_tag.outputs.tag_exists }}" == "true" ]]; then
             echo "Tag $new_tag already exists, skipping retag"
-            echo "::set-output name=retag_success::false"
+            echo "retag_success=false" >> $GITHUB_OUTPUT
           else
             git tag $new_tag
-            echo "::set-output name=retag_success::true"
+            echo "retag_success=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Push Tag
@@ -53,11 +53,11 @@ jobs:
         if: steps.retag.outputs.retag_success == 'true'
         run: |
           git push origin ${{ steps.check_tag.outputs.new_tag }}
-          echo "::set-output name=success::true"
+          echo "push_success=true" >> $GITHUB_OUTPUT
 
       - name: Release Tag
         uses: softprops/action-gh-release@v1
-        if: steps.push_tag.outputs.success == 'true'
+        if: steps.push_tag.outputs.push_success == 'true'
         with:
           name: ${{ steps.latest_tag.outputs.tag }}
           target_commitish: ${{ steps.check_tag.outputs.new_tag }}
