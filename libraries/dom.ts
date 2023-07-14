@@ -1,11 +1,12 @@
-type ElementDef = {
+type ElementDef<T extends Element = Element> = {
   attributes?: { [name: string]: string | boolean | number };
-  children?: (ElementDef | Node | string)[];
+  children?: (ElementDef<T> | Node | string)[];
   events?: {
     [K in keyof HTMLElementEventMap]?: EventListener;
   };
   tagName: string;
   tagNS?: string;
+  reuse?: T;
 };
 
 function isElementDef(obj: unknown): obj is ElementDef {
@@ -89,8 +90,12 @@ export function createElement<T extends Element>({
   events = {},
   tagName,
   tagNS = undefined,
+  reuse = undefined,
 }: ElementDef): T {
-  const elem = document.createElementNS(tagNS || getTagNS(tagName), tagName);
+  const elem =
+    reuse ?? document.createElementNS(tagNS || getTagNS(tagName), tagName);
+  elem.innerHTML = "";
+
   for (const [eventType, listener] of objectEntries(events)) {
     elem.addEventListener(eventType, listener);
   }

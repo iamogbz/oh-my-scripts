@@ -3,10 +3,8 @@ import { request } from "libraries/request";
 
 class ExtendFilePreviewAPIB extends ExtendFilePreview {
   constructor() {
-    super();
-    this.id = filePreviewNS`extend-apib`;
-    this.fileTypes = new Set(["apib"]);
-    this.featureClass = filePreviewNS`extend-apib`;
+    const id = filePreviewNS`extend-apib`;
+    super(id, id, new Set(["apib"]));
   }
 
   prepareHTML(fileContent: string) {

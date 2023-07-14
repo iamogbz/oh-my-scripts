@@ -48,6 +48,12 @@ export abstract class ExtendFilePreview {
     visibility: "hidden",
   };
 
+  constructor(id: string, featureClass: string, fileTypes: Set<string>) {
+    this.id = id;
+    this.featureClass = featureClass;
+    this.fileTypes = fileTypes;
+  }
+
   initCondition() {
     return isCommit() || isCompare() || isPRFiles() || isSingleFile();
   }
