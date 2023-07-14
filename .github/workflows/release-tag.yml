@@ -49,5 +49,15 @@ jobs:
           fi
 
       - name: Push Tag
+        id: push_tag
         if: steps.retag.outputs.retag_success == 'true'
-        run: git push origin ${{ steps.check_tag.outputs.new_tag }}
+        run: |
+          git push origin ${{ steps.check_tag.outputs.new_tag }}
+          echo "::set-output name=success::true"
+
+      - name: Release Tag
+        uses: softprops/action-gh-release@v1
+        if: steps.push_tag.outputs.success == 'true'
+        with:
+          name: ${{ steps.latest_tag.outputs.tag }}
+          target_commitish: ${{ steps.check_tag.outputs.new_tag }}
