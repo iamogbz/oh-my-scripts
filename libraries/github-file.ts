@@ -6,6 +6,7 @@ import {
   selectAll,
   selectDOM,
   selectExists,
+  selectOrReject,
   selectOrThrow,
 } from "./dom";
 import {
@@ -471,13 +472,13 @@ export abstract class ExtendFilePreview {
     const filePath = getRepoPath().replace("blob/", "");
     if (!this.isSupportedFile(filePath)) return;
     const frameElem = await this.addFrameToFileBody(
-      selectOrThrow("section[aria-labelledby='file-name-id']"),
+      await selectOrReject("section[aria-labelledby='file-name-id']"),
       filePath,
       false,
     );
     if (!frameElem) return;
     this.addButtonsToFileHeaderActions(
-      selectOrThrow("ul[aria-label='File view']"),
+      await selectOrReject("ul[aria-label='File view']"),
       frameElem,
     );
   }

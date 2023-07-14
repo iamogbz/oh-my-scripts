@@ -61,6 +61,28 @@ export function selectOrThrow<T extends Element>(
   return result;
 }
 
+export async function selectOrReject<T extends Element>(
+  selectors: string,
+  baseElement?: Element,
+  intervalMs = 300,
+  maxAttempts = 3,
+): Promise<T> {
+  let numAttempts = 0;
+  let lastError = null;
+  let selectedElement: T | null = null;
+  while (numAttempts < maxAttempts && !selectedElement) {
+    numAttempts += 1;
+    try {
+      selectedElement = selectOrThrow<T>(selectors, baseElement);
+    } catch (e) {
+      lastError = e;
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+  }
+  if (!selectedElement) throw lastError;
+  return selectedElement;
+}
+
 export function createElement<T extends Element>({
   attributes = {},
   children = [],
