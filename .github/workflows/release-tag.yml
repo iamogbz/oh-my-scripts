@@ -1,11 +1,11 @@
 name: release-tag
 on:
   push:
-    tags:
-      - "v*.*.*"
     branches:
       - master
       - gh-pages
+    tags:
+      - '*'
 
 jobs:
   retag:
