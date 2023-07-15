@@ -131,8 +131,3 @@ export function isSingleFile() {
 export function isPRFiles() {
   return new RegExp(`${REGEX_PR}/files`).test(getRepoPath());
 }
-
-export function onAjaxedPagesRaw(callback: () => unknown) {
-  document.addEventListener("pjax:end", callback);
-  callback();
-}

@@ -19,7 +19,6 @@ import {
   isCompare,
   isPRFiles,
   isSingleFile,
-  onAjaxedPagesRaw,
 } from "./github";
 import { getFileType, isAbsolutePath } from "./paths";
 import { request } from "./request";
@@ -45,7 +44,6 @@ export abstract class ExtendFilePreview {
     position: "absolute",
     top: 0,
     width: "100%",
-    visibility: "hidden",
   };
 
   constructor(id: string, featureClass: string, fileTypes: Set<string>) {
@@ -59,10 +57,21 @@ export abstract class ExtendFilePreview {
   }
 
   setup() {
-    onAjaxedPagesRaw(() => {
+    const doInit = () => {
       if (!this.initCondition()) return;
       this.initFeature();
-    });
+    };
+    // on navigation change
+    let previousUrl: string | null = null;
+    observeEl(
+      document.body,
+      () => {
+        if (previousUrl && previousUrl === window.location.href) return;
+        previousUrl = window.location.href;
+        doInit();
+      },
+      { childList: true, subtree: true },
+    );
   }
 
   abstract prepareHTML(
@@ -277,10 +286,14 @@ export abstract class ExtendFilePreview {
     });
     this.updateToggle(sourceButton, frameElem);
     this.updateToggle(renderButton, frameElem);
+
+    const btnGroupId = `${frameElem.id}-button-group`;
+    const btnGroupCls = `BtnGroup ${this.featureClass}`;
     return createElement({
-      attributes: { class: `BtnGroup ${this.featureClass}` },
+      attributes: { id: btnGroupId, class: btnGroupCls },
       children: [sourceButton, renderButton],
       tagName: "span",
+      reuse: document.getElementById(btnGroupId) ?? undefined,
     });
   }
 
@@ -291,8 +304,16 @@ export abstract class ExtendFilePreview {
     actionsElem: HTMLElement;
     frameElem: HTMLIFrameElement;
   }) {
+    const buttonWrapperId = `${frameElem.id}-button-group`;
+    const previousButtonWrapper = document.getElementById(buttonWrapperId);
+    const previewButtonWrapper =
+      previousButtonWrapper ?? document.createElement("li");
+
     const buttonSelectedAttribute = "aria-current";
     const buttonSelector = `button[${buttonSelectedAttribute}]`;
+
+    const isSelectedBtn = (btn: HTMLButtonElement) =>
+      btn.getAttribute(buttonSelectedAttribute) === "true";
 
     const previousButtons = Array.from(
       actionsElem.querySelectorAll(
@@ -300,76 +321,88 @@ export abstract class ExtendFilePreview {
       ) as NodeListOf<HTMLButtonElement>,
     );
 
-    const selectedButtonTemplate = previousButtons.filter(
-      (elem) => elem.getAttribute(buttonSelectedAttribute) === "true",
-    )[0];
-    const clsSelectedButton = selectedButtonTemplate.getAttribute("class");
+    const selectedButtonTemplate = previousButtons.filter(isSelectedBtn)[0];
+    const clsSelectedButton = selectedButtonTemplate?.getAttribute("class");
     const clsSelectedButtonWrapper =
-      selectedButtonTemplate.parentElement!.getAttribute("class");
+      selectedButtonTemplate?.parentElement?.getAttribute("class");
 
     const unselectedButtonTemplate = previousButtons.filter(
-      (elem) => elem.getAttribute(buttonSelectedAttribute) === "false",
+      (elem) => !isSelectedBtn(elem),
     )[0];
-    const clsUnselectedButton = unselectedButtonTemplate.getAttribute("class");
+    const clsUnselectedButton = unselectedButtonTemplate?.getAttribute("class");
     const clsUnselectedButtonWrapper =
-      unselectedButtonTemplate.parentElement?.getAttribute("class");
+      unselectedButtonTemplate?.parentElement?.getAttribute("class");
 
-    const tempElement = document.createElement("div");
-    tempElement.innerHTML = `<!-- github-file-${this.id}-created-button -->
-    <li class="${clsUnselectedButtonWrapper}">
-    <button aria-current="false" data-hotkey="Meta+/ Meta+p" class="${clsUnselectedButton}">
-    <span class="segmentedControl-content">
-    <div class="Box-sc-g0xbh4-0 segmentedControl-text">Preview</div>
-    </span>
-    </button>
-    </li>`;
-    const previewButtonWrapper =
-      tempElement.firstElementChild! as HTMLLIElement;
+    if (!previousButtonWrapper) {
+      previewButtonWrapper.innerHTML = `<!-- github-file-${this.id}-created-button --><button aria-current="false" data-hotkey="Meta+/ Meta+p" class="${clsUnselectedButton}">
+      <span class="segmentedControl-content">
+      <div class="Box-sc-g0xbh4-0 segmentedControl-text">Preview</div>
+      </span>
+      </button>`;
+      previewButtonWrapper.id = buttonWrapperId;
+      previewButtonWrapper.className = clsUnselectedButtonWrapper ?? "";
 
-    const previewButton: HTMLButtonElement =
-      previewButtonWrapper.querySelector(buttonSelector)!;
+      const previewButton =
+        previewButtonWrapper.querySelector<HTMLButtonElement>(buttonSelector);
 
-    const styleButtonOnSelect = (btn: HTMLButtonElement) => {
-      btn.setAttribute(buttonSelectedAttribute, "true");
-      clsSelectedButton && btn.setAttribute("class", clsSelectedButton);
-      clsSelectedButtonWrapper &&
-        btn.parentElement?.setAttribute("class", clsSelectedButtonWrapper);
-    };
+      const styleButtonOnSelect = (btn: HTMLButtonElement) => {
+        btn.setAttribute(buttonSelectedAttribute, "true");
+        clsSelectedButton && btn.setAttribute("class", clsSelectedButton);
+        clsSelectedButtonWrapper &&
+          btn.parentElement?.setAttribute("class", clsSelectedButtonWrapper);
+      };
 
-    const styleButtonOnDeselect = (btn: HTMLButtonElement) => {
-      btn.setAttribute(buttonSelectedAttribute, "false");
-      clsUnselectedButton && btn.setAttribute("class", clsUnselectedButton);
-      clsSelectedButtonWrapper &&
-        btn.parentElement?.setAttribute("class", clsSelectedButtonWrapper);
-    };
+      const styleButtonOnDeselect = (btn: HTMLButtonElement) => {
+        btn.setAttribute(buttonSelectedAttribute, "false");
+        clsUnselectedButton && btn.setAttribute("class", clsUnselectedButton);
+        clsSelectedButtonWrapper &&
+          btn.parentElement?.setAttribute("class", clsSelectedButtonWrapper);
+      };
 
-    previewButtonWrapper.addEventListener("click", (e) => {
-      this.showRendered(frameElem)(e);
-      styleButtonOnSelect(previewButton);
-      previousButtons.forEach(styleButtonOnDeselect);
-    });
-
-    previousButtons.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        this.showSource(frameElem)(e);
-        styleButtonOnSelect(btn);
-        styleButtonOnDeselect(previewButton);
+      previewButtonWrapper.addEventListener("click", (e) => {
+        this.showRendered(frameElem)(e);
+        previousButtons.forEach(styleButtonOnDeselect);
+        previewButton && styleButtonOnSelect(previewButton);
       });
-    });
 
-    this.updateToggle(previewButton, frameElem);
+      previousButtons.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          this.showSource(frameElem)(e);
+          styleButtonOnSelect(btn);
+          previewButton && styleButtonOnDeselect(previewButton);
+        });
+      });
+    }
+
+    // selectedButtonTemplate?.dispatchEvent(new Event("click"));
 
     return previewButtonWrapper;
   }
 
-  frameElement(attrs: Record<string, string | undefined>) {
+  getFrameElem(wrapperElem?: HTMLElement) {
+    const frameSelector = `${this.frameTagName}.${this.featureClass}`;
+    return selectDOM<HTMLIFrameElement>(
+      frameSelector,
+      wrapperElem ?? document.body,
+    );
+  }
+
+  frameElement(
+    attrs: Record<string, string | undefined>,
+    wrapperElem: HTMLElement,
+  ) {
+    const reuseElem = this.getFrameElem(wrapperElem);
     return createElement<HTMLIFrameElement>({
       attributes: {
         class: this.featureClass,
-        style: createElementStyle(this.frameStyle),
+        style: createElementStyle({
+          visibility: reuseElem?.style.visibility ?? "hidden",
+          ...this.frameStyle,
+        }),
         ...attrs,
       },
       tagName: this.frameTagName,
+      reuse: this.getFrameElem(wrapperElem),
     });
   }
 
@@ -400,26 +433,32 @@ export abstract class ExtendFilePreview {
   }
 
   async addFrameToFileBody(
-    bodyElem: HTMLBodyElement,
+    wrapperElem: HTMLElement,
     filePath: string,
     canDefer: boolean,
   ) {
-    if (canDefer && !selectExists(".js-blob-wrapper", bodyElem)) {
+    if (canDefer && !selectExists(".js-blob-wrapper", wrapperElem)) {
       return undefined;
     }
-    const frameSelector = `${this.frameTagName}.${this.featureClass}`;
-    if (selectExists(frameSelector, bodyElem)) {
-      return selectDOM<HTMLIFrameElement>(frameSelector, bodyElem);
-    }
-    const frameElem = this.frameElement({
+    const frameAttrs = {
+      "data-filepath": filePath,
       src: `https://rawgit.com/${this.pathToFile(filePath)}`,
       srcDoc: await this.prepareHTML(
         await this.getFileContent(filePath),
         filePath,
       ),
-    });
-    bodyElem.style.position = "relative";
-    return bodyElem.appendChild(frameElem);
+    };
+    const frameElem = this.frameElement(frameAttrs, wrapperElem);
+    wrapperElem.style.position = "relative";
+    observeEl(
+      wrapperElem,
+      () => {
+        if (wrapperElem.lastElementChild === frameElem) return;
+        wrapperElem.appendChild(frameElem);
+      },
+      { childList: true, subtree: true },
+    );
+    return frameElem;
   }
 
   extendHtmlFileDetailsElements(commitSha: string) {
@@ -476,7 +515,11 @@ export abstract class ExtendFilePreview {
 
   async initSingleFile() {
     const filePath = getRepoPath().replace("blob/", "");
-    if (!this.isSupportedFile(filePath)) return;
+    if (!this.isSupportedFile(filePath)) {
+      const frameElem = this.getFrameElem();
+      frameElem && (frameElem.style.visibility = "hidden");
+      return;
+    }
     const frameElem = await this.addFrameToFileBody(
       await selectOrReject("section[aria-labelledby='file-name-id']"),
       filePath,
