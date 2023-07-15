@@ -1,9 +1,11 @@
 name: release-tag
 on:
   push:
+    tags:
+      - "v*.*.*"
     branches:
-    - master
-    - gh-pages
+      - master
+      - gh-pages
 
 jobs:
   retag:
@@ -60,4 +62,5 @@ jobs:
         if: steps.push_tag.outputs.push_success == 'true'
         with:
           name: ${{ steps.latest_tag.outputs.tag }}
-          target_commitish: ${{ steps.check_tag.outputs.new_tag }}
+          tag_name: ${{ steps.check_tag.outputs.new_tag }}
+          target_commitish: gh-pages
