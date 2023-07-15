@@ -1,11 +1,12 @@
-type ElementDef = {
+type ElementDef<T extends Element = Element> = {
   attributes?: { [name: string]: string | boolean | number };
-  children?: (ElementDef | Node | string)[];
+  children?: (ElementDef<T> | Node | string)[];
   events?: {
     [K in keyof HTMLElementEventMap]?: EventListener;
   };
   tagName: string;
   tagNS?: string;
+  reuse?: T;
 };
 
 function isElementDef(obj: unknown): obj is ElementDef {
@@ -61,14 +62,40 @@ export function selectOrThrow<T extends Element>(
   return result;
 }
 
+export async function selectOrReject<T extends Element>(
+  selectors: string,
+  baseElement?: Element,
+  intervalMs = 300,
+  maxAttempts = 3,
+): Promise<T> {
+  let numAttempts = 0;
+  let lastError = null;
+  let selectedElement: T | null = null;
+  while (numAttempts < maxAttempts && !selectedElement) {
+    numAttempts += 1;
+    try {
+      selectedElement = selectOrThrow<T>(selectors, baseElement);
+    } catch (e) {
+      lastError = e;
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+  }
+  if (!selectedElement) throw lastError;
+  return selectedElement;
+}
+
 export function createElement<T extends Element>({
   attributes = {},
   children = [],
   events = {},
   tagName,
   tagNS = undefined,
+  reuse = undefined,
 }: ElementDef): T {
-  const elem = document.createElementNS(tagNS || getTagNS(tagName), tagName);
+  const elem =
+    reuse ?? document.createElementNS(tagNS || getTagNS(tagName), tagName);
+  elem.innerHTML = "";
+
   for (const [eventType, listener] of objectEntries(events)) {
     elem.addEventListener(eventType, listener);
   }

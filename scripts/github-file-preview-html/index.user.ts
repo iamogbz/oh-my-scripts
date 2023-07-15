@@ -4,10 +4,8 @@ import { fileDirname } from "libraries/paths";
 
 class ExtendFilePreviewHTML extends ExtendFilePreview {
   constructor() {
-    super();
-    this.id = filePreviewNS`extend-html`;
-    this.fileTypes = new Set(["html", "xhtml"]);
-    this.featureClass = filePreviewNS`extend-html`;
+    const id = filePreviewNS`extend-html`;
+    super(id, id, new Set(["html", "xhtml"]));
   }
 
   prepareHTML(fileContent: string, filePath: string) {
