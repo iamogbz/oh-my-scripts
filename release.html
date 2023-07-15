@@ -76,23 +76,27 @@
       const response = await fetch('https://api.github.com/repos/iamogbz/oh-my-scripts/contents/?ref=gh-pages');
       const data = await response.json();
       const scriptCollectionElem = document.getElementById('script-list');
-      data.filter((f) => f.type === 'file').forEach((/** @type {{ name: string, download_url: string }} */ file) => {
-        const fileBaseName = file.name.split('.')[0];
-        const scriptItemElem = document.createElement('tr');
+      const fileExtType = '.user.js';
+      const ghDataType = 'file'
+      data
+        .filter((f) => f.type === ghDataType && f.name.endsWith(fileExtType))
+        .forEach((/** @type {{ name: string, download_url: string }} */ file) => {
+          const fileBaseName = file.name.split('.')[0];
+          const scriptItemElem = document.createElement('tr');
 
-        const downloadItemElem = document.createElement('td');
-        const downLinkTitle = `Download user script ${fileBaseName}`;
-        downloadItemElem.appendChild(createElementFromInnerHtml(`<a title="${downLinkTitle}" href="${file.download_url}" target="_blank">${file.name} ↩️</a>`));
-        scriptItemElem.appendChild(downloadItemElem);
+          const downloadItemElem = document.createElement('td');
+          const downLinkTitle = `Download user script ${fileBaseName}`;
+          downloadItemElem.appendChild(createElementFromInnerHtml(`<a title="${downLinkTitle}" href="${file.download_url}" target="_blank">${file.name} ↩️</a>`));
+          scriptItemElem.appendChild(downloadItemElem);
 
-        const documentItemElem = document.createElement('td');
-        const docLinkTitle = `Read documentation for ${fileBaseName}`;
-        const readmeLink = `https://github.com/iamogbz/oh-my-scripts/tree/HEAD/scripts/${fileBaseName}/README.md`;
-        documentItemElem.appendChild(createElementFromInnerHtml(`<a title="${docLinkTitle}" href="${readmeLink}" target="_blank">👓</a>`));
-        scriptItemElem.appendChild(documentItemElem);
+          const documentItemElem = document.createElement('td');
+          const docLinkTitle = `Read documentation for ${fileBaseName}`;
+          const readmeLink = `https://github.com/iamogbz/oh-my-scripts/tree/HEAD/scripts/${fileBaseName}/README.md`;
+          documentItemElem.appendChild(createElementFromInnerHtml(`<a title="${docLinkTitle}" href="${readmeLink}" target="_blank">👓</a>`));
+          scriptItemElem.appendChild(documentItemElem);
 
-        scriptCollectionElem.appendChild(scriptItemElem)
-      })
+          scriptCollectionElem.appendChild(scriptItemElem)
+        })
     })()
   </script>
 
