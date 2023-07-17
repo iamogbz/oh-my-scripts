@@ -39,11 +39,9 @@ jobs:
       - name: Get Latest Tag
         id: latest_tag
         run: |
-          git reset --hard
           git fetch --all
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
           echo "tag=$latest_tag" >> $GITHUB_OUTPUT
-          git checkout gh-pages
 
       - name: Check Existing Tag
         id: check_tag
@@ -66,7 +64,7 @@ jobs:
             echo "Tag $new_tag already exists, skipping retag"
             echo "retag_success=false" >> $GITHUB_OUTPUT
           else
-            git tag $new_tag
+            git tag $new_tag gh-pages
             echo "retag_success=true" >> $GITHUB_OUTPUT
           fi
 
