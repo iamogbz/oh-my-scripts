@@ -1,21 +1,21 @@
 // ==UserScript==
 // @name GitHub File Preview APIB
 // @description Render Apiary blueprint files in github
-// @version 1.2.5
+// @version 1.2.6
 // @author iamogbz
 // @homepage https://github.com/iamogbz/oh-my-scripts
 // @supportURL https://github.com/iamogbz/oh-my-scripts/issues
 // @include *://github.com/*
-// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/1.2.5/github-file-preview-apib.user.js
+// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/1.2.6/github-file-preview-apib.user.js
 // @grant GM_xmlhttpRequest
 // @icon https://github.com/iamogbz/oh-my-scripts/raw/master/assets/monkey_128.png
 // @namespace iamogbz/oh-my-scripts
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.5/lib/dom.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.5/lib/github-file.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.5/lib/github.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.5/lib/paths.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.5/lib/request.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.5/lib/ns.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.6/lib/dom.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.6/lib/github-file.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.6/lib/github.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.6/lib/paths.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.6/lib/request.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.2.6/lib/ns.js
 // @updateURL https://github.com/iamogbz/oh-my-scripts/raw/release/github-file-preview-apib.user.js
 // ==/UserScript==
 
