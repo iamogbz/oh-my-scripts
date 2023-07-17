@@ -35,3 +35,52 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           npm run release
+# After release plugin pushes to gh-pages
+      - name: Get Latest Tag
+        id: latest_tag
+        run: |
+          git reset --hard
+          git fetch --all
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo "tag=$latest_tag" >> $GITHUB_OUTPUT
+          git checkout gh-pages
+
+      - name: Check Existing Tag
+        id: check_tag
+        run: |
+          tag=${{ steps.latest_tag.outputs.tag }}
+          new_tag=${tag#"v"}
+          if git rev-parse $new_tag >/dev/null 2>&1; then
+            echo "Tag $new_tag already exists"
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Retag Commit
+        id: retag
+        run: |
+          new_tag=${{ steps.check_tag.outputs.new_tag }}
+          if [[ "${{ steps.check_tag.outputs.tag_exists }}" == "true" ]]; then
+            echo "Tag $new_tag already exists, skipping retag"
+            echo "retag_success=false" >> $GITHUB_OUTPUT
+          else
+            git tag $new_tag
+            echo "retag_success=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Push Tag
+        id: push_tag
+        if: steps.retag.outputs.retag_success == 'true'
+        run: |
+          git push origin ${{ steps.check_tag.outputs.new_tag }}
+          echo "push_success=true" >> $GITHUB_OUTPUT
+
+      - name: Release Tag
+        uses: softprops/action-gh-release@v1
+        if: steps.push_tag.outputs.push_success == 'true'
+        with:
+          name: ${{ steps.latest_tag.outputs.tag }}
+          tag_name: ${{ steps.check_tag.outputs.new_tag }}
+          target_commitish: gh-pages
