@@ -2,11 +2,12 @@
 
 <head>
   <link rel="icon" href="./assets/monkey_128.png" />
+  <script src="https://cdn.jsdelivr.net/gh/iamogbz/oh-my-wcs@5533ae6/components/github-md-view.js"></script>
   <style>
     html {
       --color-bg: white;
       --color-fg: black;
-      --color-hl: cornflowerblue;
+      --color-hl: #005fcc;
 
       height: 100vh;
       width: 100vw;
@@ -17,54 +18,75 @@
       margin: 0;
       padding: 0;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 1.6em;
       line-height: 2em;
       color: var(--color-fg);
       background-color: var(--color-bg);
     }
 
     body {
-      padding: 16px;
-    }
-
-    table {
-      border-spacing: 1em;
-    }
-
-    th,
-    td {
-      text-align: center;
-      padding: 0.4em 0.3em;
-      user-select: none;
+      padding: 1em;
     }
 
     a {
       text-decoration: none;
       color: var(--color-fg);
-      border: solid 2px;
-      border-radius: 0.4em;
-      padding: 0.4em;
-      display: inline-block;
+      padding: 0.4em 1em;
       width: 100%;
+    }
 
-      &:hover {
+    summary {
+      padding: 1em;
+    }
+
+    a,
+    summary {
+      cursor: pointer;
+      box-shadow: inset var(--color-fg) 0.14em 0 0 0;
+      transition: color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+
+      &:hover,
+      &:focus,
+      &:active {
         color: var(--color-hl);
+        box-shadow: inset var(--color-hl) 0.26em 0 0 0;
+      }
+    }
+
+    #download-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+
+      & summary {
+        padding: 1em;
+
+        &::marker {
+          content: '👓';
+        }
+      }
+    }
+
+    #instructions {
+      & summary {
+        padding: 1em;
+
+        &::marker {
+          content: '👇🏾';
+        }
       }
     }
   </style>
 </head>
 
 <body>
-  <table>
-    <thead>
-      <tr>
-        <th>Download Scripts</th>
-        <th>   📃</th>
-      </tr>
-    </thead>
-    <tbody id="script-list">
-    </tbody>
-  </table>
+  <h3>Download Scripts</h3>
+  <div id="download-links"></div>
+  <hr />
+  <details id="instructions">
+    <summary>&nbsp;&nbsp;&nbsp;Browser Setup</summary>
+    <github-md-view url="https://raw.githubusercontent.com/iamogbz/oh-my-scripts/HEAD/README.md" from="7" to="22" />
+  </details>
+
   <script>
     const createElementFromInnerHtml = innerHTML => {
       const wrapper = document.createElement('div')
@@ -75,25 +97,26 @@
     (async () => {
       const response = await fetch('https://api.github.com/repos/iamogbz/oh-my-scripts/contents/?ref=gh-pages');
       const data = await response.json();
-      const scriptCollectionElem = document.getElementById('script-list');
+      const scriptCollectionElem = document.getElementById('download-links');
       const fileExtType = '.user.js';
       const ghDataType = 'file'
       data
         .filter((f) => f.type === ghDataType && f.name.endsWith(fileExtType))
         .forEach((/** @type {{ name: string, download_url: string }} */ file) => {
           const fileBaseName = file.name.split('.')[0];
-          const scriptItemElem = document.createElement('tr');
+          const scriptItemElem = document.createElement('details');
 
-          const downloadItemElem = document.createElement('td');
+          const downloadItemElem = document.createElement('summary');
           const downLinkTitle = `Download user script ${fileBaseName}`;
-          downloadItemElem.appendChild(createElementFromInnerHtml(`<a title="${downLinkTitle}" href="${file.download_url}" target="_blank">${file.name} ↩️</a>`));
+          downloadItemElem.appendChild(createElementFromInnerHtml(`<span tabindex="-1">&nbsp;&nbsp;&nbsp;<a title="${downLinkTitle}" href="${file.download_url}" target="_blank">${file.name}</a></span>`));
           scriptItemElem.appendChild(downloadItemElem);
 
-          const documentItemElem = document.createElement('td');
+          const documentItemElem = document.createElement('div');
           const docLinkTitle = `Read documentation for ${fileBaseName}`;
-          const readmeLink = `https://github.com/iamogbz/oh-my-scripts/tree/HEAD/scripts/${fileBaseName}/README.md`;
-          documentItemElem.appendChild(createElementFromInnerHtml(`<a title="${docLinkTitle}" href="${readmeLink}" target="_blank">👓</a>`));
+          const readmeLink = `https://raw.githubusercontent.com/iamogbz/oh-my-scripts/HEAD/scripts/${fileBaseName}/README.md`;
+          documentItemElem.appendChild(createElementFromInnerHtml(`<github-md-view url="${readmeLink}" target="_blank"></github-md-view>`));
           scriptItemElem.appendChild(documentItemElem);
+          scriptItemElem.title = docLinkTitle;
 
           scriptCollectionElem.appendChild(scriptItemElem)
         })
