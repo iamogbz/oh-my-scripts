@@ -48,8 +48,9 @@ export async function inline({
   > = {
     css: {
       callback: async (v) => {
-        if (!v.attribs.href) return;
-        return retrieve(v.attribs.href).then((content) => {
+        const target = $(v).attr("href");
+        if (!target) return;
+        return retrieve(target).then((content) => {
           insertInto($, "head", "style", content, { type: "text/css" });
         });
       },
@@ -59,7 +60,7 @@ export async function inline({
     },
     img: {
       callback: async (v) => {
-        const target = v.attribs.src;
+        const target = $(v).attr("src");
         if (!target) return;
         const newSrc = noPrefix(target) ? target : `${base}/${target}`;
         $(v).attr("src", newSrc);

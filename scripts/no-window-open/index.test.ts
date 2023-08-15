@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { toMatchDiffSnapshot } from "snapshot-diff";
 expect.extend({ toMatchDiffSnapshot });
 
