@@ -86,8 +86,8 @@
   "license": "Unlicense",
   "lint-staged": {
     "*.{js,ts}": [
-      "npm run lint -- --max-warnings=0",
-      "npm test -- --bail --findRelatedTests"
+      "pnpm run lint -- --max-warnings=0",
+      "pnpm run test --bail --findRelatedTests"
     ]
   },
   "name": "oh-my-scripts",
@@ -96,7 +96,7 @@
     "url": "git+https://github.com/iamogbz/oh-my-scripts.git"
   },
   "scripts": {
-    "build": "npm run build:compile && npm run build:package",
+    "build": "pnpm run build:compile && pnpm run build:package",
     "build:compile": "BUILD_STAGE=compile webpack",
     "build:package": "BUILD_STAGE=package webpack",
     "dist:ignore": "git ls-files | grep dist/ | xargs git update-index --assume-unchanged",
@@ -104,10 +104,10 @@
     "commit": "git-cz",
     "coveralls": "cat ./artifacts/coverage/lcov.info | coveralls",
     "lint": "eslint .",
-    "release": "npm run dist:repair && semantic-release",
+    "release": "pnpm run dist:repair && semantic-release",
     "server": "http-server ./dist",
-    "start": "env NODE_ENV=development nodemon -x 'npm run build && npm run server'",
-    "preview": "DEV_SERVER=https://${CODESPACE_NAME}-8080.preview.app.github.dev npm start",
+    "start": "env NODE_ENV=development nodemon -x 'pnpm run build && pnpm run server'",
+    "preview": "DEV_SERVER=https://${CODESPACE_NAME}-8080.preview.app.github.dev pnpm start",
     "test": "tsc --noEmit && jest"
   },
   "version": "0.0.0"

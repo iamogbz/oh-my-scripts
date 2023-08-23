@@ -3,10 +3,10 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
 jobs:
   build:
-    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    if: '!contains(github.event.head_commit.message, "skip ci")'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,23 +18,25 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: Install
-        run: |
-          npm install --legacy-peer-deps
+        uses: pnpm/action-setup@v2.2.1
+        with:
+          version: 8
+          run_install: true
       - name: Lint
         run: |
-          npm run lint
+          pnpm run lint
       - name: Test
         env:
           CI: true
         run: |
-          npm test -- --ci --coverage
+          pnpm run test -- --coverage
       - name: Release
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
         env:
           BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          npm run release
+          pnpm run release
 # After release plugin pushes to gh-pages
       - name: Get Latest Tag
         id: latest_tag
