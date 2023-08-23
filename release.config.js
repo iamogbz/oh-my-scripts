@@ -28,7 +28,7 @@ module.exports = {
           dryRun
             ? run("git describe --tags --abbrev=0")
             : "${nextRelease.version}"
-        } npm run build && cp {.gitignore,README.md} dist/`,
+        } pnpm run build && cp {.gitignore,README.md} dist/`,
       },
     ],
     {
