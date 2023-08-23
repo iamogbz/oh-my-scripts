@@ -13,7 +13,7 @@ try {
 }
 
 console.log("current branch:", branch);
-const dryRun = branch != "master";
+const dryRun = branch != "main";
 
 module.exports = {
   branches: [{ name: branch, channel: releaseBranch }],

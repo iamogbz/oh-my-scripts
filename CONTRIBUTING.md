@@ -64,7 +64,7 @@ Use [convential semantic commits](https://www.conventionalcommits.org/en/v1.0.0/
 
 ### Specs Styleguide
 
-Each bug fix should have an accompanying test, if it's a new feature with a script folder then it should follow the pattern of the others e.g. [no-window-open/index.test.ts](https://github.com/iamogbz/oh-my-scripts/blob/master/scripts/no-window-open/index.test.ts)
+Each bug fix should have an accompanying test, if it's a new feature with a script folder then it should follow the pattern of the others e.g. [no-window-open/index.test.ts](https://github.com/iamogbz/oh-my-scripts/blob/main/scripts/no-window-open/index.test.ts)
 
 ## Additional Notes
 

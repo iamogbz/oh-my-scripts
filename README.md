@@ -14,7 +14,7 @@ User scripts to turbo charge your browser.
       - [Tampermonkey](https://github.com/Tampermonkey/tampermonkey): [Chrome](https://tampermonkey.net/?ext=dhdg&browser=chrome)
 
 2. Choose a script from the [release page](https://ogbizi.com/oh-my-scripts/release), open file to install
-   - Documentation for each available in their respective [scripts folder](https://github.com/iamogbz/oh-my-scripts/tree/master/scripts)
+   - Documentation for each available in their respective [scripts folder](https://github.com/iamogbz/oh-my-scripts/tree/main/scripts)
 
 ## Updating
 
@@ -28,7 +28,7 @@ Userscripts are set up to automatically update. You can check for updates from w
 
 Feel free to open a PR or GitHub issue. Contributions welcome!
 
-See [contributing guide](https://github.com/iamogbz/oh-my-scripts/blob/master/CONTRIBUTING.md)
+See [contributing guide](https://github.com/iamogbz/oh-my-scripts/blob/main/CONTRIBUTING.md)
 
 ## Attributing
 

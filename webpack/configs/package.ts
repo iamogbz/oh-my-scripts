@@ -104,6 +104,9 @@ export default [
 
             // Plugin will emit the file ending with .user.js
             const downloadURL = uri(entryPoint.fileInfo.userjsFile);
+            const updateURL = downloadURL
+              .replace(`/${gitCommitHash}/`, `/${RELEASE_BRANCH}/`)
+              .replace(/\?.+/, "");
 
             const finalHeaderObj = {
               ...headerObj,
@@ -115,9 +118,7 @@ export default [
                     ? scriptHeaderObj.require
                     : [scriptHeaderObj.require].filter(Boolean)) as string[],
                 ),
-              updateURL: downloadURL
-                .replace(`/${gitCommitHash}/`, `/${RELEASE_BRANCH}/`)
-                .replace(/\?.+/, ""),
+              updateURL,
             };
 
             return finalHeaderObj;
