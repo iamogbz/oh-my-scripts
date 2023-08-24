@@ -1,14 +1,4 @@
-import { HeadersProps } from "webpack-userscript";
 import { createElement } from "../../libraries/dom";
-
-export const header: HeadersProps = {
-  description: "Blocks window open",
-  grant: ["none"],
-  name: "No Window Open",
-  require: [
-    "https://raw.githubusercontent.com/Martii/UserScripts/d8d8829/lib/GM_setStyle/GM_setStyle.js",
-  ],
-};
 
 (function () {
   "use strict";

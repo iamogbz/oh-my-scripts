@@ -1,13 +1,12 @@
 import * as path from "path";
 import * as fs from "fs-extra";
 import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
-import * as WebpackUserscript from "webpack-userscript";
+import { HeadersProps, UserscriptPlugin } from "webpack-userscript";
 import { header as defaultHeaderObj } from "../../scripts/header.default";
 import { Dists, Paths } from "../constants";
 import {
-  getCompileEntry,
   getConfig,
-  // getGitCommitHash,
+  getHeaderEntry,
   getProjectNames,
   isProdMode,
 } from "../utils";
@@ -20,6 +19,15 @@ console.log(`
 > DEV_SERVER=${DEV_SERVER}
 > DEFAULT_VERSION=${DEFAULT_VERSION}
 `);
+
+const projectNames = getProjectNames();
+const projectHeaders = Object.fromEntries(
+  projectNames.map((name) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { header } = require(`${getHeaderEntry(name)}`);
+    return [name, header];
+  }),
+);
 
 export default [
   getConfig({
@@ -64,7 +72,7 @@ export default [
     ],
   }),
   // Build user script for each project
-  ...getProjectNames().map((name) => {
+  ...projectNames.map((name) => {
     return getConfig({
       entry: { [name]: path.resolve(Paths.COMPILE, Dists.SRC, `${name}.js`) },
       output: {
@@ -72,7 +80,7 @@ export default [
         path: Paths.RELEASE,
       },
       plugins: [
-        new WebpackUserscript.UserscriptPlugin({
+        new UserscriptPlugin({
           headers: (initialHeaderObj, entryPoint) => {
             // Get the list of dependencies extracted in the build:compile stage
             const required: string[] =
@@ -80,9 +88,7 @@ export default [
               [];
 
             // Get the supplementary header object for each user script
-            const scriptHeaderObj: WebpackUserscript.HeadersProps =
-              // eslint-disable-next-line @typescript-eslint/no-var-requires
-              require(getCompileEntry(name)).header ?? {};
+            const scriptHeaderObj: HeadersProps = projectHeaders[name];
 
             // Override defaults with userscript defined headers
             const headerObj = {
