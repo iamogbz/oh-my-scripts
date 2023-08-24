@@ -13,7 +13,7 @@ import {
 
 const DEFAULT_VERSION = process.env.VERSION || "0.0.0";
 const DEV_SERVER = process.env.DEV_SERVER || "http://localhost:8080";
-const RELEASE_BRANCH = "release";
+const RELEASE_BRANCH = "gh-pages";
 
 console.log(`
 > DEV_SERVER=${DEV_SERVER}
