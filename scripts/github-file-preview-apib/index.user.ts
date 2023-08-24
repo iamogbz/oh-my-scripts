@@ -1,6 +1,13 @@
-import { ExtendFilePreview, filePreviewNS } from "libraries/github-file";
-import { request } from "libraries/request";
+import { HeadersProps } from "webpack-userscript";
+import { ExtendFilePreview, filePreviewNS } from "../../libraries/github-file";
+import { request } from "../../libraries/request";
 
+export const header: HeadersProps = {
+  description: "Render Apiary blueprint files in github",
+  grant: ["GM_xmlhttpRequest"],
+  include: ["*://github.com/*"],
+  name: "GitHub File Preview APIB",
+};
 class ExtendFilePreviewAPIB extends ExtendFilePreview {
   constructor() {
     const id = filePreviewNS`extend-apib`;

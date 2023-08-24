@@ -2,9 +2,10 @@ import * as path from "path";
 import * as fs from "fs-extra";
 import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
 import * as WebpackUserscript from "webpack-userscript";
-import * as defaultHeaderObj from "../../scripts/header.default.json";
+import { header as defaultHeaderObj } from "../../scripts/header.default";
 import { Dists, Paths } from "../constants";
 import {
+  getCompileEntry,
   getConfig,
   // getGitCommitHash,
   getProjectNames,
@@ -67,6 +68,7 @@ export default [
       entry: { [name]: path.resolve(Paths.COMPILE, Dists.SRC, `${name}.js`) },
       output: {
         filename: "[name].js",
+        globalObject: "this",
         path: Paths.RELEASE,
       },
       plugins: [
@@ -79,7 +81,8 @@ export default [
 
             // Get the supplementary header object for each user script
             const scriptHeaderObj: WebpackUserscript.HeadersProps =
-              require(path.resolve(Paths.SCRIPTS, name, "header.json")) ?? {};
+              // eslint-disable-next-line @typescript-eslint/no-var-requires
+              require(getCompileEntry(name)).header ?? {};
 
             // Override defaults with userscript defined headers
             const headerObj = {

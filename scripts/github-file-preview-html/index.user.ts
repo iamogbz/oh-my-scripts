@@ -1,6 +1,14 @@
-import { inline } from "libraries/dom-inline";
-import { ExtendFilePreview, filePreviewNS } from "libraries/github-file";
-import { fileDirname } from "libraries/paths";
+import { HeadersProps } from "webpack-userscript";
+import { inline } from "../../libraries/dom-inline";
+import { ExtendFilePreview, filePreviewNS } from "../../libraries/github-file";
+import { fileDirname } from "../../libraries/paths";
+
+export const header: HeadersProps = {
+  description: "Render HTML files in github",
+  grant: ["GM_xmlhttpRequest"],
+  include: ["*://github.com/*"],
+  name: "GitHub File Preview HTML",
+};
 
 class ExtendFilePreviewHTML extends ExtendFilePreview {
   constructor() {
