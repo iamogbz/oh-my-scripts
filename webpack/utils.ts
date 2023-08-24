@@ -1,6 +1,6 @@
+import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
-import { execSync } from "child_process";
 import { Configuration } from "webpack";
 import { BuildStage, NodeEnv, Paths } from "./constants";
 
