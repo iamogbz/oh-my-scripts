@@ -45,7 +45,7 @@ export default [
               }
               fs.copySync(file, `${Paths.RELEASE}/${file}`);
             });
-            [(Dists.LIB, Dists.NPM)].forEach((folder) => {
+            [Dists.LIB, Dists.NPM].forEach((folder) => {
               const from = `${Paths.COMPILE}/${folder}`;
               if (!fs.existsSync(from)) return;
               fs.copySync(from, `${Paths.RELEASE}/${folder}`, {
