@@ -1,6 +1,6 @@
-import { inline } from "libraries/dom-inline";
-import { ExtendFilePreview, filePreviewNS } from "libraries/github-file";
-import { fileDirname } from "libraries/paths";
+import { inline } from "../../libraries/dom-inline";
+import { ExtendFilePreview, filePreviewNS } from "../../libraries/github-file";
+import { fileDirname } from "../../libraries/paths";
 
 class ExtendFilePreviewHTML extends ExtendFilePreview {
   constructor() {

@@ -23,8 +23,16 @@ export function getProjectNames() {
     .map((dir) => dir.name);
 }
 
+function getScriptPath(name: string, file: string) {
+  return path.resolve(Paths.SCRIPTS, name, file);
+}
+
+export function getHeaderEntry(name: string) {
+  return getScriptPath(name, "header.ts");
+}
+
 export function getCompileEntry(name: string) {
-  return path.resolve(Paths.SCRIPTS, name, "index.user.ts");
+  return getScriptPath(name, "index.user.ts");
 }
 
 export function getCompileEntries() {

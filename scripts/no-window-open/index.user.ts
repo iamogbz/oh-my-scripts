@@ -159,7 +159,7 @@ Click on it below to proceed with navigation.`;
     };
   }
   // ==Run==
-  GM_setStyle({ data: POPUP_ELEMENT_CSS });
+  window.GM_setStyle({ data: POPUP_ELEMENT_CSS });
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   window.open = onWindowOpen;

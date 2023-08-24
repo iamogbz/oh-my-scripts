@@ -1,5 +1,5 @@
-import { ExtendFilePreview, filePreviewNS } from "libraries/github-file";
-import { request } from "libraries/request";
+import { ExtendFilePreview, filePreviewNS } from "../../libraries/github-file";
+import { request } from "../../libraries/request";
 
 class ExtendFilePreviewAPIB extends ExtendFilePreview {
   constructor() {

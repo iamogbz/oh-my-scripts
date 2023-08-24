@@ -1,12 +1,12 @@
 import * as path from "path";
 import * as fs from "fs-extra";
 import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
-import * as WebpackUserscript from "webpack-userscript";
-import * as defaultHeaderObj from "../../scripts/header.default.json";
+import { HeadersProps, UserscriptPlugin } from "webpack-userscript";
+import { header as defaultHeaderObj } from "../../scripts/header.default";
 import { Dists, Paths } from "../constants";
 import {
   getConfig,
-  // getGitCommitHash,
+  getHeaderEntry,
   getProjectNames,
   isProdMode,
 } from "../utils";
@@ -20,6 +20,15 @@ console.log(`
 > DEFAULT_VERSION=${DEFAULT_VERSION}
 `);
 
+const projectNames = getProjectNames();
+const projectHeaders = Object.fromEntries(
+  projectNames.map((name) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { header } = require(`${getHeaderEntry(name)}`);
+    return [name, header];
+  }),
+);
+
 export default [
   getConfig({
     entry: {},
@@ -29,7 +38,7 @@ export default [
           // Clear the release target folder on build start
           buildStart: () => fs.removeSync(Paths.RELEASE),
           // Copy the compiled library and npm distributables
-          buildEnd: () =>
+          buildEnd: () => {
             [Dists.LIB, Dists.NPM].forEach((folder) => {
               const from = `${Paths.COMPILE}/${folder}`;
               if (!fs.existsSync(from)) return;
@@ -54,7 +63,8 @@ export default [
                   return shouldInclude;
                 },
               });
-            }),
+            });
+          },
         },
         name: "Copy",
         stageMessages: {},
@@ -62,7 +72,7 @@ export default [
     ],
   }),
   // Build user script for each project
-  ...getProjectNames().map((name) => {
+  ...projectNames.map((name) => {
     return getConfig({
       entry: { [name]: path.resolve(Paths.COMPILE, Dists.SRC, `${name}.js`) },
       output: {
@@ -70,7 +80,7 @@ export default [
         path: Paths.RELEASE,
       },
       plugins: [
-        new WebpackUserscript.UserscriptPlugin({
+        new UserscriptPlugin({
           headers: (initialHeaderObj, entryPoint) => {
             // Get the list of dependencies extracted in the build:compile stage
             const required: string[] =
@@ -78,8 +88,7 @@ export default [
               [];
 
             // Get the supplementary header object for each user script
-            const scriptHeaderObj: WebpackUserscript.HeadersProps =
-              require(path.resolve(Paths.SCRIPTS, name, "header.json")) ?? {};
+            const scriptHeaderObj: HeadersProps = projectHeaders[name];
 
             // Override defaults with userscript defined headers
             const headerObj = {
