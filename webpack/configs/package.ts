@@ -39,7 +39,13 @@ export default [
           buildStart: () => fs.removeSync(Paths.RELEASE),
           // Copy the compiled library and npm distributables
           buildEnd: () => {
-            [Dists.LIB, Dists.NPM].forEach((folder) => {
+            [".gitignore", "README.md"].forEach((file) => {
+              if (!fs.existsSync(file)) {
+                console.log("File does not exist:", file);
+              }
+              fs.copySync(file, `${Paths.RELEASE}/${file}`);
+            });
+            [(Dists.LIB, Dists.NPM)].forEach((folder) => {
               const from = `${Paths.COMPILE}/${folder}`;
               if (!fs.existsSync(from)) return;
               fs.copySync(from, `${Paths.RELEASE}/${folder}`, {
