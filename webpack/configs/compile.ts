@@ -44,7 +44,6 @@ export default getConfig({
   },
   output: {
     filename: "[name].js",
-    globalObject: "this",
     path: Paths.COMPILE,
   },
   plugins: [

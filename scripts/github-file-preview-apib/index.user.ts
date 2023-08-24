@@ -8,6 +8,7 @@ export const header: HeadersProps = {
   include: ["*://github.com/*"],
   name: "GitHub File Preview APIB",
 };
+
 class ExtendFilePreviewAPIB extends ExtendFilePreview {
   constructor() {
     const id = filePreviewNS`extend-apib`;

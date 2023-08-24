@@ -30,7 +30,7 @@ export default [
           // Clear the release target folder on build start
           buildStart: () => fs.removeSync(Paths.RELEASE),
           // Copy the compiled library and npm distributables
-          buildEnd: () =>
+          buildEnd: () => {
             [Dists.LIB, Dists.NPM].forEach((folder) => {
               const from = `${Paths.COMPILE}/${folder}`;
               if (!fs.existsSync(from)) return;
@@ -55,7 +55,8 @@ export default [
                   return shouldInclude;
                 },
               });
-            }),
+            });
+          },
         },
         name: "Copy",
         stageMessages: {},
@@ -68,7 +69,6 @@ export default [
       entry: { [name]: path.resolve(Paths.COMPILE, Dists.SRC, `${name}.js`) },
       output: {
         filename: "[name].js",
-        globalObject: "this",
         path: Paths.RELEASE,
       },
       plugins: [
