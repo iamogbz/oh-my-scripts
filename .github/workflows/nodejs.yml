@@ -30,6 +30,9 @@ jobs:
           CI: true
         run: |
           pnpm run test --coverage
+      - name: Prebuild
+        run: |
+          pnpm run build
       - name: Release
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
         env:
