@@ -108,7 +108,7 @@
     "release": "pnpm run dist:repair && semantic-release",
     "server": "http-server ./dist",
     "start": "env NODE_ENV=development nodemon -x 'pnpm run build && pnpm run server'",
-    "preview": "DEV_SERVER=https://${CODESPACE_NAME}-8080.preview.app.github.dev pnpm start",
+    "preview": "env $(cat .env | xargs) pnpm start",
     "test": "tsc --noEmit && jest"
   },
   "version": "0.0.0"
