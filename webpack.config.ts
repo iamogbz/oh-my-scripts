@@ -1,5 +1,5 @@
 import { isCompileStage } from "./webpack/utils";
 
-module.exports = require(`./webpack/configs/${
-  isCompileStage() ? "compile" : "package"
-}`);
+const configName = isCompileStage() ? "compile" : "package";
+const configModule = `./webpack/configs/${configName}`;
+module.exports = require(configModule);
