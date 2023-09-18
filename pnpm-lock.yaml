@@ -29,8 +29,8 @@ devDependencies:
     specifier: ^11.0.2
     version: 11.0.2
   '@types/jest':
-    specifier: ^29.5.4
-    version: 29.5.4
+    specifier: ^29.5.5
+    version: 29.5.5
   '@types/node':
     specifier: ^20.6.1
     version: 20.6.1
@@ -794,13 +794,6 @@ packages:
       '@jest/types': 29.6.3
       '@types/node': 20.6.1
       jest-mock: 29.7.0
-    dev: true
-
-  /@jest/expect-utils@29.6.4:
-    resolution: {integrity: sha512-FEhkJhqtvBwgSpiTrocquJCdXPsyvNKcl/n7A3u7X4pVoF4bswm11c9d4AV+kfq2Gpv/mM8x7E7DsRvH+djkrg==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-    dependencies:
-      jest-get-type: 29.6.3
     dev: true
 
   /@jest/expect-utils@29.7.0:
@@ -1576,11 +1569,11 @@ packages:
       '@types/istanbul-lib-report': 3.0.0
     dev: true
 
-  /@types/jest@29.5.4:
-    resolution: {integrity: sha512-PhglGmhWeD46FYOVLt3X7TiWjzwuVGW9wG/4qocPevXMjCmrIc5b6db9WjeGE4QYVpUAWMDv3v0IiBwObY289A==}
+  /@types/jest@29.5.5:
+    resolution: {integrity: sha512-ebylz2hnsWR9mYvmBFbXJXr+33UPc4+ZdxyDXh5w0FlPBTfCVN3wPL+kuOiQt3xvrK419v7XWeAs+AeOksafXg==}
     dependencies:
-      expect: 29.6.1
-      pretty-format: 29.6.1
+      expect: 29.7.0
+      pretty-format: 29.7.0
     dev: true
 
   /@types/jsdom@20.0.1:
@@ -3994,29 +3987,6 @@ packages:
       homedir-polyfill: 1.0.3
     dev: true
 
-  /expect@29.6.1:
-    resolution: {integrity: sha512-XEdDLonERCU1n9uR56/Stx9OqojaLAQtZf9PrCHH9Hl8YXiEIka3H4NXJ3NOIBmQJTg7+j7buh34PMHfJujc8g==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-    dependencies:
-      '@jest/expect-utils': 29.6.4
-      '@types/node': 20.6.1
-      jest-get-type: 29.6.3
-      jest-matcher-utils: 29.6.4
-      jest-message-util: 29.7.0
-      jest-util: 29.7.0
-    dev: true
-
-  /expect@29.6.4:
-    resolution: {integrity: sha512-F2W2UyQ8XYyftHT57dtfg8Ue3X5qLgm2sSug0ivvLRH/VKNRL/pDxg/TH7zVzbQB0tu80clNFy6LU7OS/VSEKA==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-    dependencies:
-      '@jest/expect-utils': 29.6.4
-      jest-get-type: 29.6.3
-      jest-matcher-utils: 29.6.4
-      jest-message-util: 29.7.0
-      jest-util: 29.7.0
-    dev: true
-
   /expect@29.7.0:
     resolution: {integrity: sha512-2Zks0hf1VLFYI1kbh0I5jP3KHHyCHpkfyHBzsSXRFgl/Bg9mWYfMW8oD+PdMPlEwy5HNsR9JutYy6pMeOh61nw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -5500,16 +5470,6 @@ packages:
       pretty-format: 29.7.0
     dev: true
 
-  /jest-diff@29.6.4:
-    resolution: {integrity: sha512-9F48UxR9e4XOEZvoUXEHSWY4qC4zERJaOfrbBg9JpbJOO43R1vN76REt/aMGZoY6GD5g84nnJiBIVlscegefpw==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-    dependencies:
-      chalk: 4.1.2
-      diff-sequences: 29.6.3
-      jest-get-type: 29.6.3
-      pretty-format: 29.7.0
-    dev: true
-
   /jest-diff@29.7.0:
     resolution: {integrity: sha512-LMIgiIrhigmPrs03JHpxUh2yISK3vLFPkAodPeo0+BuF7wA2FoQbkEg1u8gBYBThncu7e1oEDUfIXVuTqLRUjw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -5620,16 +5580,6 @@ packages:
     resolution: {integrity: sha512-kYA8IJcSYtST2BY9I+SMC32nDpBT3J2NvWJx8+JCuCdl/CR1I4EKUJROiP8XtCcxqgTTBGJNdbB1A8XRKbTetw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      jest-get-type: 29.6.3
-      pretty-format: 29.7.0
-    dev: true
-
-  /jest-matcher-utils@29.6.4:
-    resolution: {integrity: sha512-KSzwyzGvK4HcfnserYqJHYi7sZVqdREJ9DMPAKVbS98JsIAvumihaNUbjrWw0St7p9IY7A9UskCW5MYlGmBQFQ==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-    dependencies:
-      chalk: 4.1.2
-      jest-diff: 29.6.4
       jest-get-type: 29.6.3
       pretty-format: 29.7.0
     dev: true
@@ -5778,17 +5728,17 @@ packages:
       '@babel/plugin-syntax-jsx': 7.22.5(@babel/core@7.22.9)
       '@babel/plugin-syntax-typescript': 7.22.5(@babel/core@7.22.9)
       '@babel/types': 7.22.5
-      '@jest/expect-utils': 29.6.4
+      '@jest/expect-utils': 29.7.0
       '@jest/transform': 29.6.4
       '@jest/types': 29.6.3
       '@types/prettier': 2.7.3
       babel-preset-current-node-syntax: 1.0.1(@babel/core@7.22.9)
       chalk: 4.1.2
-      expect: 29.6.4
+      expect: 29.7.0
       graceful-fs: 4.2.11
-      jest-diff: 29.6.4
+      jest-diff: 29.7.0
       jest-get-type: 29.6.3
-      jest-matcher-utils: 29.6.4
+      jest-matcher-utils: 29.7.0
       jest-message-util: 29.7.0
       jest-util: 29.7.0
       natural-compare: 1.4.0
