@@ -17,8 +17,8 @@ devDependencies:
     specifier: ^18.0.0
     version: 18.0.0
   '@qiwi/semantic-release-gh-pages-plugin':
-    specifier: ^5.2.9
-    version: 5.2.9
+    specifier: ^5.2.10
+    version: 5.2.10
   '@semantic-release/exec':
     specifier: ^6.0.3
     version: 6.0.3(semantic-release@22.0.1)
@@ -1202,12 +1202,12 @@ packages:
       config-chain: 1.1.13
     dev: true
 
-  /@qiwi/semantic-release-gh-pages-plugin@5.2.9:
-    resolution: {integrity: sha512-HbhRHznpZKz88DW+7NU9x7+uEwEglBJ8ja9GSpi9OTM3+AJOLFIYSmPKl3T9NJIOOZS8tEVjygwDiqmPgQa/vg==}
+  /@qiwi/semantic-release-gh-pages-plugin@5.2.10:
+    resolution: {integrity: sha512-GOoHvQRN8hvX6XxuZAPECvlYiwRwKBIcYdBHU8O1dEMDkAa4/8f8JFGa2SEDALQodLBvwH5xdW1TzzTpDfn2aA==}
     dependencies:
       '@qiwi/substrate': 2.0.4
       '@types/debug': 4.1.10
-      '@types/gh-pages': 3.2.3
+      '@types/gh-pages': 5.0.0
       '@types/git-url-parse': 9.0.2
       '@types/lodash': 4.14.200
       '@types/semantic-release': 20.0.4
@@ -1526,8 +1526,8 @@ packages:
       '@types/node': 20.8.8
     dev: true
 
-  /@types/gh-pages@3.2.3:
-    resolution: {integrity: sha512-g3LrxF287AZVzhPTOnopH8tToLG+XcrM+6//g1D4Egk9uFndTRjgic0OSYHxotYOLOAda0NjjCFdFoMWxDxZoA==}
+  /@types/gh-pages@5.0.0:
+    resolution: {integrity: sha512-pVBH6O7Ypty4u8BDLUtWIId/2VbVHnJCcee5tnDt/Jw5bTOdSsxGeCGC6owHrmYcBBPQY3vC8nSg35YG9SHD5g==}
     dev: true
 
   /@types/git-url-parse@9.0.2:
@@ -2631,7 +2631,7 @@ packages:
   /call-bind@1.0.2:
     resolution: {integrity: sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA==}
     dependencies:
-      function-bind: 1.1.1
+      function-bind: 1.1.2
       get-intrinsic: 1.2.1
     dev: true
 
@@ -4277,10 +4277,6 @@ packages:
     dev: true
     optional: true
 
-  /function-bind@1.1.1:
-    resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
-    dev: true
-
   /function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
     dev: true
@@ -4312,7 +4308,7 @@ packages:
   /get-intrinsic@1.2.1:
     resolution: {integrity: sha512-2DcsyfABl+gVHEfCOaTrWgyt+tb6MSEGmKq+kI5HwLbIYgjgmMcV8KQ41uaKz1xxUcn9tJtgFbQUEVcEbd0FYw==}
     dependencies:
-      function-bind: 1.1.1
+      function-bind: 1.1.2
       has: 1.0.3
       has-proto: 1.0.1
       has-symbols: 1.0.3
@@ -4593,7 +4589,7 @@ packages:
     resolution: {integrity: sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==}
     engines: {node: '>= 0.4.0'}
     dependencies:
-      function-bind: 1.1.1
+      function-bind: 1.1.2
     dev: true
 
   /hasown@2.0.0:
@@ -5011,12 +5007,6 @@ packages:
   /is-callable@1.2.7:
     resolution: {integrity: sha512-1BC0BVFhS/p0qtw6enp8e+8OD0UrK0oFLztSjNzhcKA3WDuJxxAPXzPuPtKkjEY9UUoEWlX/8fgKeu2S8i9JTA==}
     engines: {node: '>= 0.4'}
-    dev: true
-
-  /is-core-module@2.13.0:
-    resolution: {integrity: sha512-Z7dk6Qo8pOCp3l4tsX2C5ZVas4V+UxwQodwZhLopL91TX8UyyHEXafPcyoeeWuLrwzHcr3igO78wNLwHJHsMCQ==}
-    dependencies:
-      has: 1.0.3
     dev: true
 
   /is-core-module@2.13.1:
@@ -6512,7 +6502,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       hosted-git-info: 4.1.0
-      is-core-module: 2.13.0
+      is-core-module: 2.13.1
       semver: 7.5.4
       validate-npm-package-license: 3.0.4
     dev: true
@@ -6522,7 +6512,7 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
       hosted-git-info: 6.1.1
-      is-core-module: 2.13.0
+      is-core-module: 2.13.1
       semver: 7.5.4
       validate-npm-package-license: 3.0.4
     dev: true
