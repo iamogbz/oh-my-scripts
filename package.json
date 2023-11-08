@@ -22,7 +22,7 @@
     "@qiwi/semantic-release-gh-pages-plugin": "^5.2.10",
     "@semantic-release/exec": "^6.0.3",
     "@types/cheerio": "^0.22.31",
-    "@types/fs-extra": "^11.0.3",
+    "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.8",
     "@types/node": "^20.8.10",
     "@types/webpack-dev-server": "^4.7.2",
