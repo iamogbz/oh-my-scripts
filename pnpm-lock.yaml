@@ -89,8 +89,8 @@ devDependencies:
     specifier: ^3.1.1
     version: 3.1.1
   prettier-eslint:
-    specifier: ^16.1.2
-    version: 16.1.2
+    specifier: ^16.2.0
+    version: 16.2.0
   semantic-release:
     specifier: ^22.0.12
     version: 22.0.12(typescript@5.3.3)
@@ -7158,8 +7158,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier-eslint@16.1.2:
-    resolution: {integrity: sha512-mGFGZQbAh11FSnwW3H1zngzQYR2QMmHO8vdfgnAuzOFhnDeUZHYtwpqQvOMOMT0k818Dr1X+J4a/sVE0r34RKQ==}
+  /prettier-eslint@16.2.0:
+    resolution: {integrity: sha512-GDTSKc62VaLceiaI/qMaKo2oco2CIWtbj4Zr6ckhbTgcBL/uR0d9jkMzh9OtBIT/Z7iBoCB4OHj/aJ5YuNgAuA==}
     engines: {node: '>=16.10.0'}
     dependencies:
       '@typescript-eslint/parser': 6.14.0(eslint@8.56.0)(typescript@5.3.3)
