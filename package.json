@@ -23,7 +23,7 @@
     "@semantic-release/exec": "^6.0.3",
     "@types/cheerio": "^0.22.31",
     "@types/fs-extra": "^11.0.4",
-    "@types/jest": "^29.5.11",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.11.15",
     "@types/webpack-dev-server": "^4.7.2",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
