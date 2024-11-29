@@ -20,6 +20,7 @@ export function getProjectNames() {
   return fs
     .readdirSync(Paths.SCRIPTS, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
+    .filter((entry) => fs.existsSync(getCompileEntry(entry.name)))
     .map((dir) => dir.name);
 }
 
