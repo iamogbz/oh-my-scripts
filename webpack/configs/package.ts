@@ -23,7 +23,6 @@ console.log(`
 const projectNames = getProjectNames();
 const projectHeaders = Object.fromEntries(
   projectNames.map((name) => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { header } = require(`${getHeaderEntry(name)}`);
     return [name, header];
   }),
@@ -52,14 +51,13 @@ export default [
                 // Only include folders or JS files
                 filter: (src, dest) => {
                   const shouldInclude = /[\d\w_-](\.js)?$/.test(src);
-                  if (shouldInclude) {
-                    src.endsWith(".js") &&
-                      console.log(
-                        "\x1b[32m\x1b[1msuccess\x1b[0m",
-                        path.relative(process.cwd(), dest),
-                        "[copied]\n",
-                      );
-                  } else {
+                  if (shouldInclude && src.endsWith(".js")) {
+                    console.log(
+                      "\x1b[32m\x1b[1msuccess\x1b[0m",
+                      path.relative(process.cwd(), dest),
+                      "[copied]\n",
+                    );
+                  } else if (!shouldInclude) {
                     console.log(
                       "\x1b[93m\x1b[1mwarning\x1b[0m",
                       path.relative(process.cwd(), dest),

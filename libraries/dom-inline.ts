@@ -19,7 +19,6 @@ function insertInto(
   $(selector).append(elem.outerHTML);
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export async function inline({
   base,
   html,

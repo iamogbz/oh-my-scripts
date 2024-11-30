@@ -23,6 +23,7 @@ export function normalisePath(p: string) {
   try {
     return new URL(p).href;
   } catch (e) {
+    console.error(e);
     const fakeProtocol = "x://";
     return new URL(`${fakeProtocol}${p}`).href.substr(fakeProtocol.length);
   }
