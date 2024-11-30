@@ -52,6 +52,7 @@ export default [
       "@typescript-eslint/no-non-null-assertion": "off",
       "@typescript-eslint/no-require-imports": "off",
       "import/no-relative-parent-imports": "off",
+      "import/no-unresolved": "off",
 
       "import/order": [
         "error",
