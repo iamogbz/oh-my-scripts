@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { execSync } = require("child_process");
 
 const run = (command) => execSync(command).toString().trim();
@@ -9,7 +8,9 @@ const releaseBranch = "gh-pages";
 try {
   run(`git ls-remote --exit-code --heads origin '${branch}'`);
 } catch (e) {
-  throw new Error(`Branch '${branch}' needs to exist on remote to run release`);
+  throw new Error(
+    `Branch '${branch}' needs to exist on remote to run release: ${e}`,
+  );
 }
 
 console.log("current branch:", branch);

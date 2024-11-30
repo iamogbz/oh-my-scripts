@@ -347,29 +347,29 @@ export abstract class ExtendFilePreview {
 
       const styleButtonOnSelect = (btn: HTMLButtonElement) => {
         btn.setAttribute(buttonSelectedAttribute, "true");
-        clsSelectedButton && btn.setAttribute("class", clsSelectedButton);
-        clsSelectedButtonWrapper &&
+        if (clsSelectedButton) btn.setAttribute("class", clsSelectedButton);
+        if (clsSelectedButtonWrapper)
           btn.parentElement?.setAttribute("class", clsSelectedButtonWrapper);
       };
 
       const styleButtonOnDeselect = (btn: HTMLButtonElement) => {
         btn.setAttribute(buttonSelectedAttribute, "false");
-        clsUnselectedButton && btn.setAttribute("class", clsUnselectedButton);
-        clsSelectedButtonWrapper &&
+        if (clsUnselectedButton) btn.setAttribute("class", clsUnselectedButton);
+        if (clsSelectedButtonWrapper)
           btn.parentElement?.setAttribute("class", clsSelectedButtonWrapper);
       };
 
       previewButtonWrapper.addEventListener("click", (e) => {
         this.showRendered(frameElem)(e);
         previousButtons.forEach(styleButtonOnDeselect);
-        previewButton && styleButtonOnSelect(previewButton);
+        if (previewButton) styleButtonOnSelect(previewButton);
       });
 
       previousButtons.forEach((btn) => {
         btn.addEventListener("click", (e) => {
           this.showSource(frameElem)(e);
           styleButtonOnSelect(btn);
-          previewButton && styleButtonOnDeselect(previewButton);
+          if (previewButton) styleButtonOnDeselect(previewButton);
         });
       });
     }
@@ -517,7 +517,7 @@ export abstract class ExtendFilePreview {
     const filePath = getRepoPath().replace("blob/", "");
     if (!this.isSupportedFile(filePath)) {
       const frameElem = this.getFrameElem();
-      frameElem && (frameElem.style.visibility = "hidden");
+      if (frameElem) frameElem.style.visibility = "hidden";
       return;
     }
     const frameElem = await this.addFrameToFileBody(
