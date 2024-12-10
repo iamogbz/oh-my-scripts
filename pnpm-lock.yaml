@@ -22,8 +22,8 @@ importers:
         specifier: ^1.2.4
         version: 1.2.4(eslint@9.16.0(jiti@1.20.0))
       '@qiwi/semantic-release-gh-pages-plugin':
-        specifier: ^5.4.0
-        version: 5.4.0
+        specifier: ^5.4.1
+        version: 5.4.1
       '@semantic-release/exec':
         specifier: ^6.0.3
         version: 6.0.3(semantic-release@24.2.0(typescript@5.7.2))
@@ -668,8 +668,8 @@ packages:
     resolution: {integrity: sha512-UA91GwWPhFExt3IizW6bOeY/pQ0BkuNwKjk9iQW9KqxluGCrg4VenZ0/L+2Y0+ZOtme72EVvg6v0zo3AMQRCeA==}
     engines: {node: '>=12'}
 
-  '@qiwi/semantic-release-gh-pages-plugin@5.4.0':
-    resolution: {integrity: sha512-dLfQAGGx3jB1tYI7v1gMsCx5Xr9ufR2ZQvtSTqXkL+b9CW2LV6wYYZmlOoGUnZ5tHAyPCmHml1U0YvQH5UDNHw==}
+  '@qiwi/semantic-release-gh-pages-plugin@5.4.1':
+    resolution: {integrity: sha512-YDjiUHQHn7qOfw0bnJo5OcpURPmfAKPJgIYuLGO5RL/KHzVBX+PV8KYAxRQIFyKhI+vH8UsywjgdQ+pPJ6p+nQ==}
 
   '@qiwi/substrate-types@2.1.0':
     resolution: {integrity: sha512-WLPKeX61SNFTUDLpywY91MNKwR/+JN+KEqyYnCncjqEtlmDkuUn+FVWhzmbd4BUmF5PQ3icyQkppSCgrxcEBlg==}
@@ -4743,8 +4743,8 @@ packages:
     resolution: {integrity: sha512-esbDnt0Z1zI1KgvOZU90hJbL6BkoUbrP9yy7ArNZ6TmxBxydMJTYMf9FZjmwwcA8ZgEQzriQ3hwZ0NYXhlFo8Q==}
     engines: {node: '>=18'}
 
-  zurk@0.9.0:
-    resolution: {integrity: sha512-MfREZRQx5VySt3VtNrfP+UTALaTTIBquhSuJS/RYAs59YkwAicx6QrXyMMpvJu0wQdfWiJJAhAeOw4+OJLZ8ig==}
+  zurk@0.9.2:
+    resolution: {integrity: sha512-SWZ3UHQkLNdX3IregkMPIvfV6PmWkLz6Gp7AHEyBT6qHiN9dsrcKD9/BSCIzaTNTLb9Pa8Rsd80Nhja0GEKw3Q==}
 
 snapshots:
 
@@ -5512,7 +5512,7 @@ snapshots:
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
 
-  '@qiwi/semantic-release-gh-pages-plugin@5.4.0':
+  '@qiwi/semantic-release-gh-pages-plugin@5.4.1':
     dependencies:
       '@qiwi/substrate-types': 2.1.0
       aggregate-error: 3.1.0
@@ -5524,7 +5524,7 @@ snapshots:
       read-pkg: 5.2.0
       then-request: 6.0.2
       tslib: 2.8.1
-      zurk: 0.9.0
+      zurk: 0.9.2
     transitivePeerDependencies:
       - supports-color
 
@@ -9255,7 +9255,7 @@ snapshots:
 
   rxjs@7.8.1:
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
 
   safe-array-concat@1.0.0:
     dependencies:
@@ -9611,7 +9611,7 @@ snapshots:
   synckit@0.9.2:
     dependencies:
       '@pkgr/core': 0.1.1
-      tslib: 2.6.2
+      tslib: 2.8.1
 
   table@6.8.2:
     dependencies:
@@ -10193,4 +10193,4 @@ snapshots:
 
   yoctocolors@2.0.0: {}
 
-  zurk@0.9.0: {}
+  zurk@0.9.2: {}
