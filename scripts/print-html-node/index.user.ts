@@ -70,8 +70,8 @@
     newDocument.body.appendChild(clone);
 
     // Trigger the print action
-    newWindow.addEventListener("load", function () {
-      newWindow.print();
+    newWindow.setTimeout(() => newWindow.print(), 1000);
+    newWindow.addEventListener("afterprint", function () {
       newWindow.close();
     });
   }
@@ -81,8 +81,13 @@
    */
   function printNodeAs(type: (typeof params)["type"]) {
     if (params.target) {
-      if (type === Types.PDF) {
-        cloneAndPrintNode(params.target);
+      switch (type) {
+        case Types.PDF: {
+          return cloneAndPrintNode(params.target);
+        }
+        default: {
+          alert(`Unsupported type: ${type}`);
+        }
       }
     } else {
       alert("Node not found!");
@@ -90,5 +95,11 @@
   }
 
   // Add context menu item
-  window.GM_registerMenuCommand("As PDF", () => printNodeAs("pdf"), "as-pdf");
+  Object.values(Types).forEach((type) => {
+    window.GM_registerMenuCommand(
+      `As ${type.toUpperCase()}`,
+      () => printNodeAs(type),
+      `as-${type.toLowerCase()}`,
+    );
+  });
 })();
