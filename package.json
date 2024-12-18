@@ -107,8 +107,7 @@
     "lint": "eslint .",
     "release": "pnpm run dist:repair && semantic-release",
     "server": "http-server ./dist",
-    "start": "env NODE_ENV=development nodemon -x 'pnpm run build && pnpm run server'",
-    "preview": "env $(cat .env | xargs) pnpm start",
+    "start": "touch .env && env $(cat .env | xargs) env NODE_ENV=development nodemon -x 'pnpm run build && pnpm run server'",
     "test": "tsc --noEmit && jest"
   },
   "version": "0.0.0"
