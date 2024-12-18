@@ -3,7 +3,7 @@
 
   const Types = Object.freeze({
     PDF: "pdf",
-    PNG: "png",
+    // PNG: "png", // TODO: add png support
   });
 
   const params: {
