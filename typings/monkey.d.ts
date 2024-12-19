@@ -10,7 +10,7 @@ declare interface Window {
   // https://www.tampermonkey.net/documentation.php#api:GM_registerMenuCommand
   GM_registerMenuCommand(
     name: string,
-    callback: Function,
+    callback: () => void,
     accessKey:
       | string
       | { id: string; accessKey: string; autoClose: boolean; title: string },

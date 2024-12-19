@@ -51,7 +51,6 @@
 
       // If it's the transparent keyword: simple case
       if (backgroundColor === transparentColor) {
-        console.log("background transparent");
         return false;
       }
 
@@ -60,7 +59,6 @@
         /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/,
       );
 
-      console.log("rgba", backgroundColor);
       if (rgbaMatch) {
         // If rgba, check the alpha channel.
         const alpha = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1; // Default alpha is 1
@@ -171,7 +169,7 @@
   Object.values(Types).forEach((type) => {
     window.GM_registerMenuCommand(
       `As ${type.toUpperCase()}`,
-      () => printNodeAs(type),
+      () => void printNodeAs(type),
       `as-${type.toLowerCase()}`,
     );
   });
