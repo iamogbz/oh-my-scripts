@@ -1,19 +1,23 @@
+import { html2canvas } from "libraries/html2canvas";
+
 (function () {
   "use strict";
 
   const Types = Object.freeze({
     PDF: "pdf",
-    // PNG: "png", // TODO: add png support
+    PNG: "png",
   });
 
+  type ExportType = (typeof Types)[keyof typeof Types];
+
   const params: {
+    matchWords: string[];
     eventTarget: EventTarget | null;
     target: Node | null;
-    type: (typeof Types)[keyof typeof Types];
   } = {
+    matchWords: [],
     eventTarget: null,
     target: null,
-    type: Types.PDF,
   };
 
   /**
@@ -41,25 +45,33 @@
   }
 
   // Add context menu to user script
-  document.addEventListener("contextmenu", function (event) {
+  function handleUpdateTarget(event: MouseEvent) {
     params.eventTarget = event.target;
+    const selection = window.getSelection?.() ??
+      document.getSelection?.() ?? {
+        anchorNode: event.target as Node,
+        focusNode: event.target as Node,
+        toString: (): string =>
+          Object.getOwnPropertyDescriptor(
+            document,
+            "selection",
+          )?.value?.createRange?.()?.text || "",
+      };
 
-    const selectedText =
-      window.getSelection?.()?.toString() ??
-      document.getSelection?.()?.toString() ??
-      Object.getOwnPropertyDescriptor(
-        document,
-        "selection",
-      )?.value?.createRange?.()?.text ??
-      "";
+    const selectedText = selection.toString();
     const matchText = sanitizeText(selectedText);
-    const matchWords = matchText.split(" ");
+    params.matchWords = matchText.split(" ");
 
-    params.target = findLastNodeWithPredicate(event.target as Node, (node) => {
-      const nodeText = sanitizeText((node as HTMLElement).innerText);
-      return containsAll(nodeText, matchWords);
-    });
-  });
+    params.target = findLastNodeWithPredicate(
+      selection.anchorNode ?? selection.focusNode,
+      (node) => {
+        const nodeText = sanitizeText((node as HTMLElement).innerText);
+        return containsAll(nodeText, params.matchWords);
+      },
+    );
+  }
+  document.addEventListener("contextmenu", handleUpdateTarget);
+  document.addEventListener("mouseup", handleUpdateTarget);
 
   function findBackgroundColor(element: Element) {
     const transparentColor = "transparent";
@@ -173,16 +185,51 @@
   }
 
   /**
+   * Clone node as image and trigger download
+   */
+  async function cloneAndDownloadImage(node: Node) {
+    const clone = cloneNodeWithStyles(window, node);
+
+    // place the clone in a hidden div to enable html2canvas to render it
+    // TODO: render the image in page as dismissable modal for user to save if desired
+    const placeholderDiv = document.createElement("div");
+    placeholderDiv.style.visibility = "hidden";
+    placeholderDiv.appendChild(clone);
+    document.body.appendChild(placeholderDiv);
+
+    // https://stackoverflow.com/questions/3906142/how-to-save-a-png-from-javascript-variable
+    const canvas = await html2canvas(clone);
+    const imageType = "image/png";
+    const dataBlob = await new Promise<Blob>((resolve) => {
+      canvas.toBlob((blob) => (blob ? resolve(blob) : undefined), imageType);
+    });
+    const dataURI = URL.createObjectURL(dataBlob); // canvas.toDataURL(imageType);
+    const filename = `${["screenshot", ...params.matchWords.slice(0, 10)]
+      .join("-")
+      .toLowerCase()
+      .replace(/[/\\?%*:|"<>]+/g, "_")}.${imageType.split("/")[1]}`;
+    const imageLink = document.createElement("a");
+    imageLink.target = "_blank";
+    imageLink.href = dataURI;
+    imageLink.download = filename;
+    imageLink.click();
+    document.body.removeChild(placeholderDiv);
+  }
+
+  /**
    * Print the context node as specified type
    */
-  function printNodeAs(type: (typeof params)["type"]) {
+  function printNodeAs(type: ExportType) {
     if (params.target) {
       switch (type) {
         case Types.PDF: {
           return cloneAndPrintNode(params.target);
         }
+        case Types.PNG: {
+          return cloneAndDownloadImage(params.target);
+        }
         default: {
-          alert(`Unsupported type: ${type}`);
+          return alert(`Unsupported type: ${type}`);
         }
       }
     } else {
