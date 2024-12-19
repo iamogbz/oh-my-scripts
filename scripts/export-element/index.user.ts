@@ -184,10 +184,14 @@ import { html2canvas } from "libraries/html2canvas";
     });
   }
 
+  /**
+   * Clone node as image and trigger download
+   */
   async function cloneAndDownloadImage(node: Node) {
     const clone = cloneNodeWithStyles(window, node);
 
     // place the clone in a hidden div to enable html2canvas to render it
+    // TODO: render the image in page as dismissable modal for user to save if desired
     const placeholderDiv = document.createElement("div");
     placeholderDiv.style.visibility = "hidden";
     placeholderDiv.appendChild(clone);
@@ -195,11 +199,15 @@ import { html2canvas } from "libraries/html2canvas";
 
     // https://stackoverflow.com/questions/3906142/how-to-save-a-png-from-javascript-variable
     const canvas = await html2canvas(clone);
-    const dataURI = canvas.toDataURL("image/png");
+    const imageType = "image/png";
+    const dataBlob = await new Promise<Blob>((resolve) => {
+      canvas.toBlob((blob) => (blob ? resolve(blob) : undefined), imageType);
+    });
+    const dataURI = URL.createObjectURL(dataBlob); // canvas.toDataURL(imageType);
     const filename = `${["screenshot", ...params.matchWords.slice(0, 10)]
       .join("-")
       .toLowerCase()
-      .replace(/[/\\?%*:|"<>]+/g, "_")}.png`;
+      .replace(/[/\\?%*:|"<>]+/g, "_")}.${imageType.split("/")[1]}`;
     const imageLink = document.createElement("a");
     imageLink.target = "_blank";
     imageLink.href = dataURI;
