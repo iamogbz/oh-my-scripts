@@ -4,4 +4,4 @@
 
 Adds a context menu that triggers printing of the element that was right clicked.
 
-![Example context menu usage](https://github.com/user-attachments/assets/f64f2fff-8fad-4827-9225-bbb4f98e3b54)
+![Example context menu usage](https://github.com/user-attachments/assets/927e79a1-3a46-4c4a-88d2-5b315a2c40f1)
