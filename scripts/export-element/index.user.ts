@@ -1,16 +1,23 @@
+import { html2canvas } from "libraries/html2canvas";
+import { doc } from "prettier";
+
 (function () {
   "use strict";
 
   const Types = Object.freeze({
     PDF: "pdf",
-    // PNG: "png", // TODO: add png support
+    PNG: "png",
   });
 
+  type ExportType = (typeof Types)[keyof typeof Types];
+
   const params: {
+    matchWords: string[];
     eventTarget: EventTarget | null;
     target: Node | null;
-    type: (typeof Types)[keyof typeof Types];
+    type: ExportType;
   } = {
+    matchWords: [],
     eventTarget: null,
     target: null,
     type: Types.PDF,
@@ -53,11 +60,11 @@
       )?.value?.createRange?.()?.text ??
       "";
     const matchText = sanitizeText(selectedText);
-    const matchWords = matchText.split(" ");
+    params.matchWords = matchText.split(" ");
 
     params.target = findLastNodeWithPredicate(event.target as Node, (node) => {
       const nodeText = sanitizeText((node as HTMLElement).innerText);
-      return containsAll(nodeText, matchWords);
+      return containsAll(nodeText, params.matchWords);
     });
   });
 
@@ -172,17 +179,43 @@
     });
   }
 
+  async function cloneAndDownloadImage(node: Node) {
+    const clone = cloneNodeWithStyles(window, node);
+
+    // place the clone in a hidden div to enable html2canvas to render it
+    const placeholderDiv = document.createElement("div");
+    placeholderDiv.style.visibility = "hidden";
+    placeholderDiv.appendChild(clone);
+    document.body.appendChild(placeholderDiv);
+
+    // https://stackoverflow.com/questions/3906142/how-to-save-a-png-from-javascript-variable
+    const canvas = await html2canvas(clone);
+    const dataURI = canvas.toDataURL("image/png");
+    const filename = `${["screenshot", ...params.matchWords.slice(0, 10)]
+      .join("-")
+      .toLowerCase()
+      .replace(/[/\\?%*:|"<>]+/g, "_")}.png`;
+    const download = document.createElement("a");
+    download.href = dataURI;
+    download.download = filename;
+    download.click();
+    document.body.removeChild(placeholderDiv);
+  }
+
   /**
    * Print the context node as specified type
    */
-  function printNodeAs(type: (typeof params)["type"]) {
+  function printNodeAs(type: ExportType) {
     if (params.target) {
       switch (type) {
         case Types.PDF: {
           return cloneAndPrintNode(params.target);
         }
+        case Types.PNG: {
+          return cloneAndDownloadImage(params.target);
+        }
         default: {
-          alert(`Unsupported type: ${type}`);
+          return alert(`Unsupported type: ${type}`);
         }
       }
     } else {
