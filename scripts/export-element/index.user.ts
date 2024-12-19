@@ -28,12 +28,27 @@
     return null;
   }
 
+  /** replace all continous newlines and whitespace in text with a single space */
+  function sanitizeText(text: string) {
+    return text.replace(/\s+/g, " ").trim();
+  }
+
   // Add context menu to user script
   document.addEventListener("contextmenu", function (event) {
-    params.target = findLastNodeWithPredicate(
-      event.target as Node,
-      (node: Node) => !node.nextSibling,
-    );
+    const selectedText =
+      window.getSelection?.()?.toString() ??
+      document.getSelection?.()?.toString() ??
+      Object.getOwnPropertyDescriptor(
+        document,
+        "selection",
+      )?.value?.createRange?.()?.text ??
+      "";
+    const matchText = sanitizeText(selectedText);
+
+    params.target = findLastNodeWithPredicate(event.target as Node, (node) => {
+      const nodeText = sanitizeText((node as HTMLElement).innerText);
+      return nodeText.includes(matchText);
+    });
   });
 
   function findBackgroundColor(element: Element) {
