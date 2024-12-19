@@ -15,12 +15,10 @@ import { doc } from "prettier";
     matchWords: string[];
     eventTarget: EventTarget | null;
     target: Node | null;
-    type: ExportType;
   } = {
     matchWords: [],
     eventTarget: null,
     target: null,
-    type: Types.PDF,
   };
 
   /**
