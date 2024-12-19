@@ -190,57 +190,85 @@ import { html2canvas } from "libraries/html2canvas";
    */
   async function cloneAndDownloadImage(node: Node) {
     const clone = cloneNodeWithStyles(window, node);
-    clone.style.backgroundColor = findBackgroundColor(node as Element);
-    clone.style.outlineColor = clone.style.backgroundColor;
-    clone.style.outlineStyle = "solid";
-    clone.style.outlineWidth = "1vw";
-    clone.style.margin = "1vw auto";
-    clone.style.position = "relative";
+
+    const modalContent = document.createElement("div");
+    modalContent.style.backgroundColor = findBackgroundColor(node as Element);
+    modalContent.style.display = "block";
+    modalContent.style.height = "fit-content";
+    modalContent.style.outlineColor = modalContent.style.backgroundColor;
+    modalContent.style.outlineStyle = "solid";
+    modalContent.style.outlineWidth = "1vw";
+    modalContent.style.margin = "1vw auto";
+    modalContent.style.position = "relative";
+    modalContent.style.width = "fit-content";
+
+    const modalWrapper = document.createElement("div");
+    modalWrapper.style.alignItems = "center";
+    modalWrapper.style.backdropFilter = "blur(10px)";
+    modalWrapper.style.backgroundColor = `color-mix(in srgb, ${clone.style.backgroundColor}, ${transparentColor} 50%)`;
+    modalWrapper.style.display = "block";
+    modalWrapper.style.height = "100vh";
+    modalWrapper.style.justifyContent = "center";
+    modalWrapper.style.left = "0";
+    modalWrapper.style.opacity = "0";
+    modalWrapper.style.overflow = "auto";
+    modalWrapper.style.position = "fixed";
+    modalWrapper.style.top = "0";
+    modalWrapper.style.userSelect = "none";
+    modalWrapper.style.width = "100vw";
+    modalWrapper.style.visibility = "hidden";
+    modalWrapper.style.zIndex = `${Number.MAX_SAFE_INTEGER}`;
 
     // place the clone in a hidden div to enable html2canvas to render it
-    const placeholderDiv = document.createElement("div");
-    placeholderDiv.appendChild(clone);
-    document.body.appendChild(placeholderDiv);
+    modalContent.appendChild(clone);
+    modalWrapper.appendChild(modalContent);
+    document.body.appendChild(modalWrapper);
 
-    // style the placeholder div and clone
-    placeholderDiv.style.alignItems = "center";
-    placeholderDiv.style.backdropFilter = "blur(10px)";
-    placeholderDiv.style.backgroundColor = `color-mix(in srgb, ${clone.style.backgroundColor}, ${transparentColor} 50%)`;
-    placeholderDiv.style.display = "block";
-    placeholderDiv.style.height = "100vh";
-    placeholderDiv.style.justifyContent = "center";
-    placeholderDiv.style.left = "0";
-    placeholderDiv.style.overflow = "auto";
-    placeholderDiv.style.position = "fixed";
-    placeholderDiv.style.top = "0";
-    placeholderDiv.style.userSelect = "none";
-    placeholderDiv.style.width = "100vw";
+    // scale and position clone to fit the window
+    const positionPreview = () => {
+      const scale = {
+        x: window.innerWidth / clone.clientWidth,
+        y: window.innerHeight / clone.clientHeight,
+      };
+      modalContent.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+      modalWrapper.style.opacity = "1";
+      modalWrapper.style.visibility = "visible";
+    };
+
+    positionPreview(); // wait for clone to be rendered before positioning it
 
     // https://stackoverflow.com/questions/3906142/how-to-save-a-png-from-javascript-variable
-    const canvas = await html2canvas(clone);
+    const canvas = await html2canvas(modalContent);
     const imageType = "image/png";
     const dataBlob = await new Promise<Blob>((resolve) => {
       canvas.toBlob((blob) => (blob ? resolve(blob) : undefined), imageType);
     });
     const dataURI = URL.createObjectURL(dataBlob); // canvas.toDataURL(imageType);
+    const filenameGlue = "-";
     const filename = `${["screenshot", ...params.matchWords.slice(0, 10)]
-      .join("-")
+      .map((w) => w.trim())
+      .filter(Boolean)
+      .join(filenameGlue)
       .toLowerCase()
-      .replace(/[/\\?%*:|"<>]+/g, "_")}.${imageType.split("/")[1]}`;
+      .replace(/[/\\?%*:|"<>]+/g, filenameGlue)
+      .replace(/[-]+/g, filenameGlue)}.${imageType.split("/")[1]}`;
 
     const imageLink = document.createElement("a");
     imageLink.target = "_blank";
     imageLink.href = dataURI;
     imageLink.download = filename;
 
-    placeholderDiv.addEventListener("click", () => placeholderDiv.remove());
+    modalWrapper.addEventListener("click", () => modalWrapper.remove());
     const downloadImage = (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
       return imageLink.click();
     };
     clone.addEventListener("click", downloadImage);
-    clone.addEventListener("mouseup", downloadImage);
   }
 
   /**
@@ -260,7 +288,7 @@ import { html2canvas } from "libraries/html2canvas";
         }
       }
     } else {
-      console.error("Node not found!", params.eventTarget);
+      console.error("Node not found!", params);
     }
   }
 
