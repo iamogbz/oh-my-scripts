@@ -200,10 +200,11 @@ import { html2canvas } from "libraries/html2canvas";
       .join("-")
       .toLowerCase()
       .replace(/[/\\?%*:|"<>]+/g, "_")}.png`;
-    const download = document.createElement("a");
-    download.href = dataURI;
-    download.download = filename;
-    download.click();
+    const imageLink = document.createElement("a");
+    imageLink.target = "_blank";
+    imageLink.href = dataURI;
+    imageLink.download = filename;
+    imageLink.click();
     document.body.removeChild(placeholderDiv);
   }
 
