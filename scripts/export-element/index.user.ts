@@ -7,9 +7,11 @@
   });
 
   const params: {
+    eventTarget: EventTarget | null;
     target: Node | null;
     type: (typeof Types)[keyof typeof Types];
   } = {
+    eventTarget: null,
     target: null,
     type: Types.PDF,
   };
@@ -40,6 +42,8 @@
 
   // Add context menu to user script
   document.addEventListener("contextmenu", function (event) {
+    params.eventTarget = event.target;
+
     const selectedText =
       window.getSelection?.()?.toString() ??
       document.getSelection?.()?.toString() ??
@@ -182,7 +186,7 @@
         }
       }
     } else {
-      alert("Node not found!");
+      console.error("Node not found!", params.eventTarget);
     }
   }
 
