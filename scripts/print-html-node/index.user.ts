@@ -85,12 +85,43 @@
     params.target = findLastNodeInTree(event.target as Node);
   });
 
+  function cloneNodeWithStyles(window: Window, node: Node) {
+    // Function to copy computed styles from one element to another
+    function copyComputedStyles(source: Node, target: Node) {
+      const computedStyle = window.getComputedStyle(source as Element);
+      for (const style of computedStyle) {
+        (target as HTMLElement).style.setProperty(
+          style,
+          computedStyle.getPropertyValue(style),
+        );
+      }
+    }
+
+    // Clone the node deeply
+    const clone = node.cloneNode(true) as HTMLElement;
+
+    // Copy styles from the original node to the cloned node
+    copyComputedStyles(node, clone);
+
+    // Recursively copy styles for all child nodes
+    function copyStylesRecursively(sourceNode: Node, targetNode: Node) {
+      const sourceEl = sourceNode as HTMLElement;
+      for (let i = 0; i < sourceEl.children.length; i++) {
+        const targetEl = targetNode as Element;
+        copyComputedStyles(sourceEl.children[i], targetEl.children[i]);
+        copyStylesRecursively(sourceEl.children[i], targetEl.children[i]);
+      }
+    }
+
+    copyStylesRecursively(node, clone);
+
+    return clone;
+  }
+
   /**
    * Clone node into new window and print
    */
   function cloneAndPrintNode(node: Node) {
-    const clone = node.cloneNode(true);
-
     // Create a new window
     const newWindow: Window | null = window.open(
       "",
@@ -103,23 +134,7 @@
     }
     const newDocument = newWindow.document;
 
-    // Copy all CSS stylesheets
-    Array.from(document.styleSheets).forEach((styleSheet) => {
-      if (styleSheet.href) {
-        const link = newDocument.createElement("link");
-        link.rel = "stylesheet";
-        link.href = styleSheet.href;
-        newDocument.head.appendChild(link);
-      } else if (styleSheet.cssRules) {
-        const style = newDocument.createElement("style");
-        Array.from(styleSheet.cssRules).forEach((rule) => {
-          style.appendChild(newDocument.createTextNode(rule.cssText));
-        });
-        newDocument.head.appendChild(style);
-      }
-    });
-
-    // Append the cloned node to the new document
+    const clone = cloneNodeWithStyles(window, node);
     newDocument.body.appendChild(clone);
     newDocument.body.style.backgroundColor = findBackgroundColor(
       node as Element,
