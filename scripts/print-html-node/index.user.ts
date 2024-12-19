@@ -35,6 +35,51 @@
     return findLastNodeWithPredicate(node, (node: Node) => !node.nextSibling);
   }
 
+  function findBackgroundColor(element: Element) {
+    const transparentColor = "transparent";
+    const backgroundElement = findLastNodeWithPredicate(element, (node) => {
+      // return true if the node is an element with a background-color that is not transparent
+      if (!(node instanceof Element)) {
+        return false;
+      }
+      const computedStyle = window.getComputedStyle(node as Element);
+      const backgroundColor = computedStyle.backgroundColor; // Get the background-color
+
+      if (!backgroundColor) {
+        return false; // Handle case where background-color is invalid
+      }
+
+      // If it's the transparent keyword: simple case
+      if (backgroundColor === transparentColor) {
+        console.log("background transparent");
+        return false;
+      }
+
+      // Parse rgba values
+      const rgbaMatch = backgroundColor.match(
+        /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/,
+      );
+
+      console.log("rgba", backgroundColor);
+      if (rgbaMatch) {
+        // If rgba, check the alpha channel.
+        const alpha = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1; // Default alpha is 1
+        return alpha !== 0;
+      }
+
+      // For other cases (e.g., named colors), assume it's not transparent
+      return true;
+    });
+
+    if (backgroundElement) {
+      const computedStyle = window.getComputedStyle(
+        backgroundElement as Element,
+      );
+      return computedStyle.getPropertyValue("background-color");
+    }
+    return transparentColor;
+  }
+
   // Add context menu to user script
   document.addEventListener("contextmenu", function (event) {
     params.target = findLastNodeInTree(event.target as Node);
@@ -76,6 +121,9 @@
 
     // Append the cloned node to the new document
     newDocument.body.appendChild(clone);
+    newDocument.body.style.backgroundColor = findBackgroundColor(
+      node as Element,
+    );
 
     // Trigger the print action
     newWindow.setTimeout(() => newWindow.print(), 1000);
