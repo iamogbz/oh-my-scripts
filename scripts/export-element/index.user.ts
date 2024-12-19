@@ -1,5 +1,4 @@
 import { html2canvas } from "libraries/html2canvas";
-import { doc } from "prettier";
 
 (function () {
   "use strict";
