@@ -3,6 +3,8 @@ import { html2canvas } from "libraries/html2canvas";
 (function () {
   "use strict";
 
+  const transparentColor = "transparent";
+
   const Types = Object.freeze({
     PDF: "pdf",
     PNG: "png",
@@ -74,7 +76,6 @@ import { html2canvas } from "libraries/html2canvas";
   document.addEventListener("mouseup", handleUpdateTarget);
 
   function findBackgroundColor(element: Element) {
-    const transparentColor = "transparent";
     const backgroundElement = findLastNodeWithPredicate(element, (node) => {
       // return true if the node is an element with a background-color that is not transparent
       if (!(node instanceof Element)) {
@@ -189,13 +190,31 @@ import { html2canvas } from "libraries/html2canvas";
    */
   async function cloneAndDownloadImage(node: Node) {
     const clone = cloneNodeWithStyles(window, node);
+    clone.style.backgroundColor = findBackgroundColor(node as Element);
+    clone.style.outlineColor = clone.style.backgroundColor;
+    clone.style.outlineStyle = "solid";
+    clone.style.outlineWidth = "1vw";
+    clone.style.margin = "1vw auto";
+    clone.style.position = "relative";
 
     // place the clone in a hidden div to enable html2canvas to render it
-    // TODO: render the image in page as dismissable modal for user to save if desired
     const placeholderDiv = document.createElement("div");
-    placeholderDiv.style.visibility = "hidden";
     placeholderDiv.appendChild(clone);
     document.body.appendChild(placeholderDiv);
+
+    // style the placeholder div and clone
+    placeholderDiv.style.alignItems = "center";
+    placeholderDiv.style.backdropFilter = "blur(10px)";
+    placeholderDiv.style.backgroundColor = `color-mix(in srgb, ${clone.style.backgroundColor}, ${transparentColor} 50%)`;
+    placeholderDiv.style.display = "block";
+    placeholderDiv.style.height = "100vh";
+    placeholderDiv.style.justifyContent = "center";
+    placeholderDiv.style.left = "0";
+    placeholderDiv.style.overflow = "auto";
+    placeholderDiv.style.position = "fixed";
+    placeholderDiv.style.top = "0";
+    placeholderDiv.style.userSelect = "none";
+    placeholderDiv.style.width = "100vw";
 
     // https://stackoverflow.com/questions/3906142/how-to-save-a-png-from-javascript-variable
     const canvas = await html2canvas(clone);
@@ -208,12 +227,20 @@ import { html2canvas } from "libraries/html2canvas";
       .join("-")
       .toLowerCase()
       .replace(/[/\\?%*:|"<>]+/g, "_")}.${imageType.split("/")[1]}`;
+
     const imageLink = document.createElement("a");
     imageLink.target = "_blank";
     imageLink.href = dataURI;
     imageLink.download = filename;
-    imageLink.click();
-    document.body.removeChild(placeholderDiv);
+
+    placeholderDiv.addEventListener("click", () => placeholderDiv.remove());
+    const downloadImage = (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return imageLink.click();
+    };
+    clone.addEventListener("click", downloadImage);
+    clone.addEventListener("mouseup", downloadImage);
   }
 
   /**
