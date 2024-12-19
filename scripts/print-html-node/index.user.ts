@@ -15,16 +15,24 @@
   };
 
   /**
-   * Find the uppermost node that does not have a next sibling
+   * Find the uppermost node that satisfies the predicate
    */
-  function findLastNodeInTree(node: Node | null) {
+  function findLastNodeWithPredicate(
+    node: Node | null,
+    predicate: (node: Node) => boolean,
+  ) {
     while (node) {
-      if (!node.nextSibling) {
-        return node;
-      }
+      if (predicate(node)) return node;
       node = node.parentNode;
     }
     return null;
+  }
+
+  /**
+   * Find the uppermost node that does not have a next sibling
+   */
+  function findLastNodeInTree(node: Node | null) {
+    return findLastNodeWithPredicate(node, (node: Node) => !node.nextSibling);
   }
 
   // Add context menu to user script
@@ -45,7 +53,7 @@
       "width=800,height=600",
     );
     if (!newWindow) {
-      alert("Please allow popups for this site");
+      alert("Please allow popups for this site and try again.");
       return;
     }
     const newDocument = newWindow.document;
@@ -72,7 +80,9 @@
     // Trigger the print action
     newWindow.setTimeout(() => newWindow.print(), 1000);
     newWindow.addEventListener("afterprint", function () {
-      newWindow.close();
+      if (this.confirm("Close window after successful print?")) {
+        newWindow.close();
+      }
     });
   }
 
