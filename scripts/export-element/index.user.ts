@@ -45,25 +45,33 @@ import { html2canvas } from "libraries/html2canvas";
   }
 
   // Add context menu to user script
-  document.addEventListener("contextmenu", function (event) {
+  function handleUpdateTarget(event: MouseEvent) {
     params.eventTarget = event.target;
+    const selection = window.getSelection?.() ??
+      document.getSelection?.() ?? {
+        anchorNode: event.target as Node,
+        focusNode: event.target as Node,
+        toString: (): string =>
+          Object.getOwnPropertyDescriptor(
+            document,
+            "selection",
+          )?.value?.createRange?.()?.text || "",
+      };
 
-    const selectedText =
-      window.getSelection?.()?.toString() ??
-      document.getSelection?.()?.toString() ??
-      Object.getOwnPropertyDescriptor(
-        document,
-        "selection",
-      )?.value?.createRange?.()?.text ??
-      "";
+    const selectedText = selection.toString();
     const matchText = sanitizeText(selectedText);
     params.matchWords = matchText.split(" ");
 
-    params.target = findLastNodeWithPredicate(event.target as Node, (node) => {
-      const nodeText = sanitizeText((node as HTMLElement).innerText);
-      return containsAll(nodeText, params.matchWords);
-    });
-  });
+    params.target = findLastNodeWithPredicate(
+      selection.anchorNode ?? selection.focusNode,
+      (node) => {
+        const nodeText = sanitizeText((node as HTMLElement).innerText);
+        return containsAll(nodeText, params.matchWords);
+      },
+    );
+  }
+  document.addEventListener("contextmenu", handleUpdateTarget);
+  document.addEventListener("mouseup", handleUpdateTarget);
 
   function findBackgroundColor(element: Element) {
     const transparentColor = "transparent";
