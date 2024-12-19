@@ -28,12 +28,13 @@
     return null;
   }
 
-  /**
-   * Find the uppermost node that does not have a next sibling
-   */
-  function findLastNodeInTree(node: Node | null) {
-    return findLastNodeWithPredicate(node, (node: Node) => !node.nextSibling);
-  }
+  // Add context menu to user script
+  document.addEventListener("contextmenu", function (event) {
+    params.target = findLastNodeWithPredicate(
+      event.target as Node,
+      (node: Node) => !node.nextSibling,
+    );
+  });
 
   function findBackgroundColor(element: Element) {
     const transparentColor = "transparent";
@@ -77,11 +78,6 @@
     }
     return transparentColor;
   }
-
-  // Add context menu to user script
-  document.addEventListener("contextmenu", function (event) {
-    params.target = findLastNodeInTree(event.target as Node);
-  });
 
   function cloneNodeWithStyles(window: Window, node: Node) {
     // Function to copy computed styles from one element to another
