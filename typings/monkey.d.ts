@@ -7,4 +7,12 @@ declare interface Window {
   GM_getResourceText(name: string): string;
   // https://www.tampermonkey.net/documentation.php#GM_xmlhttpRequest
   GM_xmlhttpRequest(details: Record<string, unknown>): void;
+  // https://www.tampermonkey.net/documentation.php#api:GM_registerMenuCommand
+  GM_registerMenuCommand(
+    name: string,
+    callback: () => void,
+    accessKey:
+      | string
+      | { id: string; accessKey: string; autoClose: boolean; title: string },
+  );
 }
