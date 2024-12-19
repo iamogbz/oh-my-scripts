@@ -193,6 +193,7 @@ import { html2canvas } from "libraries/html2canvas";
 
     const modalContent = document.createElement("div");
     modalContent.style.backgroundColor = findBackgroundColor(node as Element);
+    modalContent.style.cursor = "pointer";
     modalContent.style.display = "block";
     modalContent.style.height = "fit-content";
     modalContent.style.outlineColor = modalContent.style.backgroundColor;
@@ -210,14 +211,14 @@ import { html2canvas } from "libraries/html2canvas";
     modalWrapper.style.height = "100vh";
     modalWrapper.style.justifyContent = "center";
     modalWrapper.style.left = "0";
-    modalWrapper.style.opacity = "0";
+    modalWrapper.style.opacity = "1";
     modalWrapper.style.overflow = "auto";
     modalWrapper.style.position = "fixed";
     modalWrapper.style.top = "0";
     modalWrapper.style.userSelect = "none";
     modalWrapper.style.width = "100vw";
-    modalWrapper.style.visibility = "hidden";
-    modalWrapper.style.zIndex = `${Number.MAX_SAFE_INTEGER}`;
+    modalWrapper.style.visibility = "visible";
+    modalWrapper.style.zIndex = `${Number.MIN_SAFE_INTEGER}`;
 
     // place the clone in a hidden div to enable html2canvas to render it
     modalContent.appendChild(clone);
@@ -230,19 +231,18 @@ import { html2canvas } from "libraries/html2canvas";
         x: window.innerWidth / clone.clientWidth,
         y: window.innerHeight / clone.clientHeight,
       };
+      modalContent.style.scale = `${Math.min(1, scale.x, scale.y)}`;
       modalContent.scrollIntoView({
         behavior: "smooth",
         block: "center",
         inline: "center",
       });
-      modalWrapper.style.opacity = "1";
-      modalWrapper.style.visibility = "visible";
+      modalWrapper.style.zIndex = `${Number.MAX_SAFE_INTEGER}`;
     };
-
-    positionPreview(); // wait for clone to be rendered before positioning it
 
     // https://stackoverflow.com/questions/3906142/how-to-save-a-png-from-javascript-variable
     const canvas = await html2canvas(modalContent);
+    positionPreview(); // wait for clone to be rendered before positioning it
     const imageType = "image/png";
     const dataBlob = await new Promise<Blob>((resolve) => {
       canvas.toBlob((blob) => (blob ? resolve(blob) : undefined), imageType);
