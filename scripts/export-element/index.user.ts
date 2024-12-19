@@ -28,9 +28,14 @@
     return null;
   }
 
-  /** replace all continous newlines and whitespace in text with a single space */
+  /** Replace all continous newlines and whitespace in text with a single space */
   function sanitizeText(text: string) {
-    return text.replace(/\s+/g, " ").trim();
+    return text?.replace(/\s+/g, " ").trim() ?? "";
+  }
+
+  /** Checks that text contains all words */
+  function containsAll(text: string, words: string[]) {
+    return words.every((word) => text.includes(word));
   }
 
   // Add context menu to user script
@@ -44,10 +49,11 @@
       )?.value?.createRange?.()?.text ??
       "";
     const matchText = sanitizeText(selectedText);
+    const matchWords = matchText.split(" ");
 
     params.target = findLastNodeWithPredicate(event.target as Node, (node) => {
       const nodeText = sanitizeText((node as HTMLElement).innerText);
-      return nodeText.includes(matchText);
+      return containsAll(nodeText, matchWords);
     });
   });
 
