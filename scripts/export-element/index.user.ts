@@ -1,19 +1,25 @@
+import { html2canvas } from "libraries/html2canvas";
+
 (function () {
   "use strict";
 
+  const transparentColor = "transparent";
+
   const Types = Object.freeze({
     PDF: "pdf",
-    // PNG: "png", // TODO: add png support
+    PNG: "png",
   });
 
+  type ExportType = (typeof Types)[keyof typeof Types];
+
   const params: {
+    matchWords: string[];
     eventTarget: EventTarget | null;
     target: Node | null;
-    type: (typeof Types)[keyof typeof Types];
   } = {
+    matchWords: [],
     eventTarget: null,
     target: null,
-    type: Types.PDF,
   };
 
   /**
@@ -41,28 +47,35 @@
   }
 
   // Add context menu to user script
-  document.addEventListener("contextmenu", function (event) {
+  function handleUpdateTarget(event: MouseEvent) {
     params.eventTarget = event.target;
+    const selection = window.getSelection?.() ??
+      document.getSelection?.() ?? {
+        anchorNode: event.target as Node,
+        focusNode: event.target as Node,
+        toString: (): string =>
+          Object.getOwnPropertyDescriptor(
+            document,
+            "selection",
+          )?.value?.createRange?.()?.text || "",
+      };
 
-    const selectedText =
-      window.getSelection?.()?.toString() ??
-      document.getSelection?.()?.toString() ??
-      Object.getOwnPropertyDescriptor(
-        document,
-        "selection",
-      )?.value?.createRange?.()?.text ??
-      "";
+    const selectedText = selection.toString();
     const matchText = sanitizeText(selectedText);
-    const matchWords = matchText.split(" ");
+    params.matchWords = matchText.split(" ");
 
-    params.target = findLastNodeWithPredicate(event.target as Node, (node) => {
-      const nodeText = sanitizeText((node as HTMLElement).innerText);
-      return containsAll(nodeText, matchWords);
-    });
-  });
+    params.target = findLastNodeWithPredicate(
+      selection.anchorNode ?? selection.focusNode,
+      (node) => {
+        const nodeText = sanitizeText((node as HTMLElement).innerText);
+        return containsAll(nodeText, params.matchWords);
+      },
+    );
+  }
+  document.addEventListener("contextmenu", handleUpdateTarget);
+  document.addEventListener("mouseup", handleUpdateTarget);
 
   function findBackgroundColor(element: Element) {
-    const transparentColor = "transparent";
     const backgroundElement = findLastNodeWithPredicate(element, (node) => {
       // return true if the node is an element with a background-color that is not transparent
       if (!(node instanceof Element)) {
@@ -173,20 +186,109 @@
   }
 
   /**
+   * Clone node as image and trigger download
+   */
+  async function cloneAndDownloadImage(node: Node) {
+    const clone = cloneNodeWithStyles(window, node);
+
+    const modalContent = document.createElement("div");
+    modalContent.style.backgroundColor = findBackgroundColor(node as Element);
+    modalContent.style.cursor = "pointer";
+    modalContent.style.display = "block";
+    modalContent.style.height = "fit-content";
+    modalContent.style.outlineColor = modalContent.style.backgroundColor;
+    modalContent.style.outlineStyle = "solid";
+    modalContent.style.outlineWidth = "1vw";
+    modalContent.style.margin = "1vw auto";
+    modalContent.style.position = "relative";
+    modalContent.style.width = "fit-content";
+
+    const modalWrapper = document.createElement("div");
+    modalWrapper.style.alignItems = "center";
+    modalWrapper.style.backdropFilter = "blur(10px)";
+    modalWrapper.style.backgroundColor = `color-mix(in srgb, ${clone.style.backgroundColor}, ${transparentColor} 50%)`;
+    modalWrapper.style.display = "block";
+    modalWrapper.style.height = "100vh";
+    modalWrapper.style.justifyContent = "center";
+    modalWrapper.style.left = "0";
+    modalWrapper.style.opacity = "1";
+    modalWrapper.style.overflow = "auto";
+    modalWrapper.style.position = "fixed";
+    modalWrapper.style.top = "0";
+    modalWrapper.style.userSelect = "none";
+    modalWrapper.style.width = "100vw";
+    modalWrapper.style.visibility = "visible";
+    modalWrapper.style.zIndex = `${Number.MIN_SAFE_INTEGER}`;
+
+    // place the clone in a hidden div to enable html2canvas to render it
+    modalContent.appendChild(clone);
+    modalWrapper.appendChild(modalContent);
+    document.body.appendChild(modalWrapper);
+
+    // scale and position clone to fit the window
+    const positionPreview = () => {
+      const scale = {
+        x: window.innerWidth / clone.clientWidth,
+        y: window.innerHeight / clone.clientHeight,
+      };
+      modalContent.style.scale = `${Math.min(1, scale.x, scale.y)}`;
+      modalContent.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+      modalWrapper.style.zIndex = `${Number.MAX_SAFE_INTEGER}`;
+    };
+
+    // https://stackoverflow.com/questions/3906142/how-to-save-a-png-from-javascript-variable
+    const canvas = await html2canvas(modalContent);
+    positionPreview(); // wait for clone to be rendered before positioning it
+    const imageType = "image/png";
+    const dataBlob = await new Promise<Blob>((resolve) => {
+      canvas.toBlob((blob) => (blob ? resolve(blob) : undefined), imageType);
+    });
+    const dataURI = URL.createObjectURL(dataBlob); // canvas.toDataURL(imageType);
+    const filenameGlue = "-";
+    const filename = `${["screenshot", ...params.matchWords.slice(0, 10)]
+      .map((w) => w.trim())
+      .filter(Boolean)
+      .join(filenameGlue)
+      .toLowerCase()
+      .replace(/[/\\?%*:|"<>]+/g, filenameGlue)
+      .replace(/[-]+/g, filenameGlue)}.${imageType.split("/")[1]}`;
+
+    const imageLink = document.createElement("a");
+    imageLink.target = "_blank";
+    imageLink.href = dataURI;
+    imageLink.download = filename;
+
+    modalWrapper.addEventListener("click", () => modalWrapper.remove());
+    const downloadImage = (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return imageLink.click();
+    };
+    clone.addEventListener("click", downloadImage);
+  }
+
+  /**
    * Print the context node as specified type
    */
-  function printNodeAs(type: (typeof params)["type"]) {
+  function printNodeAs(type: ExportType) {
     if (params.target) {
       switch (type) {
         case Types.PDF: {
           return cloneAndPrintNode(params.target);
         }
+        case Types.PNG: {
+          return cloneAndDownloadImage(params.target);
+        }
         default: {
-          alert(`Unsupported type: ${type}`);
+          return alert(`Unsupported type: ${type}`);
         }
       }
     } else {
-      console.error("Node not found!", params.eventTarget);
+      console.error("Node not found!", params);
     }
   }
 
