@@ -133,7 +133,11 @@
     const newDocument = newWindow.document;
 
     const clone = cloneNodeWithStyles(window, node);
-    newDocument.body.appendChild(clone);
+    if (clone.tagName.toLowerCase() === "body") {
+      newDocument.body.outerHTML = clone.outerHTML;
+    } else {
+      newDocument.body.appendChild(clone);
+    }
     newDocument.body.style.backgroundColor = findBackgroundColor(
       node as Element,
     );
