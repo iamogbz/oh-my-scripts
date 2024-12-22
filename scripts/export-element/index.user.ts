@@ -53,11 +53,15 @@ import { html2canvas } from "libraries/html2canvas";
       document.getSelection?.() ?? {
         anchorNode: event.target as Node,
         focusNode: event.target as Node,
-        toString: (): string =>
-          Object.getOwnPropertyDescriptor(
-            document,
-            "selection",
-          )?.value?.createRange?.()?.text || "",
+        toString() {
+          return (
+            // @ts-expect-error this is IE before version 9
+            document.selection?.createRange?.()?.text ||
+            this.anchorNode?.textContent ||
+            this.focusNode?.textContent ||
+            ""
+          );
+        },
       };
 
     const selectedText = selection.toString();
@@ -67,21 +71,28 @@ import { html2canvas } from "libraries/html2canvas";
     params.target = findLastNodeWithPredicate(
       selection.anchorNode ?? selection.focusNode,
       (node) => {
-        const nodeText = sanitizeText((node as HTMLElement).innerText);
+        const nodeText = sanitizeText(node.textContent || "");
         return containsAll(nodeText, params.matchWords);
       },
+    );
+
+    console.log(
+      (event.target as Node).textContent,
+      // @ts-expect-error IE before version 9
+      document.selection?.createRange?.().text,
+      params.target,
     );
   }
   document.addEventListener("contextmenu", handleUpdateTarget);
   document.addEventListener("mouseup", handleUpdateTarget);
 
-  function findBackgroundColor(element: Element) {
-    const backgroundElement = findLastNodeWithPredicate(element, (node) => {
+  function findBackgroundColor(node: Node) {
+    const backgroundElement = findLastNodeWithPredicate(node, (element) => {
       // return true if the node is an element with a background-color that is not transparent
-      if (!(node instanceof Element)) {
+      if (!(element instanceof Element)) {
         return false;
       }
-      const computedStyle = window.getComputedStyle(node as Element);
+      const computedStyle = window.getComputedStyle(element);
       const backgroundColor = computedStyle.backgroundColor; // Get the background-color
 
       if (!backgroundColor) {
@@ -108,10 +119,8 @@ import { html2canvas } from "libraries/html2canvas";
       return true;
     });
 
-    if (backgroundElement) {
-      const computedStyle = window.getComputedStyle(
-        backgroundElement as Element,
-      );
+    if (backgroundElement instanceof Element) {
+      const computedStyle = window.getComputedStyle(backgroundElement);
       return computedStyle.getPropertyValue("background-color");
     }
     return transparentColor;
@@ -120,7 +129,8 @@ import { html2canvas } from "libraries/html2canvas";
   function cloneNodeWithStyles(window: Window, node: Node) {
     // Function to copy computed styles from one element to another
     function copyComputedStyles(source: Node, target: Node) {
-      const computedStyle = window.getComputedStyle(source as Element);
+      if (!(source instanceof Element) || !(target instanceof Element)) return;
+      const computedStyle = window.getComputedStyle(source);
       for (const style of computedStyle) {
         (target as HTMLElement).style.setProperty(
           style,
@@ -130,16 +140,16 @@ import { html2canvas } from "libraries/html2canvas";
     }
 
     // Clone the node deeply
-    const clone = node.cloneNode(true) as HTMLElement;
+    const clone = node.cloneNode(true);
 
     // Copy styles from the original node to the cloned node
     copyComputedStyles(node, clone);
 
     // Recursively copy styles for all child nodes
-    function copyStylesRecursively(sourceNode: Node, targetNode: Node) {
-      const sourceEl = sourceNode as HTMLElement;
+    function copyStylesRecursively(sourceEl: Node, targetEl: Node) {
+      if (!(sourceEl instanceof Element) || !(targetEl instanceof Element))
+        return;
       for (let i = 0; i < sourceEl.children.length; i++) {
-        const targetEl = targetNode as Element;
         copyComputedStyles(sourceEl.children[i], targetEl.children[i]);
         copyStylesRecursively(sourceEl.children[i], targetEl.children[i]);
       }
@@ -167,14 +177,12 @@ import { html2canvas } from "libraries/html2canvas";
     const newDocument = newWindow.document;
 
     const clone = cloneNodeWithStyles(window, node);
-    if (clone.tagName.toLowerCase() === "body") {
+    if (clone instanceof Element && clone.tagName.toLowerCase() === "body") {
       newDocument.body.outerHTML = clone.outerHTML;
     } else {
       newDocument.body.appendChild(clone);
     }
-    newDocument.body.style.backgroundColor = findBackgroundColor(
-      node as Element,
-    );
+    newDocument.body.style.backgroundColor = findBackgroundColor(node);
 
     // Trigger the print action
     newWindow.setTimeout(() => newWindow.print(), 1000);
@@ -190,24 +198,23 @@ import { html2canvas } from "libraries/html2canvas";
    */
   async function cloneAndDownloadImage(node: Node) {
     const clone = cloneNodeWithStyles(window, node);
+    const backgroundColor = findBackgroundColor(node);
 
     const modalContent = document.createElement("div");
-    modalContent.style.backgroundColor = findBackgroundColor(node as Element);
+    modalContent.style.backgroundColor = backgroundColor;
     modalContent.style.cursor = "pointer";
     modalContent.style.display = "block";
     modalContent.style.height = "fit-content";
-    modalContent.style.outlineColor = modalContent.style.backgroundColor;
-    modalContent.style.outlineStyle = "solid";
-    modalContent.style.outlineWidth = "1vw";
-    modalContent.style.margin = "1vw auto";
+    modalContent.style.padding = "min(1vh, 1vw)";
     modalContent.style.position = "relative";
+    modalContent.style.top = "1vh";
     modalContent.style.width = "fit-content";
 
     const modalWrapper = document.createElement("div");
-    modalWrapper.style.alignItems = "center";
+    modalWrapper.style.alignItems = "start";
     modalWrapper.style.backdropFilter = "blur(10px)";
-    modalWrapper.style.backgroundColor = `color-mix(in srgb, ${clone.style.backgroundColor}, ${transparentColor} 50%)`;
-    modalWrapper.style.display = "block";
+    modalWrapper.style.backgroundColor = `color-mix(in srgb, ${backgroundColor}, ${transparentColor} 50%)`;
+    modalWrapper.style.display = "flex";
     modalWrapper.style.height = "100vh";
     modalWrapper.style.justifyContent = "center";
     modalWrapper.style.left = "0";
@@ -228,8 +235,8 @@ import { html2canvas } from "libraries/html2canvas";
     // scale and position clone to fit the window
     const positionPreview = () => {
       const scale = {
-        x: window.innerWidth / clone.clientWidth,
-        y: window.innerHeight / clone.clientHeight,
+        x: window.innerWidth / modalContent.clientWidth,
+        y: window.innerHeight / modalContent.clientHeight,
       };
       modalContent.style.scale = `${Math.min(1, scale.x, scale.y)}`;
       modalContent.scrollIntoView({
@@ -263,12 +270,12 @@ import { html2canvas } from "libraries/html2canvas";
     imageLink.download = filename;
 
     modalWrapper.addEventListener("click", () => modalWrapper.remove());
-    const downloadImage = (e: MouseEvent) => {
+    const downloadImage = (e: Event) => {
       e.preventDefault();
       e.stopPropagation();
       return imageLink.click();
     };
-    clone.addEventListener("click", downloadImage);
+    modalContent.addEventListener("click", downloadImage);
   }
 
   /**
