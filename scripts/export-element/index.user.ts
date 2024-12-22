@@ -213,18 +213,27 @@ import { html2canvas } from "libraries/html2canvas";
   async function cloneAndDownloadImage(node: Node) {
     const clone = cloneNodeWithStyles(window, node);
     const backgroundColor = findBackgroundColor(node);
+    const nodeSize = (
+      findLastNodeWithPredicate(
+        node,
+        (element) => element instanceof Element,
+      ) as Element
+    )?.getBoundingClientRect() ?? {
+      height: "fit-content",
+      width: "fit-content",
+    };
 
     const modalContent = document.createElement("a");
     modalContent.style.backgroundColor = backgroundColor;
     modalContent.style.cursor = "pointer";
     modalContent.style.display = "block";
-    modalContent.style.height = "fit-content";
+    modalContent.style.height = nodeSize.height.toString();
     modalContent.style.padding = "min(1vh, 1vw)";
     modalContent.style.position = "relative";
     modalContent.style.textDecoration = "none";
     modalContent.style.top = "1vh";
     modalContent.style.userSelect = "none";
-    modalContent.style.width = "fit-content";
+    modalContent.style.width = nodeSize.width.toString();
 
     const modalWrapper = document.createElement("div");
     modalWrapper.style.alignItems = "start";
