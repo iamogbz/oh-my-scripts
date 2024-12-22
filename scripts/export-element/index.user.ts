@@ -75,13 +75,6 @@ import { html2canvas } from "libraries/html2canvas";
         return containsAll(nodeText, params.matchWords);
       },
     );
-
-    console.log(
-      (event.target as Node).textContent,
-      // @ts-expect-error IE before version 9
-      document.selection?.createRange?.().text,
-      params.target,
-    );
   }
   document.addEventListener("contextmenu", handleUpdateTarget);
   document.addEventListener("mouseup", handleUpdateTarget);
@@ -171,7 +164,15 @@ import { html2canvas } from "libraries/html2canvas";
       "width=800,height=600",
     );
     if (!newWindow) {
-      alert("Please allow popups for this site and try again.");
+      const errorMessage =
+        "Failed to open new window. Please allow popups for this site and try again.";
+      const isInIframe = window.self !== window.top;
+      if (isInIframe) {
+        console.error(errorMessage);
+        console.error("Falling back to exporting as image.");
+        cloneAndDownloadImage(node);
+      }
+      alert(errorMessage);
       return;
     }
     const newDocument = newWindow.document;
@@ -200,14 +201,16 @@ import { html2canvas } from "libraries/html2canvas";
     const clone = cloneNodeWithStyles(window, node);
     const backgroundColor = findBackgroundColor(node);
 
-    const modalContent = document.createElement("div");
+    const modalContent = document.createElement("a");
     modalContent.style.backgroundColor = backgroundColor;
     modalContent.style.cursor = "pointer";
     modalContent.style.display = "block";
     modalContent.style.height = "fit-content";
     modalContent.style.padding = "min(1vh, 1vw)";
     modalContent.style.position = "relative";
+    modalContent.style.textDecoration = "none";
     modalContent.style.top = "1vh";
+    modalContent.style.userSelect = "none";
     modalContent.style.width = "fit-content";
 
     const modalWrapper = document.createElement("div");
@@ -264,18 +267,21 @@ import { html2canvas } from "libraries/html2canvas";
       .replace(/[/\\?%*:|"<>]+/g, filenameGlue)
       .replace(/[-]+/g, filenameGlue)}.${imageType.split("/")[1]}`;
 
-    const imageLink = document.createElement("a");
-    imageLink.target = "_blank";
-    imageLink.href = dataURI;
-    imageLink.download = filename;
+    modalContent.target = "_blank";
+    modalContent.href = dataURI;
+    modalContent.download = filename;
+    modalContent.title = `Download ${filename}`;
 
-    modalWrapper.addEventListener("click", () => modalWrapper.remove());
-    const downloadImage = (e: Event) => {
-      e.preventDefault();
+    // prevent modal from closing when clicking on the link
+    modalContent.addEventListener("click", (e) => {
       e.stopPropagation();
-      return imageLink.click();
-    };
-    modalContent.addEventListener("click", downloadImage);
+      // TODO: check if download is permitted by browser
+    });
+    // close modal when clicking outside the link
+    modalWrapper.addEventListener("click", () => {
+      modalWrapper.remove();
+      URL.revokeObjectURL(dataURI); // free up memory
+    });
   }
 
   /**
