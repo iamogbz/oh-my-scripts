@@ -23,6 +23,19 @@ import { html2canvas } from "libraries/html2canvas";
   };
 
   /**
+   * Create keyboard event handler that triggers callback only on specific key
+   * TODO: Handle multiple keys and combinations
+   * TODO: options to prevent default event action and stop propagation
+   */
+  function onKey(params: { key: string; callback: () => void }) {
+    return (event: KeyboardEvent) => {
+      if (event.key === params.key) {
+        params.callback();
+      }
+    };
+  }
+
+  /**
    * Find the uppermost node that satisfies the predicate
    */
   function findLastNodeWithPredicate(
@@ -277,11 +290,19 @@ import { html2canvas } from "libraries/html2canvas";
       e.stopPropagation();
       // TODO: check if download is permitted by browser
     });
-    // close modal when clicking outside the link
-    modalWrapper.addEventListener("click", () => {
+    const closePreview = () => {
       modalWrapper.remove();
       URL.revokeObjectURL(dataURI); // free up memory
+      document.removeEventListener("keydown", closePreviewOnEscape);
+    };
+    const closePreviewOnEscape = onKey({
+      key: "Escape",
+      callback: closePreview,
     });
+    // close modal when clicking outside the link
+    modalWrapper.addEventListener("click", closePreview);
+    // close modal when pressing escape
+    document.addEventListener("keydown", closePreviewOnEscape);
   }
 
   /**
