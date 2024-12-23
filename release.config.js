@@ -37,6 +37,7 @@ module.exports = {
       branch: releaseBranch,
       src: "dist",
       msg: "chore(release): scripts and libraries <%= nextRelease.gitTag %> [skip ci]\n\n<%= nextRelease.notes %>",
+      dotfiles: true,
     },
   ],
 };
