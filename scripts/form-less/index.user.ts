@@ -1,4 +1,4 @@
-import { createElement, selectAll } from "../../libraries/dom";
+import { selectAll } from "../../libraries/dom";
 
 (function main() {
   "use strict";
@@ -9,13 +9,9 @@ import { createElement, selectAll } from "../../libraries/dom";
   // When editing a form field show button that brings up modal to select a stashed form value [field name] [value] [relative date time] [spinner]
 
   // == Setup ==
-  const _WINDOW_ON_BEFORE_UNLOAD = window.onbeforeunload;
-  const WINDOW_ON_BEFORE_UNLOAD_MSG = "You have filled in a form on this page. Do you want to remember the values for next time?";
+  const WINDOW_ON_BEFORE_UNLOAD_MSG =
+    "You have filled in a form on this page. Do you want to remember the values for next time?";
   let STATE_HAS_UNSAVED_FIELDS = false;
-
-  function selectorNS(str: string | TemplateStringsArray) {
-    return `iamogbz-form-less-${str}`;
-  }
 
   function setPageHasUnsavedFields() {
     STATE_HAS_UNSAVED_FIELDS = true;
@@ -25,9 +21,9 @@ import { createElement, selectAll } from "../../libraries/dom";
     STATE_HAS_UNSAVED_FIELDS = false;
   }
 
-  const submitHook = (e: SubmitEvent) => {
-    setPageFieldsBeenSaved()
-  }
+  const submitHook = () => {
+    setPageFieldsBeenSaved();
+  };
 
   const exitHook: OnBeforeUnloadEventHandlerNonNull = (e) => {
     if (!STATE_HAS_UNSAVED_FIELDS) return null;
@@ -36,14 +32,13 @@ import { createElement, selectAll } from "../../libraries/dom";
 
     // For IE and Firefox
     if (evt) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error - IE specific
       evt.returnValue = WINDOW_ON_BEFORE_UNLOAD_MSG;
     }
 
     // For Safari
     return WINDOW_ON_BEFORE_UNLOAD_MSG;
-  }
+  };
 
   function setPageHooks() {
     document.onsubmit = submitHook;
@@ -51,15 +46,17 @@ import { createElement, selectAll } from "../../libraries/dom";
   }
 
   function selectValidFormFields() {
-    const formFieldSelectors = ['hidden', 'password', 'reset', 'submit']
-      .map(t => `input:not([type='${t}'])`)
-      .concat('select', 'textarea')
-      .join(',');
-    return selectAll(formFieldSelectors)
+    const formFieldSelectors = ["hidden", "password", "reset", "submit"]
+      .map((t) => `input:not([type='${t}'])`)
+      .concat("select", "textarea")
+      .join(",");
+    return selectAll(formFieldSelectors);
   }
 
   function setInputListeners() {
-    selectValidFormFields().forEach(e => e.addEventListener('input', setPageHasUnsavedFields));
+    selectValidFormFields().forEach((e) =>
+      e.addEventListener("input", setPageHasUnsavedFields),
+    );
   }
 
   function init() {
@@ -69,5 +66,5 @@ import { createElement, selectAll } from "../../libraries/dom";
   }
 
   // == Run ==
-  init()
+  init();
 })();
