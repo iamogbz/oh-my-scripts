@@ -79,11 +79,12 @@ import { html2canvas } from "libraries/html2canvas";
 
     const selectedText = selection.toString();
     const matchText = sanitizeText(selectedText);
-    params.matchWords = matchText.split(" ");
+    params.matchWords = matchText.split(" ").filter(Boolean);
 
     params.target = findLastNodeWithPredicate(
       selection.anchorNode ?? selection.focusNode,
       (node) => {
+        if (params.matchWords.length === 0) return true;
         const nodeText = sanitizeText(node.textContent || "");
         return containsAll(nodeText, params.matchWords);
       },
@@ -212,6 +213,24 @@ import { html2canvas } from "libraries/html2canvas";
    */
   async function cloneAndDownloadImage(node: Node) {
     const clone = cloneNodeWithStyles(window, node);
+    const modifyElements = (
+      parent: Node,
+      selector: string,
+      modifier: (el: Node) => void,
+    ) => {
+      if (!(parent instanceof Element)) return;
+      parent.querySelectorAll(selector).forEach((el) => {
+        modifier(el);
+        if (el.shadowRoot) {
+          modifyElements(el.shadowRoot, selector, modifier);
+        }
+      });
+    };
+    modifyElements(clone, "*", (img) => {
+      if (!(img instanceof HTMLImageElement)) return;
+      img.setAttribute("crossOrigin", "anonymous"); // enable CORS
+      img.setAttribute("src", img.src + "?t=" + Date.now()); // prevent caching
+    });
     const backgroundColor = findBackgroundColor(node);
     const nodeSize = (
       findLastNodeWithPredicate(
@@ -273,7 +292,11 @@ import { html2canvas } from "libraries/html2canvas";
     };
 
     // https://stackoverflow.com/questions/3906142/how-to-save-a-png-from-javascript-variable
-    const canvas = await html2canvas(modalContent);
+    // https://stackoverflow.com/questions/75128079/html2canvas-not-including-fetched-image-in-downloaded-png
+    const canvas = await html2canvas(modalContent, {
+      allowTaint: true,
+      useCORS: true,
+    });
     positionPreview(); // wait for clone to be rendered before positioning it
     const imageType = "image/png";
     const dataBlob = await new Promise<Blob>((resolve) => {
