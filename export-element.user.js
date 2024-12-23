@@ -1,17 +1,17 @@
 // ==UserScript==
 // @name Export Element
 // @description Add a context menu option to print a HTML element including all styles
-// @version 1.5.3
+// @version 1.5.4
 // @author iamogbz
 // @homepage https://github.com/iamogbz/oh-my-scripts
 // @supportURL https://github.com/iamogbz/oh-my-scripts/issues
 // @match *://*/*
-// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/1.5.3/export-element.user.js
+// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/1.5.4/export-element.user.js
 // @grant GM_registerMenuCommand
 // @icon https://github.com/iamogbz/oh-my-scripts/raw/main/assets/monkey_128.png
 // @namespace iamogbz/oh-my-scripts
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.5.3/npm/.pnpm.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.5.3/lib/html2canvas.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.5.4/npm/.pnpm.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.5.4/lib/html2canvas.js
 // @updateURL https://github.com/iamogbz/oh-my-scripts/raw/gh-pages/export-element.user.js
 // ==/UserScript==
 
