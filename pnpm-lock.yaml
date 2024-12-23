@@ -124,8 +124,8 @@ importers:
         specifier: ^1.1.5
         version: 1.1.5
       webpack-userscript:
-        specifier: ^3.2.2
-        version: 3.2.2(webpack@5.97.1)
+        specifier: ^3.2.3
+        version: 3.2.3(webpack@5.97.1)
 
 packages:
 
@@ -4381,9 +4381,6 @@ packages:
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
-  tslib@2.6.2:
-    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
-
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
@@ -4598,8 +4595,8 @@ packages:
     resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}
     engines: {node: '>=10.13.0'}
 
-  webpack-userscript@3.2.2:
-    resolution: {integrity: sha512-XZHdxbHJ6bA7PWQRULST6qI5agiyoBDq//6vtHou9aAeCAyrIzeVSldSLdYBx2Fbrn+1sbjn8HXOFs5wq5EKtw==}
+  webpack-userscript@3.2.3:
+    resolution: {integrity: sha512-P7sVzIMr1Cs/0oWk/G+QtzTSskVCwq5MhNEIpAm6TCF5x0m+RSelyXCdwHZxS+/v7MXkpnLysEcA2bQaDqs2+g==}
     peerDependencies:
       webpack: '5'
 
@@ -9804,8 +9801,6 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tslib@2.6.2: {}
-
   tslib@2.8.1: {}
 
   type-check@0.4.0:
@@ -10024,7 +10019,7 @@ snapshots:
 
   webpack-sources@3.2.3: {}
 
-  webpack-userscript@3.2.2(webpack@5.97.1):
+  webpack-userscript@3.2.3(webpack@5.97.1):
     dependencies:
       class-transformer: 0.5.1
       class-validator: 0.14.1
@@ -10034,7 +10029,7 @@ snapshots:
       ssri: 10.0.6
       table: 6.8.2
       tapable: 2.2.1
-      tslib: 2.6.2
+      tslib: 2.8.1
       webpack: 5.97.1(webpack-cli@5.1.4)
     transitivePeerDependencies:
       - encoding
