@@ -1,8 +1,8 @@
-import { doEvery } from "../../libraries/interval";
-
 const Constants = {
   CURSOR_ID: "fancy-cursor",
   OUTLINE_ID: "fancy-outline",
+  // used to ensure the backdrop is never fully transparent
+  BACKDROP_ID: "fancy-backdrop",
   SIZE: "2px",
   SPACE: "10px",
   Z_INDEX: Number.MAX_SAFE_INTEGER.toString(),
@@ -10,6 +10,10 @@ const Constants = {
 
 (function () {
   "use strict";
+
+  const setCursorStyle = (element: HTMLElement | undefined) => {
+    element?.style.setProperty("cursor", "none", "important");
+  };
 
   const getCustomCursor = () => {
     const cursor =
@@ -21,7 +25,6 @@ const Constants = {
     cursor.style.backdropFilter = `blur(${Constants.SIZE})`;
     cursor.style.backgroundColor = "rgba(255, 255, 255, 1)"; // TODO: red for now
     cursor.style.borderRadius = "50%";
-    cursor.style.cursor = "none";
     cursor.style.height = Constants.SIZE;
     cursor.style.mixBlendMode = "difference";
     cursor.style.opacity = "1";
@@ -38,6 +41,7 @@ const Constants = {
       cursor.id = Constants.CURSOR_ID;
       document.body.appendChild(cursor);
     }
+    setCursorStyle(cursor);
     return cursor;
   };
 
@@ -50,7 +54,6 @@ const Constants = {
     outline.style.boxSizing = "border-box";
     outline.style.backgroundColor = "rgba(255, 255, 255, 1)";
     outline.style.mixBlendMode = "difference";
-    outline.style.cursor = "none";
     outline.style.pointerEvents = "none";
     outline.style.position = "fixed";
     outline.style.transitionDuration = "0.1s";
@@ -64,6 +67,7 @@ const Constants = {
       outline.id = Constants.OUTLINE_ID;
       document.body.appendChild(outline);
     }
+    setCursorStyle(outline);
     return outline;
   };
 
@@ -74,25 +78,34 @@ const Constants = {
 
   const cursor = getCustomCursor();
 
+  // TODO: this is a bit of a hack, but we need to ensure that the outline
+  // is not displayed on over complicated element trees
+  function allChildrenHaveAtMostSingleChildElement(node: Node) {
+    if (!node) return true;
+    const element = node as HTMLElement;
+    if (element.childElementCount > 1) {
+      return false;
+    }
+    if (element.childElementCount < 1) {
+      return true;
+    }
+    return Array.from(element.children || []).every(
+      allChildrenHaveAtMostSingleChildElement,
+    );
+  }
+
   const updateCursorPosition = () => {
     cursor.style.left = `${mousePosition.x}px`;
     cursor.style.top = `${mousePosition.y}px`;
   };
 
   const outline = getCustomOutline();
+  const backdrop = outline.cloneNode() as HTMLElement;
+  backdrop.id = Constants.BACKDROP_ID;
+  document.body.appendChild(backdrop);
 
   const updateOutlinePosition = () => {
     const target = getElementByCursor();
-
-    if (!target || target.childElementCount > 1) {
-      outline.style.zIndex = Constants.Z_INDEX;
-      outline.style.left = `calc(${mousePosition.x}px - ${Constants.SPACE}/2)`;
-      outline.style.top = `calc(${mousePosition.y}px - ${Constants.SPACE}/2)`;
-      outline.style.width = Constants.SPACE;
-      outline.style.height = Constants.SPACE;
-      outline.style.borderRadius = Constants.SPACE;
-      return;
-    }
 
     const getZIndex = (node: Node | null) => {
       if (node != null && node instanceof HTMLElement) {
@@ -105,14 +118,28 @@ const Constants = {
       return 0;
     };
 
-    outline.style.zIndex = (getZIndex(target) + 1).toString();
-    // if target is a single element node
-    const rect = target.getBoundingClientRect();
-    outline.style.left = `calc(${rect.left}px  - ${Constants.SPACE}/2)`;
-    outline.style.top = `calc(${rect.top}px  - ${Constants.SPACE}/2)`;
-    outline.style.width = `calc(${rect.width}px + ${Constants.SPACE})`;
-    outline.style.height = `calc(${rect.height}px + ${Constants.SPACE})`;
-    outline.style.borderRadius = Constants.SIZE;
+    if (!target || !allChildrenHaveAtMostSingleChildElement(target)) {
+      outline.style.zIndex = Constants.Z_INDEX;
+      outline.style.left = `calc(${mousePosition.x}px - ${Constants.SPACE}/2)`;
+      outline.style.top = `calc(${mousePosition.y}px - ${Constants.SPACE}/2)`;
+      outline.style.width = Constants.SPACE;
+      outline.style.height = Constants.SPACE;
+      outline.style.borderRadius = Constants.SPACE;
+    } else {
+      const zIndex = getZIndex(target);
+      outline.style.zIndex = (zIndex + 1).toString();
+      const rect = target.getBoundingClientRect();
+      outline.style.left = `calc(${rect.left}px - ${Constants.SPACE}/2)`;
+      outline.style.top = `calc(${rect.top}px - ${Constants.SPACE}/2)`;
+      outline.style.width = `calc(${rect.width}px + ${Constants.SPACE})`;
+      outline.style.height = `calc(${rect.height}px + ${Constants.SPACE})`;
+      outline.style.borderRadius = Constants.SIZE;
+    }
+
+    // update backdrop position
+    backdrop.setAttribute("style", outline.getAttribute("style") ?? "");
+    backdrop.style.mixBlendMode = "unset";
+    backdrop.style.zIndex = (Number(Constants.Z_INDEX) * -1).toString();
   };
 
   /**
@@ -150,8 +177,15 @@ const Constants = {
 
     // if element is a text node, get the parent element
     const topMatchingNode = findLastNodeWithPredicate(element, (node) => {
-      return node.textContent?.trim() === element.textContent?.trim();
+      return (
+        node.textContent?.trim() === element.textContent?.trim() &&
+        allChildrenHaveAtMostSingleChildElement(node)
+      );
     }) as HTMLElement;
+
+    // ensure element pointer is none
+    setCursorStyle(element as HTMLElement);
+    setCursorStyle(topMatchingNode);
 
     return topMatchingNode;
   };
@@ -166,20 +200,6 @@ const Constants = {
   window.addEventListener("mousemove", onEvent);
   window.addEventListener("touchstart", (event) => onEvent(event.touches[0]));
 
-  doEvery({
-    condition: () => {
-      const hasFancyCursor = !!document.getElementById(Constants.CURSOR_ID);
-      return hasFancyCursor;
-    },
-    callback: () => {
-      // ensure cursor is set to none
-      document.body.style.cursor = "none";
-      document.documentElement.style.cursor = "none";
-      document.querySelectorAll("*").forEach((element) => {
-        if (element instanceof HTMLElement) {
-          element.style.cursor = "none";
-        }
-      });
-    },
-  });
+  setCursorStyle(document.documentElement);
+  setCursorStyle(document.body);
 })();
