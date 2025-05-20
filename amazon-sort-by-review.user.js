@@ -1,18 +1,18 @@
 // ==UserScript==
 // @name Amazon Sort by Review
 // @description Sort products best by reviews
-// @version 1.5.4
+// @version 1.6.0
 // @author iamogbz
 // @homepage https://github.com/iamogbz/oh-my-scripts
 // @supportURL https://github.com/iamogbz/oh-my-scripts/issues
 // @match *://*.amazon.ca/*
 // @match *://*.amazon.com/*
 // @match *://*.amazon.co.uk/*
-// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/1.5.4/amazon-sort-by-review.user.js
+// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/amazon-sort-by-review.user.js
 // @grant GM_xmlhttpRequest
 // @icon https://github.com/iamogbz/oh-my-scripts/raw/main/assets/monkey_128.png
 // @namespace iamogbz/oh-my-scripts
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.5.4/lib/interval.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/lib/interval.js
 // @updateURL https://github.com/iamogbz/oh-my-scripts/raw/gh-pages/amazon-sort-by-review.user.js
 // ==/UserScript==
 
