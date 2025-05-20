@@ -107,27 +107,14 @@ const Constants = {
   const updateOutlinePosition = () => {
     const target = getElementByCursor();
 
-    const getZIndex = (node: Node | null) => {
-      if (node != null && node instanceof HTMLElement) {
-        const zIndex = window.getComputedStyle(node).zIndex;
-        if (zIndex !== "auto") {
-          return Number(zIndex);
-        }
-        return getZIndex(node.parentNode);
-      }
-      return 0;
-    };
-
+    outline.style.zIndex = Constants.Z_INDEX;
     if (!target || !allChildrenHaveAtMostSingleChildElement(target)) {
-      outline.style.zIndex = Constants.Z_INDEX;
       outline.style.left = `calc(${mousePosition.x}px - ${Constants.SPACE}/2)`;
       outline.style.top = `calc(${mousePosition.y}px - ${Constants.SPACE}/2)`;
       outline.style.width = Constants.SPACE;
       outline.style.height = Constants.SPACE;
       outline.style.borderRadius = Constants.SPACE;
     } else {
-      const zIndex = getZIndex(target);
-      outline.style.zIndex = (zIndex + 1).toString();
       const rect = target.getBoundingClientRect();
       outline.style.left = `calc(${rect.left}px - ${Constants.SPACE}/2)`;
       outline.style.top = `calc(${rect.top}px - ${Constants.SPACE}/2)`;
