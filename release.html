@@ -106,6 +106,20 @@
         .forEach((/** @type {{ name: string, download_url: string }} */ file) => {
           const fileBaseName = file.name.split('.')[0];
           const scriptItemElem = document.createElement('details');
+          const urlParamName = "script"
+          scriptItemElem.setAttribute('id', fileBaseName);
+          if ((new URLSearchParams(location.search)).get(urlParamName) === fileBaseName) {
+            scriptItemElem.setAttribute('open', '');
+          }
+          scriptItemElem.addEventListener("click", () => {
+            setTimeout(() => {
+              if (scriptItemElem.open) {
+                history.pushState(null, '', `?${urlParamName}=${fileBaseName}`);
+              } else {
+                history.pushState(null, '', '?');
+              }
+            }, 100)
+          })
 
           const downloadItemElem = document.createElement('summary');
           const downLinkTitle = `Download user script ${fileBaseName}`;
