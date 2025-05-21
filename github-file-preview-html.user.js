@@ -1,23 +1,23 @@
 // ==UserScript==
 // @name GitHub File Preview HTML
 // @description Render HTML files in github
-// @version 1.6.0
+// @version 1.6.1
 // @author iamogbz
 // @homepage https://github.com/iamogbz/oh-my-scripts
 // @supportURL https://github.com/iamogbz/oh-my-scripts/issues
 // @include *://github.com/*
-// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/github-file-preview-html.user.js
+// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/1.6.1/github-file-preview-html.user.js
 // @grant GM_xmlhttpRequest
 // @icon https://github.com/iamogbz/oh-my-scripts/raw/main/assets/monkey_128.png
 // @namespace iamogbz/oh-my-scripts
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/lib/dom.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/npm/.pnpm.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/lib/github-file.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/lib/github.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/lib/paths.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/lib/request.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/lib/ns.js
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/lib/dom-inline.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.1/lib/dom.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.1/npm/.pnpm.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.1/lib/github-file.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.1/lib/github.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.1/lib/paths.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.1/lib/request.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.1/lib/ns.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.1/lib/dom-inline.js
 // @updateURL https://github.com/iamogbz/oh-my-scripts/raw/gh-pages/github-file-preview-html.user.js
 // ==/UserScript==
 

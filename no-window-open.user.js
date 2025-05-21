@@ -1,16 +1,16 @@
 // ==UserScript==
 // @name No Window Open
 // @description Blocks window open
-// @version 1.6.0
+// @version 1.6.1
 // @author iamogbz
 // @homepage https://github.com/iamogbz/oh-my-scripts
 // @supportURL https://github.com/iamogbz/oh-my-scripts/issues
 // @match *://*/*
-// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/no-window-open.user.js
+// @downloadURL https://github.com/iamogbz/oh-my-scripts/raw/1.6.1/no-window-open.user.js
 // @grant none
 // @icon https://github.com/iamogbz/oh-my-scripts/raw/main/assets/monkey_128.png
 // @namespace iamogbz/oh-my-scripts
-// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.0/lib/dom.js
+// @require https://github.com/iamogbz/oh-my-scripts/raw/1.6.1/lib/dom.js
 // @require https://raw.githubusercontent.com/Martii/UserScripts/d8d8829/lib/GM_setStyle/GM_setStyle.js
 // @updateURL https://github.com/iamogbz/oh-my-scripts/raw/gh-pages/no-window-open.user.js
 // ==/UserScript==
