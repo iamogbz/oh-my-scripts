@@ -65,7 +65,7 @@ const Constants = {
     outline.style.zIndex = Constants.Z_INDEX;
     if (!outline.id) {
       outline.id = Constants.OUTLINE_ID;
-      document.body.appendChild(outline);
+      document.body.insertBefore(outline, null);
     }
     setCursorStyle(outline);
     return outline;
@@ -102,7 +102,7 @@ const Constants = {
   const outline = getCustomOutline();
   const backdrop = outline.cloneNode() as HTMLElement;
   backdrop.id = Constants.BACKDROP_ID;
-  document.body.appendChild(backdrop);
+  document.body.insertBefore(backdrop, null);
 
   const updateOutlinePosition = () => {
     const target = getElementByCursor();
@@ -121,6 +121,12 @@ const Constants = {
       outline.style.width = `calc(${rect.width}px + ${Constants.SPACE})`;
       outline.style.height = `calc(${rect.height}px + ${Constants.SPACE})`;
       outline.style.borderRadius = Constants.SIZE;
+    }
+    // set the outline to be above the target element
+    // make outline the last child of the target element
+    if (document.body.lastChild !== backdrop) {
+      document.body.insertBefore(outline, null);
+      document.body.insertBefore(backdrop, null);
     }
 
     // update backdrop position
