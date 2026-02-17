@@ -133,8 +133,9 @@ Click on it below to proceed with navigation.`;
   }
 
   function onWindowOpen(url: string) {
-    console.log(`window.open(${url})`);
-    setPopupLink(url);
+    console.log(`window.open('${url}')`);
+    const fullUrl = new URL(url, window.location.href).href;
+    setPopupLink(fullUrl);
     showNoticeTimeout();
     // return mock window object that allows setting location
     return {
