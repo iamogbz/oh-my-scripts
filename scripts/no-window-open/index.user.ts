@@ -160,7 +160,14 @@ Click on it below to proceed with navigation.`;
     };
   }
   // ==Run==
-  window.GM_setStyle({ data: POPUP_ELEMENT_CSS });
+  if (!window.GM_setStyle) {
+    console.warn(
+      "GM_setStyle is not available. Please make sure to include it in the userscript header.",
+    );
+    return;
+  } else {
+    window.GM_setStyle({ data: POPUP_ELEMENT_CSS });
+  }
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   window.open = onWindowOpen;
