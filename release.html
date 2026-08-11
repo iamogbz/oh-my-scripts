@@ -2,6 +2,7 @@
 
 <head>
   <link rel="icon" href="./assets/monkey_128.png" />
+  <title>Releases - Oh My Scripts</title>
   <script src="https://cdn.jsdelivr.net/gh/iamogbz/oh-my-wcs@5533ae6/components/github-md-view.js"></script>
   <style>
     html {
@@ -105,6 +106,20 @@
         .forEach((/** @type {{ name: string, download_url: string }} */ file) => {
           const fileBaseName = file.name.split('.')[0];
           const scriptItemElem = document.createElement('details');
+          const urlParamName = "script"
+          scriptItemElem.setAttribute('id', fileBaseName);
+          if ((new URLSearchParams(location.search)).get(urlParamName) === fileBaseName) {
+            scriptItemElem.setAttribute('open', '');
+          }
+          scriptItemElem.addEventListener("click", () => {
+            setTimeout(() => {
+              if (scriptItemElem.open) {
+                history.pushState(null, '', `?${urlParamName}=${fileBaseName}`);
+              } else {
+                history.pushState(null, '', '?');
+              }
+            }, 100)
+          })
 
           const downloadItemElem = document.createElement('summary');
           const downLinkTitle = `Download user script ${fileBaseName}`;
@@ -124,13 +139,13 @@
   </script>
 
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R7JWQVGXJV"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CL18SRGQN3"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
-    gtag('config', 'G-R7JWQVGXJV');
+    gtag('config', 'G-CL18SRGQN3');
   </script>
 
   <body>

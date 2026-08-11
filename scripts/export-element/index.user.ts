@@ -1,4 +1,4 @@
-import { html2canvas } from "libraries/html2canvas";
+import { html2canvas } from "../../libraries/html2canvas";
 
 (function () {
   "use strict";

@@ -133,8 +133,9 @@ Click on it below to proceed with navigation.`;
   }
 
   function onWindowOpen(url: string) {
-    console.log(`window.open(${url})`);
-    setPopupLink(url);
+    console.log(`window.open('${url}')`);
+    const fullUrl = new URL(url, window.location.href).href;
+    setPopupLink(fullUrl);
     showNoticeTimeout();
     // return mock window object that allows setting location
     return {
@@ -159,7 +160,14 @@ Click on it below to proceed with navigation.`;
     };
   }
   // ==Run==
-  window.GM_setStyle({ data: POPUP_ELEMENT_CSS });
+  if (!window.GM_setStyle) {
+    console.warn(
+      "GM_setStyle is not available. Please make sure to include it in the userscript header.",
+    );
+    return;
+  } else {
+    window.GM_setStyle({ data: POPUP_ELEMENT_CSS });
+  }
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   window.open = onWindowOpen;
